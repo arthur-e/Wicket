@@ -25,21 +25,29 @@ var Wkt = (function() { // Execute function immediately
 
         /**
          * An object for reading WKT strings and writing geographic features
+         * @param {String} An optional WKT string for immediate read
+         * @param {<Wkt.Wkt>} A WKT object
          */
         Wkt: function(wkt) {
             var beginsWith, endsWith, trim;
 
-            // private
+            /**
+             * @private
+             */
             beginsWith = function(str, sub) {
                 return str.substring(0, sub.length) === sub;
-            }
+            };
 
-            // private
+            /**
+             * @private
+             */
             endsWith = function(str, sub) {
                 return str.substring(str.length - sub.length) === sub;
-            }
+            };
 
-            // private
+            /**
+             * @private
+             */
             trim = function(str, sub) {
                 sub = sub || ' '; // Defaults to trimming spaces
                 // Trim beginning spaces
@@ -52,10 +60,6 @@ var Wkt = (function() { // Execute function immediately
                 }
                 return str;
             };
-
-            ////////////////////////////////////////////////////////////////////
-            this.trim = trim;
-            ////////////////////////////////////////////////////////////////////
 
             /**
              * Regular expressions copied from OpenLayers.Format.WKT.js
@@ -125,21 +129,21 @@ var Wkt = (function() { // Execute function immediately
                  * @param {String} A WKT fragment representing the polygon
                  */
                 'polygon': function(str) {
-                    var i, j, matches, path, ring, rings;
-                    path = [];
+                    var i, j, ring, rings;
+                    this.components = []; // Reinitialize the components holder
                     rings = trim(str).split(this.regExes.parenComma);
                     for (i=0; i < rings.length; i+=1) {
                         ring = rings[i].replace(this.regExes.trimParens, '$1').split(this.regExes.comma);
                         for (j=0; j < ring.length; j+=1) {
                             // Split on the empty space or '+' character (between coordinates)
                             // TODO matches = this.regExes.numeric.exec(ring[j]); // Match numeric coordinates
-                            path.push({
+                            this.components.push({
                                 x: ring[j].split(this.regExes.spaces)[0],
                                 y: ring[j].split(this.regExes.spaces)[1]
                             });
                         }
                     }
-                    return path;
+                    return this.components;
                 },
 
                 /**
