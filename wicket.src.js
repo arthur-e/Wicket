@@ -62,11 +62,12 @@ var Wkt = (function() { // Execute function immediately
             };
 
             /**
-             * Regular expressions copied from OpenLayers.Format.WKT.js
+             * Some regular expressions copied from OpenLayers.Format.WKT.js
              */
             this.regExes = {
                 'typeStr': /^\s*(\w+)\s*\(\s*(.*)\s*\)\s*$/,
                 'spaces': /\s+/,
+                'numeric': /-*\d+\.*\d+/, // Examples: -83.45, 42, 35.0
                 'comma': /\s*,\s*/,
                 'parenComma': /\)\s*,\s*\(/,
                 'doubleParenComma': /\)\s*\)\s*,\s*\(\s*\(/,
@@ -77,16 +78,16 @@ var Wkt = (function() { // Execute function immediately
              * Reads a WKT string, validating and incorporating it
              */
             this.read = function(wkt) {
-                var features, matches;
+                var matches;
                 matches = this.regExes.typeStr.exec(wkt);
                 if (matches) {
                     this.type = matches[1].toLowerCase();
                     this.base = matches[2];
                     if (this.parse[this.type]) {
-                        features = this.parse[this.type].apply(this, [this.base]);
+                        this.components = this.parse[this.type].apply(this, [this.base]);
                     }
                 }
-            return features;
+            return this.components;
             }; // eo read
 
             /**
@@ -101,6 +102,12 @@ var Wkt = (function() { // Execute function immediately
                  * @param {String} str A WKT fragment representing the point
                  */
                 'point': function(str) {
+                    var coords = trim(str).split(this.regExes.spaces);
+                    // In case a parenthetical group of coordinates is passed...
+                    return { // ...Search for numeric substrings
+                        x: parseFloat(this.regExes.numeric.exec(coords[0])[0]),
+                        y: parseFloat(this.regExes.numeric.exec(coords[1])[0])
+                    };
                 },
 
                 /**
@@ -108,6 +115,13 @@ var Wkt = (function() { // Execute function immediately
                  * @param {String} A WKT fragment representing the multipoint
                  */
                 'multipoint': function(str) {
+                    var i, components, points;
+                    components = [];
+                    points = trim(str).split(this.regExes.comma);
+                    for (i=0; i < points.length; i+=1) {
+                        components.push(this.parse.point.apply(this, [points[i]]));
+                    }
+                    return components;
                 },
                 
                 /**
@@ -129,21 +143,21 @@ var Wkt = (function() { // Execute function immediately
                  * @param {String} A WKT fragment representing the polygon
                  */
                 'polygon': function(str) {
-                    var i, j, ring, rings;
-                    this.components = []; // Reinitialize the components holder
+                    var i, j, components, ring, rings;
+                    components = []; // Reinitialize the components holder
                     rings = trim(str).split(this.regExes.parenComma);
                     for (i=0; i < rings.length; i+=1) {
                         ring = rings[i].replace(this.regExes.trimParens, '$1').split(this.regExes.comma);
                         for (j=0; j < ring.length; j+=1) {
                             // Split on the empty space or '+' character (between coordinates)
                             // TODO matches = this.regExes.numeric.exec(ring[j]); // Match numeric coordinates
-                            this.components.push({
-                                x: ring[j].split(this.regExes.spaces)[0],
-                                y: ring[j].split(this.regExes.spaces)[1]
+                            components.push({
+                                x: parseFloat(ring[j].split(this.regExes.spaces)[0]),
+                                y: parseFloat(ring[j].split(this.regExes.spaces)[1])
                             });
                         }
                     }
-                    return this.components;
+                    return components;
                 },
 
                 /**
