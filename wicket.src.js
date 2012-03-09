@@ -66,8 +66,8 @@ var Wkt = (function() { // Execute function immediately
              */
             this.regExes = {
                 'typeStr': /^\s*(\w+)\s*\(\s*(.*)\s*\)\s*$/,
-                'spaces': /\s+/,
-                'numeric': /-*\d+\.*\d+/, // Examples: -83.45, 42, 35.0
+                'spaces': /\s+|\+/, // Matches the '+' or the empty space
+                'numeric': /-*\d+\.*\d+/,
                 'comma': /\s*,\s*/,
                 'parenComma': /\)\s*,\s*\(/,
                 'doubleParenComma': /\)\s*\)\s*,\s*\(\s*\(/,
@@ -129,6 +129,9 @@ var Wkt = (function() { // Execute function immediately
                  * @param {String} A WKT fragment representing the linestring
                  */
                 'linestring': function(str) {
+                    // In our x-and-y representation of components, parsing
+                    //  multipoints is the same as parsing linestrings
+                    return this.parse.multipoint.apply(this, [str]);
                 },
 
                 /**
@@ -136,6 +139,14 @@ var Wkt = (function() { // Execute function immediately
                  * @param {String} A WKT fragment representing the multilinestring
                  */
                 'multilinestring': function(str) {
+                    var i, components, line, lines;
+                    components = [];
+                    lines = trim(str).split(this.regExes.parenComma);
+                    for (i=0; i < lines.length; i+=1) {
+                        line = lines[i].replace(this.regExes.trimParens, '$1');
+                        components.push(this.parse.linestring.apply(this, [line]));
+                    }
+                    return components;
                 },
                 
                 /**
@@ -150,7 +161,6 @@ var Wkt = (function() { // Execute function immediately
                         ring = rings[i].replace(this.regExes.trimParens, '$1').split(this.regExes.comma);
                         for (j=0; j < ring.length; j+=1) {
                             // Split on the empty space or '+' character (between coordinates)
-                            // TODO matches = this.regExes.numeric.exec(ring[j]); // Match numeric coordinates
                             components.push({
                                 x: parseFloat(ring[j].split(this.regExes.spaces)[0]),
                                 y: parseFloat(ring[j].split(this.regExes.spaces)[1])
