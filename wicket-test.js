@@ -26,7 +26,7 @@ multilinestring = 'MULTILINESTRING ((10 10, 20 20, 10 40), (40 40, 30 30, 40 20,
 multipolygon = 'MULTIPOLYGON (((30 20, 10 40, 45 40, 30 20)), ((15 5, 40 10, 10 20, 5 10, 15 5)))';
 
 // A multipolygon formatted for a URL (no spaces)
-multipolygon = 'MULTIPOLYGON(((30+20,10+40,45+40,30+20)),((15+5,40+10,10+20,5+10,15+5)))';
+multipolygon2 = 'MULTIPOLYGON(((30+20,10+40,45+40,30+20)),((15+5,40+10,10+20,5+10,15+5)))';
 
 // One polygon with a hole, one without
 multipolygon3 = 'MULTIPOLYGON (((40 40, 20 45, 45 30, 40 40)), ((20 35, 45 20, 30 5, 10 10, 10 30, 20 35), (30 20, 20 25, 20 15, 30 20)))';

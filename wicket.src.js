@@ -18,6 +18,48 @@
  *      http://pietschsoft.com/post/2009/04/04/Virtual-Earth-Shapes-%28VEShape%29-to-WKT-%28Well-Known-Text%29-and-Back-using-JavaScript.aspx
  * - Charles R. Schmidt's and the Python Spatial Analysis Laboratory's (PySAL)
  *      WKT writer
+ *
+ * WKT geometries are stored internally using the following convention. The
+ * atomic unit of geometry is the coordinate pair (e.g. latitude and longitude)
+ * which is represented by an Object with x and y properties:
+ *
+ *  {x: -83.123, y: 42.123}
+ *
+ * An Array of these coordinates can specify either a collection of unconnected
+ * points (i.e. multipoint feature) or a collection of connected points in an
+ * ordered sequence (i.e. linestring feature):
+ *
+ *  [ {x: -83.12, y: 42.12}, {x: -83.23, y: 42.23}, {x: -83.34, y: 42.34} ]
+ *
+ * The difference between the two is specified elsewhere (in the Wkt instance's
+ * type) and must be retained.
+ *
+ * An Array can also contain other Arrays. In these cases, the contained Arrays
+ * can represent a single polygon (i.e. polygon feature):
+ *
+ * [ [ {x: -83, y: 42}, {x: -83, y: 43}, {x: -82, y: 43}, {x: -82, y: 42}, {x: -83, y: 42} ] ]
+ *
+ * Or a multipolygon:
+ *
+ * [ 
+ *  [
+ *   [ {x: -83, y: 42}, {x: -83, y: 43}, {x: -82, y: 43}, {x: -82, y: 42}, {x: -83, y: 42} ]
+ *  ],
+ *  [ 
+ *   [ {x: -70, y: 40}, {x: -70, y: 41}, {x: -69, y: 41}, {x: -69, y: 40}, {x: -70, y: 40} ]
+ *  ],
+ * ]
+ *
+ * Or a polygon with inner rings (holes) in it where the outer ring is the 
+ * polygon envelope and comes first; subsequent Arrays are inner rings (holes):
+ *
+ * [ 
+ *  [
+ *   [ {x: 35, y: 10}, {x: 10, y: 20}, {x: 15, y: 40}, {x: 45, y: 45}, {x: 35, y: 10} ],
+ *   [ {x: 20, y: 30}, {x: 35, y: 35}, {x: 30, y: 20}, {x: 20, y: 30} ]
+ *  ]
+ * ]
+ *
  */
 var Wkt = (function() { // Execute function immediately
 
@@ -154,18 +196,20 @@ var Wkt = (function() { // Execute function immediately
                  * @param {String} A WKT fragment representing the polygon
                  */
                 'polygon': function(str) {
-                    var i, j, components, ring, rings;
-                    components = []; // Reinitialize the components holder
+                    var i, j, components, subcomponents, ring, rings;
                     rings = trim(str).split(this.regExes.parenComma);
+                    components = []; // Holds one or more rings
                     for (i=0; i < rings.length; i+=1) {
                         ring = rings[i].replace(this.regExes.trimParens, '$1').split(this.regExes.comma);
+                        subcomponents = []; // Holds the outer ring and any inner rings (holes)
                         for (j=0; j < ring.length; j+=1) {
                             // Split on the empty space or '+' character (between coordinates)
-                            components.push({
+                            subcomponents.push({
                                 x: parseFloat(ring[j].split(this.regExes.spaces)[0]),
                                 y: parseFloat(ring[j].split(this.regExes.spaces)[1])
                             });
                         }
+                        components.push(subcomponents);
                     }
                     return components;
                 },
@@ -175,6 +219,14 @@ var Wkt = (function() { // Execute function immediately
                  * @param {String} A WKT fragment representing the multipolygon
                  */
                 'multipolygon': function(str) {
+                    var i, components, polygon, polygons;
+                    components = [];
+                    polygons = trim(str).split(this.regExes.doubleParenComma);
+                    for (i=0; i < polygons.length; i+=1) {
+                        polygon = polygons[i].replace(this.regExes.trimParens, '$1');
+                        components.push(this.parse.polygon.apply(this, [polygon]));
+                    }
+                    return components;
                 },
 
                 /**
