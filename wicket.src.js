@@ -23,13 +23,11 @@ var Wkt = (function() { // Execute function immediately
 
     return {
 
-        Wkt: function(str) {
+        /**
+         * An object for reading WKT strings and writing geographic features
+         */
+        Wkt: function(wkt) {
             var beginsWith, endsWith, trim;
-
-            // An initial WKT string may be provided
-            if (str) {
-                this.read(str);
-            }
 
             // private
             beginsWith = function(str, sub) {
@@ -55,12 +53,17 @@ var Wkt = (function() { // Execute function immediately
                 return str;
             };
 
+            ////////////////////////////////////////////////////////////////////
+            this.trim = trim;
+            ////////////////////////////////////////////////////////////////////
+
             /**
              * Regular expressions copied from OpenLayers.Format.WKT.js
              */
             this.regExes = {
                 'typeStr': /^\s*(\w+)\s*\(\s*(.*)\s*\)\s*$/,
                 'spaces': /\s+/,
+                'comma': /\s*,\s*/,
                 'parenComma': /\)\s*,\s*\(/,
                 'doubleParenComma': /\)\s*\)\s*,\s*\(\s*\(/,
                 'trimParens': /^\s*\(?(.*?)\)?\s*$/
@@ -75,12 +78,11 @@ var Wkt = (function() { // Execute function immediately
                 if (matches) {
                     this.type = matches[1].toLowerCase();
                     this.base = matches[2];
-/*
-                    if (this.parse[type]) {
-                        features = this.parse[type].apply(this, [str]);
+                    if (this.parse[this.type]) {
+                        features = this.parse[this.type].apply(this, [this.base]);
                     }
-*/
-                }    
+                }
+            return features;
             }; // eo read
 
             /**
@@ -123,6 +125,21 @@ var Wkt = (function() { // Execute function immediately
                  * @param {String} A WKT fragment representing the polygon
                  */
                 'polygon': function(str) {
+                    var i, j, matches, path, ring, rings;
+                    path = [];
+                    rings = trim(str).split(this.regExes.parenComma);
+                    for (i=0; i < rings.length; i+=1) {
+                        ring = rings[i].replace(this.regExes.trimParens, '$1').split(this.regExes.comma);
+                        for (j=0; j < ring.length; j+=1) {
+                            // Split on the empty space or '+' character (between coordinates)
+                            // TODO matches = this.regExes.numeric.exec(ring[j]); // Match numeric coordinates
+                            path.push({
+                                x: ring[j].split(this.regExes.spaces)[0],
+                                y: ring[j].split(this.regExes.spaces)[1]
+                            });
+                        }
+                    }
+                    return path;
                 },
 
                 /**
@@ -141,8 +158,13 @@ var Wkt = (function() { // Execute function immediately
 
             }; // eo parse
 
+            // An initial WKT string may be provided
+            if (wkt) {
+                this.read(wkt);
+            }
+
         } // eo WKt.Wkt
 
     } // eo return
 
-}()) // eo Wkt
+}()); // eo Wkt

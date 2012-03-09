@@ -1,0 +1,1 @@
+Wkt.Wkt.prototype
