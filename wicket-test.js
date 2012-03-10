@@ -1,5 +1,5 @@
 // Examples are modified from: http://en.wikipedia.org/wiki/Well-known_text#Geometric_objects
-var point, linestring, polygon, polygon2, multipoint, multipoint2, multilinestring, multipolygon, multipolygon2;
+var point, linestring, polygon, polygon2, multipoint, multipoint2, multilinestring, multipolygon, multipolygon2, runTests;
 
 point = 'POINT (30 10)';
 
@@ -31,3 +31,6 @@ multipolygon2 = 'MULTIPOLYGON(((30+20,10+40,45+40,30+20)),((15+5,40+10,10+20,5+1
 // One polygon with a hole, one without
 multipolygon3 = 'MULTIPOLYGON (((40 40, 20 45, 45 30, 40 40)), ((20 35, 45 20, 30 5, 10 10, 10 30, 20 35), (30 20, 20 25, 20 15, 30 20)))';
 
+runTests = function() {
+    var cases = [point, linestring, polygon, polygon2, multipoint, multipoint2, multilinestring, multipolygon, multipolygon2];
+}

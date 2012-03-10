@@ -21,13 +21,14 @@
  *
  * WKT geometries are stored internally using the following convention. The
  * atomic unit of geometry is the coordinate pair (e.g. latitude and longitude)
- * which is represented by an Object with x and y properties:
+ * which is represented by an Object with x and y properties. An Array with a
+ * single coordinate pair represents a a single point (i.e. POINT feature)
  *
- *  {x: -83.123, y: 42.123}
+ *  [ {x: -83.123, y: 42.123} ]
  *
- * An Array of these coordinates can specify either a collection of unconnected
- * points (i.e. multipoint feature) or a collection of connected points in an
- * ordered sequence (i.e. linestring feature):
+ * An Array of multiple coordinates can specify either a collection of unconnected
+ * points (i.e. MULTIPOINT feature) or a collection of connected points in an
+ * ordered sequence (i.e. LINESTRING feature):
  *
  *  [ {x: -83.12, y: 42.12}, {x: -83.23, y: 42.23}, {x: -83.34, y: 42.34} ]
  *
@@ -35,11 +36,11 @@
  * type) and must be retained.
  *
  * An Array can also contain other Arrays. In these cases, the contained Arrays
- * can represent a single polygon (i.e. polygon feature):
+ * can represent a single polygon (i.e. POLYGON feature):
  *
  * [ [ {x: -83, y: 42}, {x: -83, y: 43}, {x: -82, y: 43}, {x: -82, y: 42}, {x: -83, y: 42} ] ]
  *
- * Or a multipolygon:
+ * Or a MULTIPOLYGON feature:
  *
  * [ 
  *  [
@@ -132,6 +133,68 @@ var Wkt = (function() { // Execute function immediately
             return this.components;
             }; // eo read
 
+            this.write = function(components) {
+                var i, pieces, type, data, isCollection;
+
+                components = components || this.components;
+
+                if (components[0] instanceof Array) {
+                    // Is collection of similar features e.g. FEATURE((...),(...))
+                    isCollection = true; 
+                } else {
+                    // Is not a collection but a single feature e.g. FEATURE(...)
+                    isCollection = false;
+                }
+
+                pieces = [];
+
+                pieces.push(this.type.toUpperCase() + '(');
+
+                for (i=0; i < components.length; i+=1) {
+                    if (isCollection && i > 0) {
+                        pieces.push(',');
+                    }
+
+                    // There should be an extract function for the named type
+                    if (!this.extract[this.type]) {
+                        return null;
+                    }
+
+                    data = this.extract[this.type].apply(this, [components[i]]);
+                    if (isCollection) {
+                        pieces.push('(' + data + ')');
+                    } else {
+                        pieces.push(data);
+                    }
+                }
+
+                pieces.push(')');
+
+                return pieces.join('');
+            };
+
+            /**
+             *
+             */
+            this.extract = {
+                /**
+                 *
+                 */
+                'point': function(point) {
+                    return point.x + ' ' + point.y;
+                },
+                /**
+                 *
+                 */
+                'multipoint': function(multipoint) {
+                    var i, parts = [];
+                    for (i=0; i < multipoint.length; i+=1) {
+                        parts.push(this.extract.point.apply(this, [multipoint[i]]));
+                    }
+                    return parts.join(',');
+                },
+            };
+
             /**
              * "Subclasses" should implement the parse object and the methods
              * it contains so as to provide framework-dependent parsing of WKT
@@ -146,10 +209,10 @@ var Wkt = (function() { // Execute function immediately
                 'point': function(str) {
                     var coords = trim(str).split(this.regExes.spaces);
                     // In case a parenthetical group of coordinates is passed...
-                    return { // ...Search for numeric substrings
+                    return [{ // ...Search for numeric substrings
                         x: parseFloat(this.regExes.numeric.exec(coords[0])[0]),
                         y: parseFloat(this.regExes.numeric.exec(coords[1])[0])
-                    };
+                    }];
                 },
 
                 /**
