@@ -105,6 +105,11 @@ var Wkt = (function() { // Execute function immediately
             };
 
             /**
+             * The default delimiter between X and Y coordinates.
+             */
+            this.delimiter = ' ';
+
+            /**
              * Some regular expressions copied from OpenLayers.Format.WKT.js
              */
             this.regExes = {
@@ -186,7 +191,7 @@ var Wkt = (function() { // Execute function immediately
                  *
                  */
                 'point': function(point) {
-                    return point.x + ' ' + point.y;
+                    return point.x + this.delimiter + point.y;
                 },
                 /**
                  *
@@ -204,7 +209,18 @@ var Wkt = (function() { // Execute function immediately
                 'linestring': function(linestring) {
                     // Extraction of linestrings is the same as for multipoints
                     return this.extract.multipoint.apply(this, [linestring]);
-                }
+                },
+                /**
+                 *
+                 */
+                'multilinestring': function(multilinestring) {
+                    var i, parts = [];
+                    for (i=0; i < multilinestring.length; i+=1) {
+                        parts.push('(' + this.extract.linestring.apply(this, [multilinestring[i]]) + ')');
+                    }
+                    return parts.join(',');
+
+                },
             };
 
             /**
