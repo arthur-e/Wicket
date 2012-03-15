@@ -138,7 +138,7 @@ var Wkt = (function() { // Execute function immediately
 
                 components = components || this.components;
 
-                if (components[0] instanceof Array) {
+                if (this.type.slice(0,5) === 'multi') {
                     // Is collection of similar features e.g. FEATURE((...),(...))
                     isCollection = true; 
                 } else {
@@ -165,6 +165,10 @@ var Wkt = (function() { // Execute function immediately
                         pieces.push('(' + data + ')');
                     } else {
                         pieces.push(data);
+                        // If not at the end of the components, add a comma
+                        if (i !== components.length-1) {
+                            pieces.push(',');
+                        }
                     }
                 }
 
@@ -174,7 +178,8 @@ var Wkt = (function() { // Execute function immediately
             };
 
             /**
-             *
+             * This object contains functions as property names that extract WKT
+             * strings from the internal representation.
              */
             this.extract = {
                 /**
@@ -193,12 +198,18 @@ var Wkt = (function() { // Execute function immediately
                     }
                     return parts.join(',');
                 },
+                /**
+                 *
+                 */
+                'linestring': function(linestring) {
+                    // Extraction of linestrings is the same as for multipoints
+                    return this.extract.multipoint.apply(this, [linestring]);
+                }
             };
 
             /**
-             * "Subclasses" should implement the parse object and the methods
-             * it contains so as to provide framework-dependent parsing of WKT
-             * strings into geometry.
+             * This object contains functions as property names that parse WKT
+             * strings into the internal representation.
              */
             this.parse = {
 
