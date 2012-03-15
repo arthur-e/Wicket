@@ -143,12 +143,22 @@ var Wkt = (function() { // Execute function immediately
 
                 components = components || this.components;
 
-                if (this.type.slice(0,5) === 'multi') {
-                    // Is collection of similar features e.g. FEATURE((...),(...))
-                    isCollection = true; 
-                } else {
-                    // Is not a collection but a single feature e.g. FEATURE(...)
-                    isCollection = false;
+                switch (this.type.slice(0,5)) {
+                    case 'multi':
+                        // Trivial; any multi-geometry is a collection
+                        isCollection = true;
+                        break;
+                    case 'polyg':
+                        // But polygons with holes are "collections" of rings
+                        if (components.length > 1) { // Single polygon with hole(s)
+                            isCollection = true;
+                        } else {
+                            isCollection = false; // Just a single polygon
+                        }
+                        break;
+                    default:
+                        // Any other geometry is not a collection
+                        isCollection = false;
                 }
 
                 pieces = [];
@@ -219,8 +229,24 @@ var Wkt = (function() { // Execute function immediately
                         parts.push('(' + this.extract.linestring.apply(this, [multilinestring[i]]) + ')');
                     }
                     return parts.join(',');
-
                 },
+                /**
+                 *
+                 */
+                'polygon': function(polygon) {
+                    // Extraction of polygons is the same as for multipoints
+                    return this.extract.multipoint.apply(this, [polygon]);
+                },
+                /**
+                 *
+                 */
+                'multipolygon': function(multipolygon) {
+                    var i, parts = [];
+                    for (i=0; i < multipolygon.length; i+=1) {
+                        parts.push('(' + this.extract.polygon.apply(this, [multipolygon[i]]) + ')');
+                    }
+                    return parts.join(',');
+                }
             };
 
             /**
