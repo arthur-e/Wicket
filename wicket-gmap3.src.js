@@ -46,8 +46,16 @@ Wkt.Wkt.prototype.construct = {
 
         c = this.components;
 
+        config = config || {
+            editable: false,
+            path: []
+        };
+
         for (i=0; i < c.length; i+=1) {
+            config.path.push(new google.maps.LatLng(c[i].y, c[i].x));
         }
+
+        return new google.maps.Polyline(config);
     },
     'multilinestring': google.maps.Polyline,
 
@@ -57,19 +65,26 @@ Wkt.Wkt.prototype.construct = {
      * @return          {google.maps.Polygon}
      */
     'polygon': function(config) { // google.maps.Polygon
-        var i, c, obj;
+        var i, j, c, obj, arr;
 
         c = this.components;
 
         config = config || {
             editable: false, // Editable geometry off by default
+            path: []
         };
 
-        config.path = (function() {
-            for (i=0; i < c.length; i+=1) {
-                config.path.push(new google.maps.LatLng(c[i].y, c[i].x));
+        for (i=0; i < c.length; i+=1) {
+            arr = [];
+            for (j=0; j < c[i].length; j+=1) {
+                arr.push(new google.maps.LatLng(c[i][j].y, c[i][j].x));
             }
-        }()); // Execute immediately
+            if (c.length === 1) { // If just one ring (no inner rings)...
+                config.path = arr;
+            } else { // Must be inner rings, make an Array of Arrays
+                config.path.push(arr);
+            }
+        }
 
         if (this.isRectangle) {
             console.log('Rectangles are not yet supported; set the isRectangle property to false (default).');
@@ -100,5 +115,5 @@ Wkt.Wkt.prototype.fromGeometry = function() {
  * the available framework geometry classes.
  */
 Wkt.Wkt.prototype.toGeometry = function(config) {
-    return this.construct[this.type].call(this, [config]);
+    return this.construct[this.type].call(this, config);
 };
