@@ -1,27 +1,75 @@
 Wkt.Wkt.prototype.construct = {
-    'point': google.maps.Marker,
-    'multipoint': google.maps.Marker,
-    'linestring': google.maps.Polyline,
+    /**
+     * Creates the framework's equivalent point geometry object.
+     * @param   config  {Object}    A hash of properties the object should use
+     * @return          {google.maps.Marker}
+     */
+    'point': function(config) {
+        var c = this.components;
+
+        config = config || {
+        };
+
+        config.position = new google.maps.LatLng(c[0].y, c[0].x);
+
+        return new google.maps.Marker(config);
+    },
+
+    /**
+     * Creates the framework's equivalent multipoint geometry object.
+     * @param   config  {Object}    A hash of properties the object should use
+     * @return          {Array}     Array containing multiple google.maps.Marker
+     */
+    'multipoint': function(config) {
+        var i, c, arr;
+
+        c = this.components;
+
+        arr = [];
+
+        for (i=0; i < c.length; i+=1) {
+            config = config || {};
+            config.position = new google.maps.LatLng(c[i].y, c[i].x);
+            arr.push(new google.maps.Marker(config));
+        }
+
+        return arr;
+    },
+
+    /**
+     * Creates the framework's equivalent multipoint geometry object.
+     * @param   config  {Object}    A hash of properties the object should use
+     * @return          {Array}     Array containing multiple google.maps.Marker
+     */
+    'linestring': function(config) {
+        var i, c;
+
+        c = this.components;
+
+        for (i=0; i < c.length; i+=1) {
+        }
+    },
     'multilinestring': google.maps.Polyline,
 
     /**
-     * Creates the equivalent polygon geometry object.
+     * Creates the framework's equivalent polygon geometry object.
      * @param   config  {Object}    A hash of properties the object should use
      * @return          {google.maps.Polygon}
      */
     'polygon': function(config) { // google.maps.Polygon
-        var c, obj;
+        var i, c, obj;
 
         c = this.components;
 
         config = config || {
             editable: false, // Editable geometry off by default
-            path: (function() {
-                for (i=0; i < c.length; i+=1) {
-                    config.path.push(new google.maps.LatLng(c[i].y, c[i].x));
-                }
-            }()) // Execute immediately
         };
+
+        config.path = (function() {
+            for (i=0; i < c.length; i+=1) {
+                config.path.push(new google.maps.LatLng(c[i].y, c[i].x));
+            }
+        }()); // Execute immediately
 
         if (this.isRectangle) {
             console.log('Rectangles are not yet supported; set the isRectangle property to false (default).');
