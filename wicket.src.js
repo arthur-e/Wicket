@@ -149,7 +149,7 @@ var Wkt = (function() { // Execute function immediately
             /**
              * Reads a WKT string, validating and incorporating it
              */
-            this.readWkt = function(wkt) {
+            this.read = function(wkt) {
                 var matches;
                 matches = this.regExes.typeStr.exec(wkt);
                 if (matches) {
@@ -163,10 +163,16 @@ var Wkt = (function() { // Execute function immediately
             }; // eo readWkt
 
             /**
-             * Reads a geometry object, which is defined by the framework in use;
-             * in fact, this method should only be defined in extensions.
+             * Writes a geometry object, which is defined by the framework in
+             * use; this method should only be defined in extensions.
              */
-            this.readGeometry = undefined;
+            //this.toGeometry = undefined;
+
+            /**
+             * Reads a geometry object, which is defined by the framework in
+             * use; this method should only be defined in extensions.
+             */
+            //this.fromGeometry = undefined;
 
             this.write = function(components) {
                 var i, pieces, type, data;
@@ -368,9 +374,9 @@ var Wkt = (function() { // Execute function immediately
 
             // An initial WKT string may be provided
             if (initializer && typeof initializer === 'string') {
-                this.readWkt(initializer);
-            } else { // Or, an initial geometry object to be read
-                this.readGeometry(initializer);
+                this.read(initializer);
+            } else if (this.fromGeometry) { // Or, an initial geometry object to be read
+                this.fromGeometry(initializer);
             }
 
         } // eo WKt.Wkt
