@@ -71,7 +71,7 @@ var Wkt = (function() { // Execute function immediately
          * @param {String} An optional WKT string for immediate read
          * @param {<Wkt.Wkt>} A WKT object
          */
-        Wkt: function(wkt) {
+        Wkt: function(initializer) {
             var beginsWith, endsWith, trim;
 
             /**
@@ -123,26 +123,10 @@ var Wkt = (function() { // Execute function immediately
             };
 
             /**
-             * Reads a WKT string, validating and incorporating it
+             * Returns true if the internal geometry is a collection of geometries.
+             * @return  {Boolean}   Returns true when it is a collection
              */
-            this.read = function(wkt) {
-                var matches;
-                matches = this.regExes.typeStr.exec(wkt);
-                if (matches) {
-                    this.type = matches[1].toLowerCase();
-                    this.base = matches[2];
-                    if (this.parse[this.type]) {
-                        this.components = this.parse[this.type].apply(this, [this.base]);
-                    }
-                }
-            return this.components;
-            }; // eo read
-
-            this.write = function(components) {
-                var i, pieces, type, data, isCollection;
-
-                components = components || this.components;
-
+            this.isCollection = function() {
                 switch (this.type.slice(0,5)) {
                     case 'multi':
                         // Trivial; any multi-geometry is a collection
@@ -150,7 +134,7 @@ var Wkt = (function() { // Execute function immediately
                         break;
                     case 'polyg':
                         // But polygons with holes are "collections" of rings
-                        if (components.length > 1) { // Single polygon with hole(s)
+                        if (this.components.length > 1) { // Single polygon with hole(s)
                             isCollection = true;
                         } else {
                             isCollection = false; // Just a single polygon
@@ -160,13 +144,41 @@ var Wkt = (function() { // Execute function immediately
                         // Any other geometry is not a collection
                         isCollection = false;
                 }
+            };
+
+            /**
+             * Reads a WKT string, validating and incorporating it
+             */
+            this.readWkt = function(wkt) {
+                var matches;
+                matches = this.regExes.typeStr.exec(wkt);
+                if (matches) {
+                    this.type = matches[1].toLowerCase();
+                    this.base = matches[2];
+                    if (this.ingest[this.type]) {
+                        this.components = this.ingest[this.type].apply(this, [this.base]);
+                    }
+                }
+            return this.components;
+            }; // eo readWkt
+
+            /**
+             * Reads a geometry object, which is defined by the framework in use;
+             * in fact, this method should only be defined in extensions.
+             */
+            this.readGeometry = undefined;
+
+            this.write = function(components) {
+                var i, pieces, type, data;
+
+                components = components || this.components;
 
                 pieces = [];
 
                 pieces.push(this.type.toUpperCase() + '(');
 
                 for (i=0; i < components.length; i+=1) {
-                    if (isCollection && i > 0) {
+                    if (this.isCollection() && i > 0) {
                         pieces.push(',');
                     }
 
@@ -176,7 +188,7 @@ var Wkt = (function() { // Execute function immediately
                     }
 
                     data = this.extract[this.type].apply(this, [components[i]]);
-                    if (isCollection) {
+                    if (this.isCollection()) {
                         pieces.push('(' + data + ')');
                     } else {
                         pieces.push(data);
@@ -250,10 +262,10 @@ var Wkt = (function() { // Execute function immediately
             };
 
             /**
-             * This object contains functions as property names that parse WKT
+             * This object contains functions as property names that ingest WKT
              * strings into the internal representation.
              */
-            this.parse = {
+            this.ingest = {
 
                 /**
                  * Return point feature given a point WKT fragment.
@@ -277,7 +289,7 @@ var Wkt = (function() { // Execute function immediately
                     components = [];
                     points = trim(str).split(this.regExes.comma);
                     for (i=0; i < points.length; i+=1) {
-                        components.push(this.parse.point.apply(this, [points[i]]));
+                        components.push(this.ingest.point.apply(this, [points[i]]));
                     }
                     return components;
                 },
@@ -289,7 +301,7 @@ var Wkt = (function() { // Execute function immediately
                 'linestring': function(str) {
                     // In our x-and-y representation of components, parsing
                     //  multipoints is the same as parsing linestrings
-                    return this.parse.multipoint.apply(this, [str]);
+                    return this.ingest.multipoint.apply(this, [str]);
                 },
 
                 /**
@@ -302,7 +314,7 @@ var Wkt = (function() { // Execute function immediately
                     lines = trim(str).split(this.regExes.parenComma);
                     for (i=0; i < lines.length; i+=1) {
                         line = lines[i].replace(this.regExes.trimParens, '$1');
-                        components.push(this.parse.linestring.apply(this, [line]));
+                        components.push(this.ingest.linestring.apply(this, [line]));
                     }
                     return components;
                 },
@@ -340,7 +352,7 @@ var Wkt = (function() { // Execute function immediately
                     polygons = trim(str).split(this.regExes.doubleParenComma);
                     for (i=0; i < polygons.length; i+=1) {
                         polygon = polygons[i].replace(this.regExes.trimParens, '$1');
-                        components.push(this.parse.polygon.apply(this, [polygon]));
+                        components.push(this.ingest.polygon.apply(this, [polygon]));
                     }
                     return components;
                 },
@@ -352,11 +364,13 @@ var Wkt = (function() { // Execute function immediately
                 'geometrycollection': function(str) {
                 }
 
-            }; // eo parse
+            }; // eo ingest
 
             // An initial WKT string may be provided
-            if (wkt) {
-                this.read(wkt);
+            if (initializer && typeof initializer === 'string') {
+                this.readWkt(initializer);
+            } else { // Or, an initial geometry object to be read
+                this.readGeometry(initializer);
             }
 
         } // eo WKt.Wkt
