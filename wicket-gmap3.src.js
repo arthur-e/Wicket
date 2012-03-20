@@ -224,15 +224,20 @@ Wkt.Wkt.prototype.deconstruct = function(obj) {
         // TODO Polygons with holes cannot be distinguished from multipolygons
         rings = [];
         for (i=0; i < obj.getPaths().length; i+=1) { // For each polygon (ring)...
+            tmp = obj.getPaths().getAt(i);
 
             verts = [];
             for (j=0; j < obj.getPaths().getAt(i).length; j+=1) { // For each vertex...
-                tmp = obj.getPaths().getAt(i).getAt(j);
                 verts.push({
-                    x: tmp.lng(),
-                    y: tmp.lat()
+                    x: tmp.getAt(j).lng(),
+                    y: tmp.getAt(j).lat()
                 });
             }
+
+            verts.push({ // Add the first coordinate again for closure
+                x: tmp.getAt(0).lng(),
+                y: tmp.getAt(0).lat()
+            });
 
             // Since we can't distinguish between single polygons with holes
             //  and multipolygons, we always create multipolygons
@@ -273,6 +278,10 @@ Wkt.Wkt.prototype.deconstruct = function(obj) {
                     { // SW corner
                         x: tmp.getSouthWest().lng(),
                         y: tmp.getSouthWest().lat()
+                    },
+                    { // NW corner (again, for closure)
+                        x: tmp.getSouthWest().lng(),
+                        y: tmp.getNorthEast().lat()
                     }
                 ]
             ]

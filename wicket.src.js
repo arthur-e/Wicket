@@ -151,13 +151,14 @@ var Wkt = (function() { // Execute function immediately
              * Sets internal geometry (components) from framework geometry (e.g.
              * Google Polygon objects or google.maps.Polygon).
              * @param   obj {Object}    The framework-dependent geometry representation
+             * @return      {<Wkt.Wkt>} The object itself
              */
             this.fromObject = function(obj) {
                 var result = this.deconstruct.call(this, obj);
                 this.components = result.components;
                 this.isRectangle = result.isRectangle || false;
                 this.type = result.type;
-                return this.components;
+                return this;
             };
 
             /**
