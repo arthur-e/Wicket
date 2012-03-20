@@ -167,23 +167,14 @@ Wkt.Wkt.prototype.construct = {
 
 };
 
+Wkt.Wkt.prototype.deconstruct = {
+    'point': function() {
+        
+    }
+}
+
 /**
  * A framework-dependent flag, set for each Wkt.Wkt() instance, that indicates
  * whether or not a closed polygon geometry should be interpreted as a rectangle.
  */
 Wkt.Wkt.prototype.isRectangle = false;
-
-/**
- * The framework's custom method for creating internal geometry from framework
- * geometry (e.g. Google Rectangle objects or google.maps.Rectangle).
- */
-Wkt.Wkt.prototype.fromGeometry = function() {
-};
-
-/**
- * The framework's custom method for creating external geometry objects based on
- * the available framework geometry classes.
- */
-Wkt.Wkt.prototype.toGeometry = function(config) {
-    return this.construct[this.type].call(this, config);
-};

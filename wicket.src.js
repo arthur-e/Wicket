@@ -55,14 +55,12 @@
  *  ],
  * ]
  *
- * Or a polygon with inner rings (holes) in it where the outer ring is the 
+ * Or a POLYGON with inner rings (holes) in it where the outer ring is the 
  * polygon envelope and comes first; subsequent Arrays are inner rings (holes):
  *
  * [ 
- *  [
- *   [ {x: 35, y: 10}, {x: 10, y: 20}, {x: 15, y: 40}, {x: 45, y: 45}, {x: 35, y: 10} ],
- *   [ {x: 20, y: 30}, {x: 35, y: 35}, {x: 30, y: 20}, {x: 20, y: 30} ]
- *  ]
+ *  [ {x: 35, y: 10}, {x: 10, y: 20}, {x: 15, y: 40}, {x: 45, y: 45}, {x: 35, y: 10} ],
+ *  [ {x: 20, y: 30}, {x: 35, y: 35}, {x: 30, y: 20}, {x: 20, y: 30} ]
  * ]
  *
  */
@@ -145,6 +143,30 @@ var Wkt = (function() { // Execute function immediately
             };
 
             /**
+             * The internal representation of geometry--the "components" of geometry.
+             */
+            this.components = undefined;
+
+            /**
+             * Creates internal geometry (components) from framework geometry
+             * (e.g. Google Rectangle objects or google.maps.Rectangle).
+             * @param   geom    {Object}    The framework-dependent geometry representation
+             */
+            this.fromObject = function(geom) {
+                this.components = this.deconstruct[this.type].call(this, geom);
+            };
+
+            /**
+             * Creates external geometry objects based on a plug-in framework's
+             * construction methods and available geometry classes.
+             * @param   config  {Object}    An optional framework-dependent properties specification
+             * @return          {Object}    The framework-dependent geometry representation
+             */
+            this.toObject = function(config) {
+                return this.construct[this.type].call(this, config);
+            };
+
+            /**
              * Reads a WKT string, validating and incorporating it.
              * @param   wkt {String}    A WKT string
              * @return      {Array}     An Array of internal geometry objects
@@ -209,13 +231,17 @@ var Wkt = (function() { // Execute function immediately
              */
             this.extract = {
                 /**
-                 *
+                 * Return a WKT string representing atomic (point) geometry
+                 * @param   point   {Object}    An object with x and y properties
+                 * @return          {String}    The WKT representation
                  */
                 'point': function(point) {
                     return point.x + this.delimiter + point.y;
                 },
                 /**
-                 *
+                 * Return a WKT string representing multiple atoms (points)
+                 * @param   point   {Array}     Multiple x-and-y objects
+                 * @return          {String}    The WKT representation
                  */
                 'multipoint': function(multipoint) {
                     var i, parts = [];
@@ -225,14 +251,18 @@ var Wkt = (function() { // Execute function immediately
                     return parts.join(',');
                 },
                 /**
-                 *
+                 * Return a WKT string representing a chain (linestring) of atoms
+                 * @param   point   {Array}     Multiple x-and-y objects
+                 * @return          {String}    The WKT representation
                  */
                 'linestring': function(linestring) {
                     // Extraction of linestrings is the same as for multipoints
                     return this.extract.multipoint.apply(this, [linestring]);
                 },
                 /**
-                 *
+                 * Return a WKT string representing multiple chains (multilinestring) of atoms
+                 * @param   point   {Array}     Multiple of multiple x-and-y objects
+                 * @return          {String}    The WKT representation
                  */
                 'multilinestring': function(multilinestring) {
                     var i, parts = [];
@@ -242,14 +272,18 @@ var Wkt = (function() { // Execute function immediately
                     return parts.join(',');
                 },
                 /**
-                 *
+                 * Return a WKT string representing multiple atoms in closed series (polygon)
+                 * @param   point   {Array}     Collection of ordered x-and-y objects
+                 * @return          {String}    The WKT representation
                  */
                 'polygon': function(polygon) {
                     // Extraction of polygons is the same as for multipoints
                     return this.extract.multipoint.apply(this, [polygon]);
                 },
                 /**
-                 *
+                 * Return a WKT string representing multiple closed series (multipolygons) of multiple atoms
+                 * @param   point   {Array}     Collection of ordered x-and-y objects
+                 * @return          {String}    The WKT representation
                  */
                 'multipolygon': function(multipolygon) {
                     var i, parts = [];
@@ -370,6 +404,7 @@ var Wkt = (function() { // Execute function immediately
                  * @param   str {String}    A WKT fragment representing the geometry collection
                  */
                 'geometrycollection': function(str) {
+                    console.log('The geometrycollection WKT type is not yet supported.');
                 }
 
             }; // eo ingest
