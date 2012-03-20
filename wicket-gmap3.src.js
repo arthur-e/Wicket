@@ -86,30 +86,35 @@ Wkt.Wkt.prototype.construct = {
     /**
      * Creates the framework's equivalent polygon geometry object.
      * @param   config      {Object}    An optional properties hash the object should use
-     * @param   component   {Object}    An optional component to build from
      * @return              {<google.maps.Polygon>}
      */
-    'polygon': function(config, component) {
-        var i, j, c, arr;
+    'polygon': function(config) {
+        var j, k, c, arr;
 
-        c = component || this.components;
+        c = this.components;
 
         config = config || {
             editable: false, // Editable geometry off by default
-            path: []
+            paths: []
         };
 
-        for (i=0; i < c.length; i+=1) {
-            arr = [];
-            for (j=0; j < c[i].length; j+=1) {
-                arr.push(new google.maps.LatLng(c[i][j].y, c[i][j].x));
+        rings = [];
+        for (j=0; j < c.length; j+=1) { // For each ring...
+
+            verts = [];
+            for (k=0; k < c[j].length; k+=1) { // For each vertex...
+                verts.push(new google.maps.LatLng(c[j][k].y, c[j][k].x));
+
+            } // eo for each vertex
+
+            if (j !== 0) { // Reverse the order of coordinates in inner rings
+                verts.reverse();
             }
-            if (c.length === 1) { // If just one ring (no inner rings)...
-                config.path = arr;
-            } else { // Must be inner rings, make an Array of Arrays
-                config.path.push(arr);
-            }
-        }
+
+            rings.push(verts);
+        } // eo for each ring
+
+        config.paths = config.paths.concat(rings);
 
         if (this.isRectangle) {
             console.log('Rectangles are not yet supported; set the isRectangle property to false (default).');
@@ -124,17 +129,40 @@ Wkt.Wkt.prototype.construct = {
      * @return          {Array}     Array containing multiple google.maps.Polygon
      */
     'multipolygon': function(config) {
-        var i, c, arr;
+        var i, j, k, c, rings, verts;
 
         c = this.components;
 
-        arr = [];
+        config = config || {
+            editable: false, // Editable geometry off by default
+            paths: []
+        };
 
-        for (i=0; i < c.length; i+=1) {
-            arr.push(this.construct.polygon(config, c[i]));
-        }
+        for (i=0; i < c.length; i+=1) { // For each polygon...
 
-        return arr;
+            rings = [];
+            for (j=0; j < c[i].length; j+=1) { // For each ring...
+
+                verts = [];
+                for (k=0; k < c[i][j].length; k+=1) { // For each vertex...
+                    verts.push(new google.maps.LatLng(c[i][j][k].y, c[i][j][k].x));
+
+                } // eo for each vertex
+
+/*              // This is apparently not needed in multipolygon cases
+                if (j !== 0) { // Reverse the order of coordinates in inner rings
+                    verts.reverse();
+                }
+*/
+
+                rings.push(verts);
+            } // eo for each ring
+
+            config.paths = config.paths.concat(rings);
+
+        } // eo for each polygon
+
+        return new google.maps.Polygon(config);
     }
 
 };
