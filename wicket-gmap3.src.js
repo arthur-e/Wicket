@@ -283,7 +283,6 @@ Wkt.Wkt.prototype.deconstruct = function(obj) {
         // Circle is the only overlay class with both the getBounds and getRadius properties
 
         console.log('Deconstruction of google.maps.Circle objects is not yet supported');
-        };
 
     } else {
         console.log('The passed object does not have any recognizable properties.');
