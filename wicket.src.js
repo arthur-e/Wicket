@@ -148,12 +148,16 @@ var Wkt = (function() { // Execute function immediately
             this.components = undefined;
 
             /**
-             * Creates internal geometry (components) from framework geometry
-             * (e.g. Google Rectangle objects or google.maps.Rectangle).
-             * @param   geom    {Object}    The framework-dependent geometry representation
+             * Sets internal geometry (components) from framework geometry (e.g.
+             * Google Polygon objects or google.maps.Polygon).
+             * @param   obj {Object}    The framework-dependent geometry representation
              */
-            this.fromObject = function(geom) {
-                this.components = this.deconstruct[this.type].call(this, geom);
+            this.fromObject = function(obj) {
+                var result = this.deconstruct.call(this, obj);
+                this.components = result.components;
+                this.isRectangle = result.isRectangle || false;
+                this.type = result.type;
+                return this.components;
             };
 
             /**

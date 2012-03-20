@@ -1,3 +1,13 @@
+google.maps.Marker.prototype.type = 'marker';
+google.maps.Polyline.prototype.type = 'polyline';
+google.maps.Polygon.prototype.type = 'polygon';
+google.maps.Rectangle.prototype.type = 'rectangle';
+google.maps.Circle.prototype.type = 'circle';
+
+/**
+ * An object of framework-dependent construction methods used to generate
+ * objects belonging to the various geometry classes of the framework.
+ */
 Wkt.Wkt.prototype.construct = {
     /**
      * Creates the framework's equivalent point geometry object.
@@ -154,7 +164,6 @@ Wkt.Wkt.prototype.construct = {
                     verts.reverse();
                 }
 */
-
                 rings.push(verts);
             } // eo for each ring
 
@@ -167,10 +176,85 @@ Wkt.Wkt.prototype.construct = {
 
 };
 
-Wkt.Wkt.prototype.deconstruct = {
-    'point': function() {
-        
+/**
+ * A framework-dependent deconstruction method used to generate internal
+ * geometric representations from instances of framework geometry. This method
+ * uses object detection to attempt to classify members of framework geometry
+ * classes into the standard WKT types.
+ * @param   obj {Object}    An instance of one of the framework's geometry classes
+ * @return      {Object}    A hash of the 'type' and 'components' thus derived
+ */
+Wkt.Wkt.prototype.deconstruct = function(obj) {
+    var i, j, verts, rings, tmp;
+
+    // google.maps.Marker //////////////////////////////////////////////////////
+    if (obj.getPosition && typeof obj.getPosition === 'function') {
+        // Only Markers, among all overlays, have the getPosition property
+
+        return { 
+            type: 'point',
+            components: {
+                x: obj.getPosition().lng(),
+                y: obj.getPosition().lat()
+            }
+        };
+
+    // google.maps.Polyline ////////////////////////////////////////////////////
+    } else if (obj.getPath && !obj.getPaths) {
+        // Polylines have a single path (getPath) not paths (getPaths)
+
+        verts = [];
+        for (i=0; i < obj.getPath().length; i+=1) {
+            tmp = obj.getPath().getAt(i);
+            verts.push({
+                x: tmp.lng(),
+                y: tmp.lat()
+            });
+        }
+
+        return {
+            type: 'linestring',
+            components: verts
+        };
+
+    // google.maps.Polygon /////////////////////////////////////////////////////
+    } else if (obj.getPaths) {
+        // Polygon is the only class with the getPaths property
+
+        // TODO Polygons with holes cannot be distinguished from multipolygons
+        rings = [];
+        for (i=0; i < obj.getPaths().length; i+=1) { // For each polygon (ring)...
+
+            verts = [];
+            for (j=0; j < obj.getPaths().getAt(i).length; j+=1) { // For each vertex...
+                tmp = obj.getPaths().getAt(i).getAt(j);
+                verts.push({
+                    x: tmp.lng(),
+                    y: tmp.lat()
+                });
+            }
+
+            // Since we can't distinguish between single polygons with holes
+            //  and multipolygons, we always create multipolygons
+            if (obj.getPaths().length > 1) {
+                verts = [verts]; // Wrap multipolygons once more (collection)
+            }
+
+            rings.push(verts);
+        }
+
+        return {
+            type: 'polygon',
+            components: rings
+        }
+
+    // google.maps.Rectangle ///////////////////////////////////////////////////
+    } else if () {
+
+    } else {
+        console.log('The passed object does not have any recognizable properties.');
     }
+
 }
 
 /**
