@@ -249,7 +249,41 @@ Wkt.Wkt.prototype.deconstruct = function(obj) {
         }
 
     // google.maps.Rectangle ///////////////////////////////////////////////////
-    } else if () {
+    } else if (obj.getBounds && !obj.getRadius) {
+        // Rectangle is only overlay class with getBounds property and not getRadius property
+
+        tmp = obj.getBounds();
+        return {
+            type: 'polygon',
+            isRectangle: true,
+            components: [
+                [
+                    { // NW corner
+                        x: tmp.getSouthWest().lng(),
+                        y: tmp.getNorthEast().lat()
+                    },
+                    { // NE corner
+                        x: tmp.getNorthEast().lng(),
+                        y: tmp.getNorthEast().lat()
+                    },
+                    { // SE corner
+                        x: tmp.getNorthEast().lng(),
+                        y: tmp.getSouthWest().lat()
+                    },
+                    { // SW corner
+                        x: tmp.getSouthWest().lng(),
+                        y: tmp.getSouthWest().lat()
+                    }
+                ]
+            ]
+        };
+
+    // google.maps.Circle //////////////////////////////////////////////////////
+    } else if (obj.getBounds && obj.getRadius) {
+        // Circle is the only overlay class with both the getBounds and getRadius properties
+
+        console.log('Deconstruction of google.maps.Circle objects is not yet supported');
+        };
 
     } else {
         console.log('The passed object does not have any recognizable properties.');
