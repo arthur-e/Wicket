@@ -1,3 +1,4 @@
+/*global Wkt, google, document, window, console*/
 google.maps.Marker.prototype.type = 'marker';
 google.maps.Polyline.prototype.type = 'polyline';
 google.maps.Polygon.prototype.type = 'polygon';
@@ -15,7 +16,7 @@ Wkt.Wkt.prototype.construct = {
      * @param   component   {Object}    An optional component to build from
      * @return              {<google.maps.Marker>}
      */
-    'point': function(config, component) {
+    'point': function (config, component) {
         var c = component || this.components;
 
         config = config || {};
@@ -30,7 +31,7 @@ Wkt.Wkt.prototype.construct = {
      * @param   config  {Object}    An optional properties hash the object should use
      * @return          {Array}     Array containing multiple google.maps.Marker
      */
-    'multipoint': function(config) {
+    'multipoint': function (config) {
         var i, c, arr;
 
         c = this.components;
@@ -39,7 +40,7 @@ Wkt.Wkt.prototype.construct = {
 
         arr = [];
 
-        for (i=0; i < c.length; i+=1) {
+        for (i = 0; i < c.length; i += 1) {
             arr.push(this.construct.point(config, c[i]));
         }
 
@@ -52,7 +53,7 @@ Wkt.Wkt.prototype.construct = {
      * @param   component   {Object}    An optional component to build from
      * @return              {<google.maps.Polyline>}
      */
-    'linestring': function(config, component) {
+    'linestring': function (config, component) {
         var i, c;
 
         c = component || this.components;
@@ -62,7 +63,7 @@ Wkt.Wkt.prototype.construct = {
             path: []
         };
 
-        for (i=0; i < c.length; i+=1) {
+        for (i = 0; i < c.length; i += 1) {
             config.path.push(new google.maps.LatLng(c[i].y, c[i].x));
         }
 
@@ -74,7 +75,7 @@ Wkt.Wkt.prototype.construct = {
      * @param   config  {Object}    An optional properties hash the object should use
      * @return          {Array}     Array containing multiple google.maps.Polyline instances
      */
-    'multilinestring': function(config) {
+    'multilinestring': function (config) {
         var i, c, arr;
 
         c = this.components;
@@ -86,7 +87,7 @@ Wkt.Wkt.prototype.construct = {
 
         arr = [];
 
-        for (i=0; i < c.length; i+=1) {
+        for (i = 0; i < c.length; i += 1) {
             arr.push(this.construct.linestring(config, c[i]));
         }
 
@@ -98,8 +99,8 @@ Wkt.Wkt.prototype.construct = {
      * @param   config      {Object}    An optional properties hash the object should use
      * @return              {<google.maps.Polygon>}
      */
-    'polygon': function(config) {
-        var j, k, c, arr;
+    'polygon': function (config) {
+        var j, k, c, rings, verts;
 
         c = this.components;
 
@@ -109,10 +110,10 @@ Wkt.Wkt.prototype.construct = {
         };
 
         rings = [];
-        for (j=0; j < c.length; j+=1) { // For each ring...
+        for (j = 0; j < c.length; j += 1) { // For each ring...
 
             verts = [];
-            for (k=0; k < c[j].length; k+=1) { // For each vertex...
+            for (k = 0; k < c[j].length; k += 1) { // For each vertex...
                 verts.push(new google.maps.LatLng(c[j][k].y, c[j][k].x));
 
             } // eo for each vertex
@@ -138,7 +139,7 @@ Wkt.Wkt.prototype.construct = {
      * @param   config  {Object}    An optional properties hash the object should use
      * @return          {Array}     Array containing multiple google.maps.Polygon
      */
-    'multipolygon': function(config) {
+    'multipolygon': function (config) {
         var i, j, k, c, rings, verts;
 
         c = this.components;
@@ -148,13 +149,13 @@ Wkt.Wkt.prototype.construct = {
             paths: []
         };
 
-        for (i=0; i < c.length; i+=1) { // For each polygon...
+        for (i = 0; i < c.length; i += 1) { // For each polygon...
 
             rings = [];
-            for (j=0; j < c[i].length; j+=1) { // For each ring...
+            for (j = 0; j < c[i].length; j += 1) { // For each ring...
 
                 verts = [];
-                for (k=0; k < c[i][j].length; k+=1) { // For each vertex...
+                for (k = 0; k < c[i][j].length; k += 1) { // For each vertex...
                     verts.push(new google.maps.LatLng(c[i][j][k].y, c[i][j][k].x));
 
                 } // eo for each vertex
@@ -184,14 +185,14 @@ Wkt.Wkt.prototype.construct = {
  * @param   obj {Object}    An instance of one of the framework's geometry classes
  * @return      {Object}    A hash of the 'type' and 'components' thus derived
  */
-Wkt.Wkt.prototype.deconstruct = function(obj) {
+Wkt.Wkt.prototype.deconstruct = function (obj) {
     var i, j, verts, rings, tmp;
 
     // google.maps.Marker //////////////////////////////////////////////////////
     if (obj.getPosition && typeof obj.getPosition === 'function') {
         // Only Markers, among all overlays, have the getPosition property
 
-        return { 
+        return {
             type: 'point',
             components: {
                 x: obj.getPosition().lng(),
@@ -204,7 +205,7 @@ Wkt.Wkt.prototype.deconstruct = function(obj) {
         // Polylines have a single path (getPath) not paths (getPaths)
 
         verts = [];
-        for (i=0; i < obj.getPath().length; i+=1) {
+        for (i = 0; i < obj.getPath().length; i += 1) {
             tmp = obj.getPath().getAt(i);
             verts.push({
                 x: tmp.lng(),
@@ -223,11 +224,11 @@ Wkt.Wkt.prototype.deconstruct = function(obj) {
 
         // TODO Polygons with holes cannot be distinguished from multipolygons
         rings = [];
-        for (i=0; i < obj.getPaths().length; i+=1) { // For each polygon (ring)...
+        for (i = 0; i < obj.getPaths().length; i += 1) { // For each polygon (ring)...
             tmp = obj.getPaths().getAt(i);
 
             verts = [];
-            for (j=0; j < obj.getPaths().getAt(i).length; j+=1) { // For each vertex...
+            for (j = 0; j < obj.getPaths().getAt(i).length; j += 1) { // For each vertex...
                 verts.push({
                     x: tmp.getAt(j).lng(),
                     y: tmp.getAt(j).lat()
@@ -251,7 +252,7 @@ Wkt.Wkt.prototype.deconstruct = function(obj) {
         return {
             type: 'polygon',
             components: rings
-        }
+        };
 
     // google.maps.Rectangle ///////////////////////////////////////////////////
     } else if (obj.getBounds && !obj.getRadius) {
@@ -297,7 +298,7 @@ Wkt.Wkt.prototype.deconstruct = function(obj) {
         console.log('The passed object does not have any recognizable properties.');
     }
 
-}
+};
 
 /**
  * A framework-dependent flag, set for each Wkt.Wkt() instance, that indicates

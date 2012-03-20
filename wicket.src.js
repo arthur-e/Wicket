@@ -1,3 +1,4 @@
+/*global console, document, window*/
 /**
  * Colophon
  *
@@ -64,43 +65,45 @@
  * ]
  *
  */
-var Wkt = (function() { // Execute function immediately
+var Wkt = (function () { // Execute function immediately
 
     return {
+        // The default delimiter for separating components of atomic geometry (coordinates)
+        delimiter: ' ',
 
         /**
          * An object for reading WKT strings and writing geographic features
          * @param   {String}    An optional WKT string for immediate read
          * @param   {<Wkt.Wkt>} A WKT object
          */
-        Wkt: function(initializer) {
+        Wkt: function (initializer) {
             var beginsWith, endsWith, trim;
 
             /**
              * @private
              */
-            beginsWith = function(str, sub) {
+            beginsWith = function (str, sub) {
                 return str.substring(0, sub.length) === sub;
             };
 
             /**
              * @private
              */
-            endsWith = function(str, sub) {
+            endsWith = function (str, sub) {
                 return str.substring(str.length - sub.length) === sub;
             };
 
             /**
              * @private
              */
-            trim = function(str, sub) {
+            trim = function (str, sub) {
                 sub = sub || ' '; // Defaults to trimming spaces
                 // Trim beginning spaces
-                while(beginsWith(str, sub)) {
+                while (beginsWith(str, sub)) {
                     str = str.substring(1);
                 }
                 // Trim ending spaces
-                while(endsWith(str, sub)) {
+                while (endsWith(str, sub)) {
                     str = str.substring(0, str.length - 1);
                 }
                 return str;
@@ -109,7 +112,7 @@ var Wkt = (function() { // Execute function immediately
             /**
              * The default delimiter between X and Y coordinates.
              */
-            this.delimiter = ' ';
+            this.delimiter = Wkt.delimiter;
 
             /**
              * Some regular expressions copied from OpenLayers.Format.WKT.js
@@ -128,17 +131,17 @@ var Wkt = (function() { // Execute function immediately
              * Returns true if the internal geometry is a collection of geometries.
              * @return  {Boolean}   Returns true when it is a collection
              */
-            this.isCollection = function() {
-                switch (this.type.slice(0,5)) {
-                    case 'multi':
-                        // Trivial; any multi-geometry is a collection
-                        return true;
-                    case 'polyg':
-                        // Polygons with holes are "collections" of rings
-                        return true;
-                    default:
-                        // Any other geometry is not a collection
-                        return false;
+            this.isCollection = function () {
+                switch (this.type.slice(0, 5)) {
+                case 'multi':
+                    // Trivial; any multi-geometry is a collection
+                    return true;
+                case 'polyg':
+                    // Polygons with holes are "collections" of rings
+                    return true;
+                default:
+                    // Any other geometry is not a collection
+                    return false;
                 }
             };
 
@@ -153,7 +156,7 @@ var Wkt = (function() { // Execute function immediately
              * @param   obj {Object}    The framework-dependent geometry representation
              * @return      {<Wkt.Wkt>} The object itself
              */
-            this.fromObject = function(obj) {
+            this.fromObject = function (obj) {
                 var result = this.deconstruct.call(this, obj);
                 this.components = result.components;
                 this.isRectangle = result.isRectangle || false;
@@ -167,7 +170,7 @@ var Wkt = (function() { // Execute function immediately
              * @param   config  {Object}    An optional framework-dependent properties specification
              * @return          {Object}    The framework-dependent geometry representation
              */
-            this.toObject = function(config) {
+            this.toObject = function (config) {
                 return this.construct[this.type].call(this, config);
             };
 
@@ -176,7 +179,7 @@ var Wkt = (function() { // Execute function immediately
              * @param   wkt {String}    A WKT string
              * @return      {Array}     An Array of internal geometry objects
              */
-            this.read = function(wkt) {
+            this.read = function (wkt) {
                 var matches;
                 matches = this.regExes.typeStr.exec(wkt);
                 if (matches) {
@@ -186,7 +189,7 @@ var Wkt = (function() { // Execute function immediately
                         this.components = this.ingest[this.type].apply(this, [this.base]);
                     }
                 }
-            return this.components;
+                return this.components;
             }; // eo readWkt
 
             /**
@@ -194,8 +197,8 @@ var Wkt = (function() { // Execute function immediately
              * @param   components  {Array}     An Array of internal geometry objects
              * @return              {String}    The corresponding WKT representation
              */
-            this.write = function(components) {
-                var i, pieces, type, data;
+            this.write = function (components) {
+                var i, pieces, data;
 
                 components = components || this.components;
 
@@ -203,7 +206,7 @@ var Wkt = (function() { // Execute function immediately
 
                 pieces.push(this.type.toUpperCase() + '(');
 
-                for (i=0; i < components.length; i+=1) {
+                for (i = 0; i < components.length; i += 1) {
                     if (this.isCollection() && i > 0) {
                         pieces.push(',');
                     }
@@ -219,7 +222,7 @@ var Wkt = (function() { // Execute function immediately
                     } else {
                         pieces.push(data);
                         // If not at the end of the components, add a comma
-                        if (i !== components.length-1) {
+                        if (i !== components.length - 1) {
                             pieces.push(',');
                         }
                     }
@@ -240,7 +243,7 @@ var Wkt = (function() { // Execute function immediately
                  * @param   point   {Object}    An object with x and y properties
                  * @return          {String}    The WKT representation
                  */
-                'point': function(point) {
+                'point': function (point) {
                     return point.x + this.delimiter + point.y;
                 },
                 /**
@@ -248,9 +251,9 @@ var Wkt = (function() { // Execute function immediately
                  * @param   point   {Array}     Multiple x-and-y objects
                  * @return          {String}    The WKT representation
                  */
-                'multipoint': function(multipoint) {
+                'multipoint': function (multipoint) {
                     var i, parts = [];
-                    for (i=0; i < multipoint.length; i+=1) {
+                    for (i = 0; i < multipoint.length; i += 1) {
                         parts.push(this.extract.point.apply(this, [multipoint[i]]));
                     }
                     return parts.join(',');
@@ -260,7 +263,7 @@ var Wkt = (function() { // Execute function immediately
                  * @param   point   {Array}     Multiple x-and-y objects
                  * @return          {String}    The WKT representation
                  */
-                'linestring': function(linestring) {
+                'linestring': function (linestring) {
                     // Extraction of linestrings is the same as for multipoints
                     return this.extract.multipoint.apply(this, [linestring]);
                 },
@@ -269,9 +272,9 @@ var Wkt = (function() { // Execute function immediately
                  * @param   point   {Array}     Multiple of multiple x-and-y objects
                  * @return          {String}    The WKT representation
                  */
-                'multilinestring': function(multilinestring) {
+                'multilinestring': function (multilinestring) {
                     var i, parts = [];
-                    for (i=0; i < multilinestring.length; i+=1) {
+                    for (i = 0; i < multilinestring.length; i += 1) {
                         parts.push('(' + this.extract.linestring.apply(this, [multilinestring[i]]) + ')');
                     }
                     return parts.join(',');
@@ -281,7 +284,7 @@ var Wkt = (function() { // Execute function immediately
                  * @param   point   {Array}     Collection of ordered x-and-y objects
                  * @return          {String}    The WKT representation
                  */
-                'polygon': function(polygon) {
+                'polygon': function (polygon) {
                     // Extraction of polygons is the same as for multipoints
                     return this.extract.multipoint.apply(this, [polygon]);
                 },
@@ -290,9 +293,9 @@ var Wkt = (function() { // Execute function immediately
                  * @param   point   {Array}     Collection of ordered x-and-y objects
                  * @return          {String}    The WKT representation
                  */
-                'multipolygon': function(multipolygon) {
+                'multipolygon': function (multipolygon) {
                     var i, parts = [];
-                    for (i=0; i < multipolygon.length; i+=1) {
+                    for (i = 0; i < multipolygon.length; i += 1) {
                         parts.push('(' + this.extract.polygon.apply(this, [multipolygon[i]]) + ')');
                     }
                     return parts.join(',');
@@ -309,7 +312,7 @@ var Wkt = (function() { // Execute function immediately
                  * Return point feature given a point WKT fragment.
                  * @param   str {String}    A WKT fragment representing the point
                  */
-                'point': function(str) {
+                'point': function (str) {
                     var coords = trim(str).split(this.regExes.spaces);
                     // In case a parenthetical group of coordinates is passed...
                     return [{ // ...Search for numeric substrings
@@ -322,21 +325,21 @@ var Wkt = (function() { // Execute function immediately
                  * Return a multipoint feature given a multipoint WKT fragment.
                  * @param   str {String}    A WKT fragment representing the multipoint
                  */
-                'multipoint': function(str) {
+                'multipoint': function (str) {
                     var i, components, points;
                     components = [];
                     points = trim(str).split(this.regExes.comma);
-                    for (i=0; i < points.length; i+=1) {
+                    for (i = 0; i < points.length; i += 1) {
                         components.push(this.ingest.point.apply(this, [points[i]]));
                     }
                     return components;
                 },
-                
+
                 /**
                  * Return a linestring feature given a linestring WKT fragment.
                  * @param   str {String}    A WKT fragment representing the linestring
                  */
-                'linestring': function(str) {
+                'linestring': function (str) {
                     var i, multipoints, components;
 
                     // In our x-and-y representation of components, parsing
@@ -345,7 +348,7 @@ var Wkt = (function() { // Execute function immediately
 
                     // However, the points need to be joined
                     components = [];
-                    for (i=0; i < multipoints.length; i+=1) {
+                    for (i = 0; i < multipoints.length; i += 1) {
                         components = components.concat(multipoints[i]);
                     }
                     return components;
@@ -355,29 +358,29 @@ var Wkt = (function() { // Execute function immediately
                  * Return a multilinestring feature given a multilinestring WKT fragment.
                  * @param   str {String}    A WKT fragment representing the multilinestring
                  */
-                'multilinestring': function(str) {
+                'multilinestring': function (str) {
                     var i, components, line, lines;
                     components = [];
                     lines = trim(str).split(this.regExes.parenComma);
-                    for (i=0; i < lines.length; i+=1) {
+                    for (i = 0; i < lines.length; i += 1) {
                         line = lines[i].replace(this.regExes.trimParens, '$1');
                         components.push(this.ingest.linestring.apply(this, [line]));
                     }
                     return components;
                 },
-                
+
                 /**
                  * Return a polygon feature given a polygon WKT fragment.
                  * @param   str {String}    A WKT fragment representing the polygon
                  */
-                'polygon': function(str) {
+                'polygon': function (str) {
                     var i, j, components, subcomponents, ring, rings;
                     rings = trim(str).split(this.regExes.parenComma);
                     components = []; // Holds one or more rings
-                    for (i=0; i < rings.length; i+=1) {
+                    for (i = 0; i < rings.length; i += 1) {
                         ring = rings[i].replace(this.regExes.trimParens, '$1').split(this.regExes.comma);
                         subcomponents = []; // Holds the outer ring and any inner rings (holes)
-                        for (j=0; j < ring.length; j+=1) {
+                        for (j = 0; j < ring.length; j += 1) {
                             // Split on the empty space or '+' character (between coordinates)
                             subcomponents.push({
                                 x: parseFloat(ring[j].split(this.regExes.spaces)[0]),
@@ -393,11 +396,11 @@ var Wkt = (function() { // Execute function immediately
                  * Return a multipolygon feature given a multipolygon WKT fragment.
                  * @param   str {String}    A WKT fragment representing the multipolygon
                  */
-                'multipolygon': function(str) {
+                'multipolygon': function (str) {
                     var i, components, polygon, polygons;
                     components = [];
                     polygons = trim(str).split(this.regExes.doubleParenComma);
-                    for (i=0; i < polygons.length; i+=1) {
+                    for (i = 0; i < polygons.length; i += 1) {
                         polygon = polygons[i].replace(this.regExes.trimParens, '$1');
                         components.push(this.ingest.polygon.apply(this, [polygon]));
                     }
@@ -408,7 +411,7 @@ var Wkt = (function() { // Execute function immediately
                  * Return an array of features given a geometrycollection WKT fragment.
                  * @param   str {String}    A WKT fragment representing the geometry collection
                  */
-                'geometrycollection': function(str) {
+                'geometrycollection': function (str) {
                     console.log('The geometrycollection WKT type is not yet supported.');
                 }
 
@@ -423,6 +426,6 @@ var Wkt = (function() { // Execute function immediately
 
         } // eo WKt.Wkt
 
-    } // eo return
+    }; // eo return
 
 }()); // eo Wkt
