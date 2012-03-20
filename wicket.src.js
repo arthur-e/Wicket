@@ -147,7 +147,9 @@ var Wkt = (function() { // Execute function immediately
             };
 
             /**
-             * Reads a WKT string, validating and incorporating it
+             * Reads a WKT string, validating and incorporating it.
+             * @param   wkt {String}    A WKT string
+             * @return      {Array}     An Array of internal geometry objects
              */
             this.read = function(wkt) {
                 var matches;
@@ -163,17 +165,10 @@ var Wkt = (function() { // Execute function immediately
             }; // eo readWkt
 
             /**
-             * Writes a geometry object, which is defined by the framework in
-             * use; this method should only be defined in extensions.
+             * Writes a WKT string.
+             * @param   components  {Array}     An Array of internal geometry objects
+             * @return              {String}    The corresponding WKT representation
              */
-            //this.toGeometry = undefined;
-
-            /**
-             * Reads a geometry object, which is defined by the framework in
-             * use; this method should only be defined in extensions.
-             */
-            //this.fromGeometry = undefined;
-
             this.write = function(components) {
                 var i, pieces, type, data;
 

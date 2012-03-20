@@ -1,14 +1,14 @@
 Wkt.Wkt.prototype.construct = {
     /**
      * Creates the framework's equivalent point geometry object.
-     * @param   config  {Object}    A hash of properties the object should use
+     * @param   config  {Object}    An optional properties hash the object should use
+     * @param   component   {Object}    An optional component to build from
      * @return          {google.maps.Marker}
      */
-    'point': function(config) {
-        var c = this.components;
+    'point': function(config, component) {
+        var c = component || this.components;
 
-        config = config || {
-        };
+        config = config || {};
 
         config.position = new google.maps.LatLng(c[0].y, c[0].x);
 
@@ -17,7 +17,7 @@ Wkt.Wkt.prototype.construct = {
 
     /**
      * Creates the framework's equivalent multipoint geometry object.
-     * @param   config  {Object}    A hash of properties the object should use
+     * @param   config  {Object}    An optional properties hash the object should use
      * @return          {Array}     Array containing multiple google.maps.Marker
      */
     'multipoint': function(config) {
@@ -25,12 +25,12 @@ Wkt.Wkt.prototype.construct = {
 
         c = this.components;
 
+        config = config || {};
+
         arr = [];
 
         for (i=0; i < c.length; i+=1) {
-            config = config || {};
-            config.position = new google.maps.LatLng(c[i].y, c[i].x);
-            arr.push(new google.maps.Marker(config));
+            arr.push(this.construct.point(config, c[i]));
         }
 
         return arr;
@@ -38,13 +38,14 @@ Wkt.Wkt.prototype.construct = {
 
     /**
      * Creates the framework's equivalent multipoint geometry object.
-     * @param   config  {Object}    A hash of properties the object should use
-     * @return          {Array}     Array containing multiple google.maps.Marker
+     * @param   config      {Object}    An optional properties hash the object should use
+     * @param   component   {Object}    An optional component to build from
+     * @return              {google.maps.Polyline}
      */
-    'linestring': function(config) {
+    'linestring': function(config, component) {
         var i, c;
 
-        c = this.components;
+        c = component || this.components;
 
         config = config || {
             editable: false,
@@ -57,17 +58,41 @@ Wkt.Wkt.prototype.construct = {
 
         return new google.maps.Polyline(config);
     },
-    'multilinestring': google.maps.Polyline,
+
+    /**
+     * Creates the framework's equivalent multilinestring geometry object.
+     * @param   config  {Object}    An optional properties hash the object should use
+     * @return          {Array}     Array containing multiple google.maps.Polyline instances
+     */
+    'multilinestring': function(config) {
+        var i, c, arr;
+
+        c = this.components;
+
+        config = config || {
+            editable: false,
+            path: []
+        };
+
+        arr = [];
+
+        for (i=0; i < c.length; i+=1) {
+            arr.push(this.construct.linestring(config, c[i]));
+        }
+
+        return arr;
+    },
 
     /**
      * Creates the framework's equivalent polygon geometry object.
-     * @param   config  {Object}    A hash of properties the object should use
-     * @return          {google.maps.Polygon}
+     * @param   config      {Object}    An optional properties hash the object should use
+     * @param   component   {Object}    An optional component to build from
+     * @return              {google.maps.Polygon}
      */
-    'polygon': function(config) { // google.maps.Polygon
-        var i, j, c, obj, arr;
+    'polygon': function(config, component) {
+        var i, j, c, arr;
 
-        c = this.components;
+        c = component || this.components;
 
         config = config || {
             editable: false, // Editable geometry off by default
@@ -89,12 +114,29 @@ Wkt.Wkt.prototype.construct = {
         if (this.isRectangle) {
             console.log('Rectangles are not yet supported; set the isRectangle property to false (default).');
         } else {
-            obj = new google.maps.Polygon(config);
+            return new google.maps.Polygon(config);
+        }
+    },
+
+    /**
+     * Creates the framework's equivalent multipolygon geometry object.
+     * @param   config  {Object}    An optional properties hash the object should use
+     * @return          {Array}     Array containing multiple google.maps.Polygon
+     */
+    'multipolygon': function(config) {
+        var i, c, arr;
+
+        c = this.components;
+
+        arr = [];
+
+        for (i=0; i < c.length; i+=1) {
+            arr.push(this.construct.polygon(config, c[i]));
         }
 
-        return obj;
-    },
-    'multipolygon': google.maps.Polygon    
+        return arr;
+    }
+
 };
 
 /**
