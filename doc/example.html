@@ -21,7 +21,6 @@
 <script src="../wicket-gmap3.src.js" type="text/javascript"></script>
 <script src="../wicket-test.js" type="text/javascript"></script>
 <script type="text/javascript">
-/*
 var init = function() {
     var gmap;
     gmap = new google.maps.Map(document.getElementById('canvas'), {
@@ -29,10 +28,10 @@ var init = function() {
         zoom: 3,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     });
+    return gmap;
 }
-*/
 </script>
-<body>
+<body onload="gmap = init();">
     <div id="canvas">
     </div>
 </body>

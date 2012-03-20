@@ -26,9 +26,13 @@
  *
  *  [ {x: -83.123, y: 42.123} ]
  *
- * An Array of multiple coordinates can specify either a collection of unconnected
- * points (i.e. MULTIPOINT feature) or a collection of connected points in an
- * ordered sequence (i.e. LINESTRING feature):
+ * An Array of multiple points (an Array of Arrays) specifies a "collection" of
+ * points (i.e. a MULTIPOINT feature):
+ *
+ *  [ [ {x: -83.123, y: 42.123} ], [ {x: -83.234, y: 42.234} ] ]
+ *
+ * An Array of multiple coordinates specifies a collection of connected points
+ * in an ordered sequence (i.e. LINESTRING feature):
  *
  *  [ {x: -83.12, y: 42.12}, {x: -83.23, y: 42.23}, {x: -83.34, y: 42.34} ]
  *
@@ -68,8 +72,8 @@ var Wkt = (function() { // Execute function immediately
 
         /**
          * An object for reading WKT strings and writing geographic features
-         * @param {String} An optional WKT string for immediate read
-         * @param {<Wkt.Wkt>} A WKT object
+         * @param   {String}    An optional WKT string for immediate read
+         * @param   {<Wkt.Wkt>} A WKT object
          */
         Wkt: function(initializer) {
             var beginsWith, endsWith, trim;
@@ -130,19 +134,13 @@ var Wkt = (function() { // Execute function immediately
                 switch (this.type.slice(0,5)) {
                     case 'multi':
                         // Trivial; any multi-geometry is a collection
-                        isCollection = true;
-                        break;
+                        return true;
                     case 'polyg':
-                        // But polygons with holes are "collections" of rings
-                        if (this.components.length > 1) { // Single polygon with hole(s)
-                            isCollection = true;
-                        } else {
-                            isCollection = false; // Just a single polygon
-                        }
-                        break;
+                        // Polygons with holes are "collections" of rings
+                        return true;
                     default:
                         // Any other geometry is not a collection
-                        isCollection = false;
+                        return false;
                 }
             };
 
@@ -270,7 +268,7 @@ var Wkt = (function() { // Execute function immediately
 
                 /**
                  * Return point feature given a point WKT fragment.
-                 * @param {String} str A WKT fragment representing the point
+                 * @param   str {String}    A WKT fragment representing the point
                  */
                 'point': function(str) {
                     var coords = trim(str).split(this.regExes.spaces);
@@ -283,7 +281,7 @@ var Wkt = (function() { // Execute function immediately
 
                 /**
                  * Return a multipoint feature given a multipoint WKT fragment.
-                 * @param {String} A WKT fragment representing the multipoint
+                 * @param   str {String}    A WKT fragment representing the multipoint
                  */
                 'multipoint': function(str) {
                     var i, components, points;
@@ -297,17 +295,26 @@ var Wkt = (function() { // Execute function immediately
                 
                 /**
                  * Return a linestring feature given a linestring WKT fragment.
-                 * @param {String} A WKT fragment representing the linestring
+                 * @param   str {String}    A WKT fragment representing the linestring
                  */
                 'linestring': function(str) {
+                    var i, multipoints, components;
+
                     // In our x-and-y representation of components, parsing
                     //  multipoints is the same as parsing linestrings
-                    return this.ingest.multipoint.apply(this, [str]);
+                    multipoints = this.ingest.multipoint.apply(this, [str]);
+
+                    // However, the points need to be joined
+                    components = [];
+                    for (i=0; i < multipoints.length; i+=1) {
+                        components = components.concat(multipoints[i]);
+                    }
+                    return components;
                 },
 
                 /**
                  * Return a multilinestring feature given a multilinestring WKT fragment.
-                 * @param {String} A WKT fragment representing the multilinestring
+                 * @param   str {String}    A WKT fragment representing the multilinestring
                  */
                 'multilinestring': function(str) {
                     var i, components, line, lines;
@@ -322,7 +329,7 @@ var Wkt = (function() { // Execute function immediately
                 
                 /**
                  * Return a polygon feature given a polygon WKT fragment.
-                 * @param {String} A WKT fragment representing the polygon
+                 * @param   str {String}    A WKT fragment representing the polygon
                  */
                 'polygon': function(str) {
                     var i, j, components, subcomponents, ring, rings;
@@ -345,7 +352,7 @@ var Wkt = (function() { // Execute function immediately
 
                 /**
                  * Return a multipolygon feature given a multipolygon WKT fragment.
-                 * @param {String} A WKT fragment representing the multipolygon
+                 * @param   str {String}    A WKT fragment representing the multipolygon
                  */
                 'multipolygon': function(str) {
                     var i, components, polygon, polygons;
@@ -360,7 +367,7 @@ var Wkt = (function() { // Execute function immediately
 
                 /**
                  * Return an array of features given a geometrycollection WKT fragment.
-                 * @param {String} A WKT fragment representing the geometrycollection
+                 * @param   str {String}    A WKT fragment representing the geometry collection
                  */
                 'geometrycollection': function(str) {
                 }

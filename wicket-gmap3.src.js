@@ -1,9 +1,9 @@
 Wkt.Wkt.prototype.construct = {
     /**
      * Creates the framework's equivalent point geometry object.
-     * @param   config  {Object}    An optional properties hash the object should use
+     * @param   config      {Object}    An optional properties hash the object should use
      * @param   component   {Object}    An optional component to build from
-     * @return          {google.maps.Marker}
+     * @return              {<google.maps.Marker>}
      */
     'point': function(config, component) {
         var c = component || this.components;
@@ -40,7 +40,7 @@ Wkt.Wkt.prototype.construct = {
      * Creates the framework's equivalent multipoint geometry object.
      * @param   config      {Object}    An optional properties hash the object should use
      * @param   component   {Object}    An optional component to build from
-     * @return              {google.maps.Polyline}
+     * @return              {<google.maps.Polyline>}
      */
     'linestring': function(config, component) {
         var i, c;
@@ -87,7 +87,7 @@ Wkt.Wkt.prototype.construct = {
      * Creates the framework's equivalent polygon geometry object.
      * @param   config      {Object}    An optional properties hash the object should use
      * @param   component   {Object}    An optional component to build from
-     * @return              {google.maps.Polygon}
+     * @return              {<google.maps.Polygon>}
      */
     'polygon': function(config, component) {
         var i, j, c, arr;
