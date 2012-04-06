@@ -1,12 +1,23 @@
-body {margin:0;padding:0;background:#CF6;border-top:5px solid #000;font-family:Helvetica,Arial,sans-serif;font-size:16px;}
+body {margin:0;padding:0;background:#CF6;border-top:5px solid #000;font-family:Helvetica,Arial,sans-serif;font-size:14px;}
+a:link,
+a:visited {color:#460;text-decoration:none;}
 
+.attribute {float:right;padding:10px 0;}
+.menu {margin:0;padding:0;list-style:none;}
+.menu a {display:inline-block;margin:0;padding:5px 0 10px;margin:0 25px 0 0;border-top:5px solid transparent;}
+.menu a:hover,
+.menu a:active {border-top:5px solid #EFC;color:#000;}
 .wrapper {width:1000px;height:100%;margin:0 auto;}
 
+#canvas {width:700px;height:100%;background:#AAA;}
+#canvas,
+#controls {float:left;}
+#controls {width:290px;height:100%;padding:0 0 0 10px;text-align:justify;background:transparent;}
 #foot,
-#head {width:100%;height:20%;background:transparent;}
+#head {width:100%;height:20%;background:transparent;color:#333;}
 #ribbon {width:100%;height:60%;background:#EEE;}
 #ribbon .wrapper {border-top:1px solid #999;border-bottom:1px solid #999;}
-#ribbon .wrapper .title {float:right;width:300px;height:80px;position:relative;top:-80px;font-family:CabinRegular,sans-serif;color:#333;}
-#ribbon .wrapper .title .brand {font-family:CabinMediumItalic,sans-serif;font-size:36px;color:#000;}
+#ribbon .wrapper .title {float:right;width:300px;height:80px;position:relative;top:-80px;font-family:CabinRegular,sans-serif;font-size:16px;color:#333;}
+#ribbon .wrapper .title .brand {font-family:CabinMediumItalic,sans-serif;font-size:36px;color:#000;text-shadow:1px 1px 1px #EFC;}
 
 

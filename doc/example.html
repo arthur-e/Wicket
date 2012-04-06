@@ -15,7 +15,7 @@
         <link rel="stylesheet" href="../lib/leaflet.ie.css" />
     <![endif]-->
 </head>
-<title>Wicket: Sandbox</title>
+<title>Wicket - Lightweight Javascript for WKT [Sandbox]</title>
 <!--<script src="../lib/leaflet.js"></script>-->
 <!--
 <script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript"></script>
@@ -38,17 +38,33 @@ var init = function() {
 <body>
     <div id="head">
         <div class="wrapper">
+            <div class="menu">
+                <a href="/">Home</a>
+                <a href="mailto:kaendsle@mtu.edu">Contact Me</a>
+                <a href="http://github.com/arthur-e/Wicket">"Fork me on GitHub!"</a>
+            </div>
         </div>
     </div>
     <div id="ribbon">
         <div class="wrapper">
-            <div class="title">
-                <div class="brand">Wicket</div>
-                &nbsp;It whispers WKT in your application's ear.
+            <div id="canvas">
+            </div>
+            <div id="controls">
+                <div class="title">
+                    <div class="brand">Wicket</div>
+                    &nbsp;It whispers WKT in your application's ear.
+                </div>
+                Wicket is a lightweight Javascript library that reads and writes Well-Known Text (WKT) strings. It can also be extended to parse and to create geometric objects from various mapping frameworks, such as the Google Maps API.
             </div>
         </div>
     </div>
-    <div id="foot">&nbsp;</div>
+    <div id="foot">
+        <div class="wrapper">
+            <div class="attribute">
+                &copy; 2012 K. Arthur Endsley
+            </div>
+        </div>
+    </div>
 </body>
 </html>
 
