@@ -54,7 +54,14 @@ var init = function() {
                     <div class="brand">Wicket</div>
                     &nbsp;It whispers WKT in your application's ear.
                 </div>
-                Wicket is a lightweight Javascript library that reads and writes Well-Known Text (WKT) strings. It can also be extended to parse and to create geometric objects from various mapping frameworks, such as the Google Maps API.
+                <div class="text">
+                    Wicket is a lightweight Javascript library that reads and writes Well-Known Text (WKT) strings. It can also be extended to parse and to create geometric objects from various mapping frameworks, such as the Google Maps API.
+                </div>
+                <div id="form">
+                    <textarea type="text" name="wkt" id="wkt"></textarea>
+                    <label class="script"><input type="checkbox" name="urlify" id="urlify" />Format for URLs</label>
+                    <input type="submit" id="submit" value="Map It!" />
+                </div>
             </div>
         </div>
     </div>

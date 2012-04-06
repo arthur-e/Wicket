@@ -6,18 +6,50 @@ a:visited {color:#460;text-decoration:none;}
 .menu {margin:0;padding:0;list-style:none;}
 .menu a {display:inline-block;margin:0;padding:5px 0 10px;margin:0 25px 0 0;border-top:5px solid transparent;}
 .menu a:hover,
-.menu a:active {border-top:5px solid #EFC;color:#000;}
+.menu a:active {border-top:5px solid #eeffcc;color:#000;}
+.script {font-family:CabinRegular,sans-serif;}
 .wrapper {width:1000px;height:100%;margin:0 auto;}
 
 #canvas {width:700px;height:100%;background:#AAA;}
 #canvas,
 #controls {float:left;}
-#controls {width:290px;height:100%;padding:0 0 0 10px;text-align:justify;background:transparent;}
+#controls {width:290px;height:100%;padding:0 0 0 10px;text-align:justify;background:transparent;position:relative;top:-80px;}
+#controls .text {margin:90px 0 0;}
+#form {margin:10px 0 0;font-size:12px;color:#333;}
+#form #wkt {width:100%;height:150px;border:1px solid #999;padding:3px;resize:none;}
+#form #urlify {vertical-align:bottom;margin:10px 5px 0 0;}
+#form #submit {float:right;height:30px;margin:10px 0 0;padding:0 5px 2px 5px;font-family:CabinItalic,sans-serif;font-size:16px;color:#666;
+    background-color: #EF9;
+    border: 1px solid #999999;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    filter: progid: DXImageTransform.Microsoft.gradient(startColorstr = '#eeffcc', endColorstr = '#ddff99');
+    -ms-filter: "progid: DXImageTransform.Microsoft.gradient(startColorstr = '#eeffcc', endColorstr = '#ddff99')";
+    background-image: -moz-linear-gradient(top, #eeffcc, #ddff99);
+    background-image: -ms-linear-gradient(top, #eeffcc, #ddff99);
+    background-image: -o-linear-gradient(top, #eeffcc, #ddff99);
+    background-image: -webkit-gradient(linear, center top, center bottom, from(#eeffcc), to(#ddff99));
+    background-image: -webkit-linear-gradient(top, #eeffcc, #ddff99);
+    background-image: linear-gradient(top, #eeffcc, #ddff99);
+    -moz-background-clip: padding;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    }
+#form #submit:hover {background-color:#EFC;color:#333;border-color:#666;text-shadow:1px 1px 0px #FFF;
+    -moz-box-shadow: 0px 0px 2px #999999;
+    -webkit-box-shadow: 0px 0px 2px #999999;
+    box-shadow: 0px 0px 2px #999999;
+    }
+#form #submit:active {
+    -moz-box-shadow:inset 0px 0px 2px #999999;
+    -webkit-box-shadow:inset 0px 0px 2px #999999;
+    box-shadow:inset 0px 0px 2px #999999;
+    }
 #foot,
 #head {width:100%;height:20%;background:transparent;color:#333;}
 #ribbon {width:100%;height:60%;background:#EEE;}
 #ribbon .wrapper {border-top:1px solid #999;border-bottom:1px solid #999;}
-#ribbon .wrapper .title {float:right;width:300px;height:80px;position:relative;top:-80px;font-family:CabinRegular,sans-serif;font-size:16px;color:#333;}
-#ribbon .wrapper .title .brand {font-family:CabinMediumItalic,sans-serif;font-size:36px;color:#000;text-shadow:1px 1px 1px #EFC;}
-
+#ribbon .wrapper .title {float:right;width:300px;height:80px;font-family:CabinRegular,sans-serif;font-size:16px;color:#333;}
+#ribbon .wrapper .title .brand {font-family:CabinMediumItalic,sans-serif;font-size:36px;color:#000;text-shadow:1px 1px 1px #FFF;}
 
