@@ -16,11 +16,22 @@ That is what Wicket aspires to be: lightweight, framework-agnostic, and useful. 
 ## Colophon ##
 ##############
 
+########################
+### Acknowledgements ###
+########################
+
+The following open sources were borrowed from; they retain all their original rights:
+
+* The OpenLayers 2.7 WKT module (OpenLayers.Format.WKT)
+* Chris Pietshmann's [article on converting Bing Maps shapes (VEShape) to WKT](http://pietschsoft.com/post/2009/04/04/Virtual-Earth-Shapes-%28VEShape%29-to-WKT-%28Well-Known-Text%29-and-Back-using-JavaScript.aspx)
+* Charles R. Schmidt's and the Python Spatial Analysis Laboratory's (PySAL) WKT writer
+
 ###################
 ### Conventions ###
 ###################
 
 The conventions I've adopted in writing this library:
+
 * The Crockford-ian module pattern with a single global (namespace) variable
 * The most un-Crockford-ian use of new to instantiate new Objects (when this is required, the Object begins with a capital letter e.g. new Wkt())
 * The namespace is the only name beginning with a capital letter that doesn't need to and shouldn't be preceded by new
@@ -29,17 +40,10 @@ The conventions I've adopted in writing this library:
 
 The base library, wicket.js, contains the Wkt.Wkt base object. This object doesn't do anything on its own except read in WKT strings, allow the underlying geometry to be manipulated programmatically, and write WKT strings. By loading additional libraries, such as wicket-gmap3.js, users can transform between between WKT and the features of a given framework (e.g. google.maps.Polygon instances). The intent is to add support for new frameworks as additional Javascript files that alter the Wkt.Wkt prototype.
 
-########################
-### Acknowledgements ###
-########################
-The following open sources were borrowed from; they retain all their original rights:
-* The OpenLayers 2.7 WKT module (OpenLayers.Format.WKT)
-* Chris Pietshmann's [article on converting Bing Maps shapes (VEShape) to WKT](http://pietschsoft.com/post/2009/04/04/Virtual-Earth-Shapes-%28VEShape%29-to-WKT-%28Well-Known-Text%29-and-Back-using-JavaScript.aspx)
-* Charles R. Schmidt's and the Python Spatial Analysis Laboratory's (PySAL) WKT writer
+##############
+## Concepts ##
+##############
 
-##################
-## Introduction ##
-##################
 WKT geometries are stored internally using the following convention. The atomic unit of geometry is the coordinate pair (e.g. latitude and longitude) which is represented by an Object with x and y properties. An Array with a single coordinate pair represents a a single point (i.e. POINT feature)
 
     [ {x: -83.123, y: 42.123} ]
@@ -78,14 +82,20 @@ Or a MULTIPOLYGON feature:
     [ 
         [
             [
-                {x: -83, y: 42}, {x: -83, y: 43}, {x: -82, y: 43},
-                {x: -82, y: 42}, {x: -83, y: 42}
+                {x: -83, y: 42},
+                {x: -83, y: 43},
+                {x: -82, y: 43},
+                {x: -82, y: 42},
+                {x: -83, y: 42}
             ]
         ],
         [ 
             [
-                {x: -70, y: 40}, {x: -70, y: 41}, {x: -69, y: 41},
-                {x: -69, y: 40}, {x: -70, y: 40}
+                {x: -70, y: 40},
+                {x: -70, y: 41},
+                {x: -69, y: 41},
+                {x: -69, y: 40},
+                {x: -70, y: 40}
             ]
         ]
     ]
