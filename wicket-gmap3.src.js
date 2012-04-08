@@ -14,7 +14,7 @@ Wkt.Wkt.prototype.construct = {
      * Creates the framework's equivalent point geometry object.
      * @param   config      {Object}    An optional properties hash the object should use
      * @param   component   {Object}    An optional component to build from
-     * @return              {<google.maps.Marker>}
+     * @return              {google.maps.Marker}
      */
     'point': function (config, component) {
         var c = component || this.components;
@@ -51,7 +51,7 @@ Wkt.Wkt.prototype.construct = {
      * Creates the framework's equivalent multipoint geometry object.
      * @param   config      {Object}    An optional properties hash the object should use
      * @param   component   {Object}    An optional component to build from
-     * @return              {<google.maps.Polyline>}
+     * @return              {google.maps.Polyline}
      */
     'linestring': function (config, component) {
         var i, c;
@@ -59,9 +59,10 @@ Wkt.Wkt.prototype.construct = {
         c = component || this.components;
 
         config = config || {
-            editable: false,
-            path: []
+            editable: false
         };
+
+        config.path = [];
 
         for (i = 0; i < c.length; i += 1) {
             config.path.push(new google.maps.LatLng(c[i].y, c[i].x));
@@ -81,9 +82,10 @@ Wkt.Wkt.prototype.construct = {
         c = this.components;
 
         config = config || {
-            editable: false,
-            path: []
+            editable: false
         };
+
+        config.path = [];
 
         arr = [];
 
@@ -97,7 +99,7 @@ Wkt.Wkt.prototype.construct = {
     /**
      * Creates the framework's equivalent polygon geometry object.
      * @param   config      {Object}    An optional properties hash the object should use
-     * @return              {<google.maps.Polygon>}
+     * @return              {google.maps.Polygon}
      */
     'polygon': function (config) {
         var j, k, c, rings, verts;
@@ -105,9 +107,10 @@ Wkt.Wkt.prototype.construct = {
         c = this.components;
 
         config = config || {
-            editable: false, // Editable geometry off by default
-            paths: []
+            editable: false // Editable geometry off by default
         };
+
+        config.paths = [];
 
         rings = [];
         for (j = 0; j < c.length; j += 1) { // For each ring...
@@ -145,9 +148,10 @@ Wkt.Wkt.prototype.construct = {
         c = this.components;
 
         config = config || {
-            editable: false, // Editable geometry off by default
-            paths: []
+            editable: false // Editable geometry off by default
         };
+
+        config.paths = []; // Must ensure this property is available
 
         for (i = 0; i < c.length; i += 1) { // For each polygon...
 
