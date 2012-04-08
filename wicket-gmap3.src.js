@@ -198,10 +198,10 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
 
         return {
             type: 'point',
-            components: {
+            components: [{
                 x: obj.getPosition().lng(),
                 y: obj.getPosition().lat()
-            }
+            }]
         };
 
     // google.maps.Polyline ////////////////////////////////////////////////////

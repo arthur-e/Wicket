@@ -8,6 +8,10 @@ var Wkt = (function () { // Execute function immediately
         // The default delimiter for separating components of atomic geometry (coordinates)
         delimiter: ' ',
 
+        isArray: function (obj) {
+            return !!(obj && obj.constructor == Array);
+        },
+
         /**
          * An object for reading WKT strings and writing geographic features
          * @param   {String}    An optional WKT string for immediate read
