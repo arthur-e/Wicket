@@ -11,7 +11,7 @@ var Wkt = (function () { // Execute function immediately
         /**
          * An object for reading WKT strings and writing geographic features
          * @param   {String}    An optional WKT string for immediate read
-         * @param   {<Wkt.Wkt>} A WKT object
+         * @param   {Wkt.Wkt}   A WKT object
          */
         Wkt: function (initializer) {
             var beginsWith, endsWith, trim;
@@ -91,7 +91,7 @@ var Wkt = (function () { // Execute function immediately
              * Sets internal geometry (components) from framework geometry (e.g.
              * Google Polygon objects or google.maps.Polygon).
              * @param   obj {Object}    The framework-dependent geometry representation
-             * @return      {<Wkt.Wkt>} The object itself
+             * @return      {Wkt.Wkt}   The object itself
              */
             this.fromObject = function (obj) {
                 var result = this.deconstruct.call(this, obj);
@@ -124,6 +124,12 @@ var Wkt = (function () { // Execute function immediately
                     this.base = matches[2];
                     if (this.ingest[this.type]) {
                         this.components = this.ingest[this.type].apply(this, [this.base]);
+                    }
+                } else {
+                    console.log("Invalid WKT string provided to read()");
+                    throw {
+                        name: "WKTError",
+                        message: "Invalid WKT string provided to read()"
                     }
                 }
                 return this.components;

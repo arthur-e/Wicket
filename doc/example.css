@@ -3,12 +3,14 @@ label {color:#666;}
 label:hover {color:#333;}
 a:link,
 a:visited {color:#460;text-decoration:none;}
+a:hover,
+a:active {text-decoration:underline;}
 
 .attribute {float:right;padding:10px 0;}
 .menu {margin:0;padding:0;list-style:none;}
 .menu a {display:inline-block;margin:0;padding:5px 0 10px;margin:0 25px 0 0;border-top:5px solid transparent;}
 .menu a:hover,
-.menu a:active {border-top:5px solid #eeffcc;color:#000;}
+.menu a:active {border-top:5px solid #eeffcc;color:#000;text-decoration:none;}
 .text {color:#333;}
 .wrapper {width:1000px;height:100%;margin:0 auto;}
 
