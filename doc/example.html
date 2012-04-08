@@ -22,13 +22,14 @@
 <script src="../wicket-gmap3.src.js" type="text/javascript"></script>
 <script src="../wicket-test.js" type="text/javascript"></script>
 <script type="text/javascript">
-var app = (function() {
+var app = (function () {
     return {
         features: [],
         /**
          * Clears the map contents.
          */
-        clearMap: function() {
+        clearMap: function () {
+            var i;
             for (i in this.features) {
                 if (this.features.hasOwnProperty(i)) {
                     this.features[i].setMap(null);
@@ -39,14 +40,14 @@ var app = (function() {
         /**
          * Clears the current contents of the textarea.
          */
-        clearText: function() {
+        clearText: function () {
             document.getElementById('wkt').value = '';
         },
         /**
          * Maps the current contents of the textarea.
          * @return  {Object}    Some sort of geometry object
          */
-        mapIt: function() {
+        mapIt: function () {
             var el, obj, wkt;
 
             el = document.getElementById('wkt');
@@ -68,15 +69,41 @@ var app = (function() {
             }
 
             obj = wkt.toObject(this.gmap.defaults); // Make an object
+
+            if (wkt.type === 'polygon' || wkt.type === 'linestring') {
+                // New vertex is inserted
+                google.maps.event.addListener(obj.getPath(), 'insert_at', function (n) {
+                    app.updateText();
+                });
+                // Existing vertex is removed (insertion is undone)
+                google.maps.event.addListener(obj.getPath(), 'remove_at', function (n) {
+                    app.updateText();
+                });
+                // Existing vertex is moved (set elsewhere)
+                google.maps.event.addListener(obj.getPath(), 'set_at', function (n) {
+                    app.updateText();
+                });
+            } else {
+                if (obj.setEditable) {obj.setEditable(false);}
+            }
+
             obj.setMap(this.gmap); // Add it to the map
             this.features.push(obj);
             return obj;
         },
         /**
+         * Updates the textarea based on the first available feature.
+         */
+        updateText: function () {
+            var wkt = new Wkt.Wkt();
+            wkt.fromObject(app.features[0]);
+            document.getElementById('wkt').value = wkt.write();
+        },
+        /**
          * Formats the textarea contents for a URL.
          * @param   checked {Boolean}   The check state of the associated checkbox
          */
-        urlify: function(checked) {
+        urlify: function (checked) {
             var wkt = new Wkt.Wkt();
             wkt.read(document.getElementById('wkt').value);
             wkt.delimiter = (checked) ? '+' : ' ';
@@ -87,11 +114,11 @@ var app = (function() {
          * Application entry point.
          * @return  {<google.maps.Map>} The Google Maps API instance
          */
-        init: function() {
+        init: function () {
             var gmap;
 
             gmap = new google.maps.Map(document.getElementById('canvas'), {
-                center: new google.maps.LatLng(10, 10),
+                center: new google.maps.LatLng(30, 10),
                 defaults: {
                     icon: 'red_dot.png',
                     shadow: 'dot_shadow.png',
@@ -116,7 +143,7 @@ var app = (function() {
                 }
             });
 
-            google.maps.event.addListener(gmap, 'tilesloaded', function() {
+            google.maps.event.addListener(gmap, 'tilesloaded', function () {
                 if (!this.loaded) {
                     this.loaded = true;
                     document.getElementById('wkt').value = 'MULTIPOLYGON (((40 40, 20 45, 45 30, 40 40)), ((20 35, 45 20, 30 5, 10 10, 10 30, 20 35), (30 20, 20 25, 20 15, 30 20)))';
@@ -141,10 +168,38 @@ var app = (function() {
             });
             gmap.drawingManager.setMap(gmap);
 
-            google.maps.event.addListener(gmap.drawingManager, 'overlaycomplete', function(event) {
+            google.maps.event.addListener(gmap.drawingManager, 'overlaycomplete', function (event) {
                 var wkt;
+
                 app.clearText();
                 app.clearMap();
+
+                // Set the drawing mode to "pan" (the hand) so users can immediately edit
+                this.setDrawingMode(null);
+
+                // Polygon drawn
+                if (event.type === google.maps.drawing.OverlayType.POLYGON || event.type === google.maps.drawing.OverlayType.POLYLINE) {
+                    // New vertex is inserted
+                    google.maps.event.addListener(event.overlay.getPath(), 'insert_at', function (n) {
+                        app.updateText();
+                    });
+
+                    // Existing vertex is removed (insertion is undone)
+                    google.maps.event.addListener(event.overlay.getPath(), 'remove_at', function (n) {
+                        app.updateText();
+                    });
+
+                    // Existing vertex is moved (set elsewhere)
+                    google.maps.event.addListener(event.overlay.getPath(), 'set_at', function (n) {
+                        app.updateText();
+                    });
+                } else if (event.type === google.maps.drawing.OverlayType.RECTANGLE) { // Rectangle drawn
+                    // Listen for the 'bounds_changed' event and update the geometry
+                    google.maps.event.addListener(event.overlay, 'bounds_changed', function () {
+                        app.updateText();
+                    });
+                }
+
                 app.features.push(event.overlay);
                 wkt = new Wkt.Wkt();
                 wkt.fromObject(event.overlay);
@@ -158,13 +213,12 @@ var app = (function() {
 </script>
 <body onload="app.gmap=app.init();">
 <body>
+    <a href="http://github.com/arthur-e/Wicket">
+        <div id="forkme">&nbsp;
+        </div>
+    </a>
     <div id="head">
         <div class="wrapper">
-            <div class="menu">
-                <a href="/">Home</a>
-                <a href="mailto:kaendsle@mtu.edu">Contact Me</a>
-                <a href="http://github.com/arthur-e/Wicket">"Fork me on GitHub!"</a>
-            </div>
         </div>
     </div>
     <div id="ribbon">
@@ -190,6 +244,11 @@ var app = (function() {
     </div>
     <div id="foot">
         <div class="wrapper">
+            <div class="menu" id="nav">
+                <a href="/">Home</a>
+                <a href="mailto:kaendsle@mtu.edu">Contact Me</a>
+                <a href="http://github.com/arthur-e/Wicket">"Fork me on GitHub!"</a>
+            </div>
             <div class="attribute">
                 &copy; 2012 K. Arthur Endsley
             </div>

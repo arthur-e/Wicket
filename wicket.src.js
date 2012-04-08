@@ -207,8 +207,8 @@ var Wkt = (function () { // Execute function immediately
                  * @return          {String}    The WKT representation
                  */
                 'linestring': function (linestring) {
-                    // Extraction of linestrings is the same as for multipoints
-                    return this.extract.multipoint.apply(this, [linestring]);
+                    // Extraction of linestrings is the same as for points
+                    return this.extract.point.apply(this, [linestring]);
                 },
                 /**
                  * Return a WKT string representing multiple chains (multilinestring) of atoms
