@@ -122,7 +122,9 @@ Wkt.Wkt.prototype.construct = {
             } // eo for each vertex
 
             if (j !== 0) { // Reverse the order of coordinates in inner rings
-                verts.reverse();
+            	if (config.reverseInnerPolygons == null || config.reverseInnerPolygons) {
+                	  verts.reverse();
+              	}
             }
 
             rings.push(verts);
