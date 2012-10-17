@@ -2,14 +2,14 @@
 # Wicket #
 ##########
 
-Updated **October 17, 2012** by K. Arthur Endsley
-Check out the [live demo](http://geojam.net/static/wicket/doc/).
+Updated **October 17, 2012** by K. Arthur Endsley. Check out the [live demo](http://geojam.net/static/wicket/doc/).
 
 #############
 ## License ##
 #############
 
-Wicket is released under the [GNU General Public License version 3 (GPLv3)](http://www.gnu.org/licenses/gpl.html). Accordingly:
+Wicket is released under the [GNU General Public License version 3 (GPLv3)](http://www.gnu.org/licenses/gpl.html).
+Accordingly:
 
 > This program is free software: you can redistribute it and/or modify
 > it under the terms of the GNU General Public License as published by
@@ -20,11 +20,18 @@ Wicket is released under the [GNU General Public License version 3 (GPLv3)](http
 ## Motivation ##
 ################
 
-Wicket was created out of the need for a lightweight Javascript library that can translate Well-Known Text (WKT) strings into geographic features. This problem arose in the context of [OpenClimateGIS](https://github.com/arthur-e/OpenClimateGIS), a web framework for accessing and subsetting online climate data.
+Wicket was created out of the need for a lightweight Javascript library that can translate Well-Known Text (WKT) strings into geographic features.
+This problem arose in the context of [OpenClimateGIS](https://github.com/arthur-e/OpenClimateGIS), a web framework for accessing and subsetting online climate data.
 
-OpenClimateGIS emits WKT representations of user-defined geometry. Our [API explorer](http://www.openclimategis.org/builder/) allows users to define arbitrary areas-of-interest (AOIs) and view predefined AOIs on a Google Maps API instance. So, initially, the problem was converting between WKT strings and Google Maps API features. While other mapping libraries, such as [OpenLayers](http://www.openlayers.org), have very nice WKT libraries built-in, the Google Maps API, as of this writing, does not. In the (apparent) absence of lightweight, easy-to-use WKT library in Javascript, I set out to create one.
+OpenClimateGIS emits WKT representations of user-defined geometry.
+Our [API explorer](http://www.openclimategis.org/builder/) allows users to define arbitrary areas-of-interest (AOIs) and view predefined AOIs on a Google Maps API instance.
+So, initially, the problem was converting between WKT strings and Google Maps API features.
+While other mapping libraries, such as [OpenLayers](http://www.openlayers.org), have very nice WKT libraries built-in, the Google Maps API, as of this writing, does not.
+In the (apparent) absence of lightweight, easy-to-use WKT library in Javascript, I set out to create one.
 
-That is what Wicket aspires to be: lightweight, framework-agnostic, and useful. I hope it achieves these goals. If you find it isn't living up to that and you have ideas on how to improve it, please fork the code or [drop me a line](mailto:kaendsle@mtu.edu).
+That is what Wicket aspires to be: lightweight, framework-agnostic, and useful.
+I hope it achieves these goals.
+If you find it isn't living up to that and you have ideas on how to improve it, please fork the code or [drop me a line](mailto:kaendsle@mtu.edu).
 
 ##############
 ## Colophon ##
@@ -51,7 +58,10 @@ Many thanks to the following sources of inspiration, which retain all their orig
 ### Conventions ###
 ###################
 
-The base library, wicket.js, contains the Wkt.Wkt base object. This object doesn't do anything on its own except read in WKT strings, allow the underlying geometry to be manipulated programmatically, and write WKT strings. By loading additional libraries, such as wicket-gmap3.js, users can transform between between WKT and the features of a given framework (e.g. google.maps.Polygon instances). The intent is to add support for new frameworks as additional Javascript files that alter the Wkt.Wkt prototype.
+The base library, wicket.js, contains the Wkt.Wkt base object.
+This object doesn't do anything on its own except read in WKT strings, allow the underlying geometry to be manipulated programmatically, and write WKT strings.
+By loading additional libraries, such as wicket-gmap3.js, users can transform between between WKT and the features of a given framework (e.g. google.maps.Polygon instances). 
+he intent is to add support for new frameworks as additional Javascript files that alter the Wkt.Wkt prototype.
 
 **To extend Wicket**, nominally by writing bindings for a new mapping library, add a new file with a name like wicket-libname.src.js (and corresponding minified version wicket-libname.js) where "libname" is some reasonably short, well-known name for the mapping library.
 
