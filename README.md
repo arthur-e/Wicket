@@ -2,7 +2,19 @@
 # Wicket #
 ##########
 
-Updated **April 8, 2012** by K. Arthur Endsley
+Updated **October 17, 2012** by K. Arthur Endsley
+Check out the [live demo](http://geojam.net/static/wicket/doc/).
+
+#############
+## License ##
+#############
+
+Wicket is released under the [GNU General Public License version 3 (GPLv3)](http://www.gnu.org/licenses/gpl.html). Accordingly:
+
+> This program is free software: you can redistribute it and/or modify
+> it under the terms of the GNU General Public License as published by
+> the Free Software Foundation, either version 3 of the License, or
+> (at your option) any later version.
 
 ################
 ## Motivation ##
@@ -22,25 +34,26 @@ That is what Wicket aspires to be: lightweight, framework-agnostic, and useful. 
 ### Acknowledgements ###
 ########################
 
-The following open sources were borrowed from; they retain all their original rights:
+Many thanks to the following sources of inspiration, which retain all their original rights:
 
 * The OpenLayers 2.7 WKT module (OpenLayers.Format.WKT)
 * Chris Pietshmann's [article on converting Bing Maps shapes (VEShape) to WKT](http://pietschsoft.com/post/2009/04/04/Virtual-Earth-Shapes-%28VEShape%29-to-WKT-%28Well-Known-Text%29-and-Back-using-JavaScript.aspx)
 * Charles R. Schmidt's and the Python Spatial Analysis Laboratory's (PySAL) WKT writer
 
+####################
+### Contributors ###
+####################
+
+* [cuyahoga](https://github.com/cuyahoga) - Option to reverse inner ring geometry in Google Maps API extension
+* [Tom Nightingale (thegreat)](https://github.com/thegreat) - **Leaflet extension!**
+
 ###################
 ### Conventions ###
 ###################
 
-The conventions I've adopted in writing this library:
-
-* The Crockford-ian module pattern with a single global (namespace) variable
-* The most un-Crockford-ian use of new to instantiate new Objects (when this is required, the Object begins with a capital letter e.g. new Wkt())
-* The namespace is the only name beginning with a capital letter that doesn't need to and shouldn't be preceded by new
-* The namespace is the result of a function allowing for private members
-* Tricky operators (++ and --) and type-coercing operators (== and !=) are not used
-
 The base library, wicket.js, contains the Wkt.Wkt base object. This object doesn't do anything on its own except read in WKT strings, allow the underlying geometry to be manipulated programmatically, and write WKT strings. By loading additional libraries, such as wicket-gmap3.js, users can transform between between WKT and the features of a given framework (e.g. google.maps.Polygon instances). The intent is to add support for new frameworks as additional Javascript files that alter the Wkt.Wkt prototype.
+
+**To extend Wicket**, nominally by writing bindings for a new mapping library, add a new file with a name like wicket-libname.src.js (and corresponding minified version wicket-libname.js) where "libname" is some reasonably short, well-known name for the mapping library.
 
 ##############
 ## Concepts ##

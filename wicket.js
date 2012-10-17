@@ -1,3 +1,22 @@
+/**
+ *  Copyright (C) 2012 K. Arthur Endsley (kaendsle@mtu.edu)
+ *  Michigan Tech Research Institute (MTRI)
+ *  3600 Green Court, Suite 100, Ann Arbor, MI, 48105
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 var Wkt=function(){return{delimiter:" ",isArray:function(obj){return!!(obj&&obj.constructor==Array)},Wkt:function(initializer){var beginsWith,endsWith,trim;beginsWith=function(str,sub){return str.substring(0,sub.length)===sub};endsWith=function(str,sub){return str.substring(str.length-sub.length)===sub};trim=function(str,sub){sub=sub||" ";while(beginsWith(str,sub))str=str.substring(1);while(endsWith(str,sub))str=str.substring(0,str.length-1);return str};this.delimiter=Wkt.delimiter;this.regExes={typeStr:/^\s*(\w+)\s*\(\s*(.*)\s*\)\s*$/,
 spaces:/\s+|\+/,numeric:/-*\d+\.*\d+/,comma:/\s*,\s*/,parenComma:/\)\s*,\s*\(/,doubleParenComma:/\)\s*\)\s*,\s*\(\s*\(/,trimParens:/^\s*\(?(.*?)\)?\s*$/};this.isCollection=function(){switch(this.type.slice(0,5)){case "multi":return true;case "polyg":return true;default:return false}};this.components=undefined;this.fromObject=function(obj){var result=this.deconstruct.call(this,obj);this.components=result.components;this.isRectangle=result.isRectangle||false;this.type=result.type;return this};this.toObject=
 function(config){return this.construct[this.type].call(this,config)};this.read=function(wkt){var matches;matches=this.regExes.typeStr.exec(wkt);if(matches){this.type=matches[1].toLowerCase();this.base=matches[2];if(this.ingest[this.type])this.components=this.ingest[this.type].apply(this,[this.base])}else{console.log("Invalid WKT string provided to read()");throw{name:"WKTError",message:"Invalid WKT string provided to read()"};}return this.components};this.write=function(components){var i,pieces,data;
