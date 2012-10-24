@@ -26,7 +26,7 @@ Wkt.Wkt.prototype.construct = {
         var coords = component || this.components,
             latlngs = this.coordsToLatLngs(coords);
 
-        return L.polyLine(latlngs);
+        return L.polyline(latlngs);
     },
 
     multilinestring: function (config) {
