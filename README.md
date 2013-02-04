@@ -24,10 +24,10 @@ Wicket was created out of the need for a lightweight Javascript library that can
 This problem arose in the context of [OpenClimateGIS](https://github.com/arthur-e/OpenClimateGIS), a web framework for accessing and subsetting online climate data.
 
 OpenClimateGIS emits WKT representations of user-defined geometry.
-Our [API explorer](http://www.openclimategis.org/builder/) allows users to define arbitrary areas-of-interest (AOIs) and view predefined AOIs on a Google Maps API instance.
+The API Explorer allowed users to define arbitrary areas-of-interest (AOIs) and view predefined AOIs on a Google Maps API instance.
 So, initially, the problem was converting between WKT strings and Google Maps API features.
 While other mapping libraries, such as [OpenLayers](http://www.openlayers.org), have very nice WKT libraries built-in, the Google Maps API, as of this writing, does not.
-In the (apparent) absence of lightweight, easy-to-use WKT library in Javascript, I set out to create one.
+In the (apparent) absence of a lightweight, easy-to-use WKT library in Javascript, I set out to create one.
 
 That is what Wicket aspires to be: lightweight, framework-agnostic, and useful.
 I hope it achieves these goals.
@@ -47,10 +47,16 @@ Many thanks to the following sources of inspiration, which retain all their orig
 * Chris Pietshmann's [article on converting Bing Maps shapes (VEShape) to WKT](http://pietschsoft.com/post/2009/04/04/Virtual-Earth-Shapes-%28VEShape%29-to-WKT-%28Well-Known-Text%29-and-Back-using-JavaScript.aspx)
 * Charles R. Schmidt's and the Python Spatial Analysis Laboratory's (PySAL) WKT writer
 
-####################
-### Contributors ###
-####################
+#########################
+### Build Information ###
+#########################
 
+Minified versions of JavaScript files were generated using Google's [Closure compiler](https://developers.google.com/closure/compiler/docs/gettingstarted_app).
+Once installed, minification can be invoked at the command line, as in the following example:
+
+    java -jar /usr/local/closure/compiler.jar --compilation_level WHITESPACE_ONLY --js wicket-leaflet.src.js --js_output_file wicket-leaflet.js 
+
+Contributors:
 * [cuyahoga](https://github.com/cuyahoga) - Option to reverse inner ring geometry in Google Maps API extension
 * [Tom Nightingale (thegreat)](https://github.com/thegreat) - **Leaflet extension!**
 
