@@ -2,7 +2,7 @@
 # Wicket #
 ##########
 
-Updated **October 17, 2012** by K. Arthur Endsley. Check out the [live demo](http://geojam.net/static/wicket/doc/).
+Updated **February 4, 2013** by K. Arthur Endsley. Check out the [live demo](http://geojam.net/static/wicket/doc/).
 
 #############
 ## License ##
@@ -47,6 +47,11 @@ Many thanks to the following sources of inspiration, which retain all their orig
 * Chris Pietshmann's [article on converting Bing Maps shapes (VEShape) to WKT](http://pietschsoft.com/post/2009/04/04/Virtual-Earth-Shapes-%28VEShape%29-to-WKT-%28Well-Known-Text%29-and-Back-using-JavaScript.aspx)
 * Charles R. Schmidt's and the Python Spatial Analysis Laboratory's (PySAL) WKT writer
 
+Contributors:
+* [cuyahoga](https://github.com/cuyahoga) - Option to reverse inner ring geometry in Google Maps API extension
+* [Tom Nightingale (thegreat)](https://github.com/thegreat) - **Leaflet extension!**
+* [Aaron Ogle](https://github.com/atogle)
+
 #########################
 ### Build Information ###
 #########################
@@ -55,10 +60,6 @@ Minified versions of JavaScript files were generated using Google's [Closure com
 Once installed, minification can be invoked at the command line, as in the following example:
 
     java -jar /usr/local/closure/compiler.jar --compilation_level WHITESPACE_ONLY --js wicket-leaflet.src.js --js_output_file wicket-leaflet.js 
-
-Contributors:
-* [cuyahoga](https://github.com/cuyahoga) - Option to reverse inner ring geometry in Google Maps API extension
-* [Tom Nightingale (thegreat)](https://github.com/thegreat) - **Leaflet extension!**
 
 ###################
 ### Conventions ###
