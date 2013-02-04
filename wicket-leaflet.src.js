@@ -26,27 +26,27 @@ Wkt.Wkt.prototype.construct = {
         var coords = component || this.components,
             latlngs = this.coordsToLatLngs(coords);
 
-        return L.polyline(latlngs);
+        return L.polyline(latlngs, config);
     },
 
     multilinestring: function (config) {
         var coords = this.components,
             latlngs = this.coordsToLatLngs(coords, 1);
 
-        return L.multiPolyline(latlngs);
+        return L.multiPolyline(latlngs, config);
     },
 
     polygon: function (config) {
         var coords = this.components,
             latlngs = this.coordsToLatLngs(coords, 1);
-        return L.polygon(latlngs);
+        return L.polygon(latlngs, config);
     },
 
     multipolygon: function (config) {
         var coords = this.components,
             latlngs = this.coordsToLatLngs(coords, 2);
 
-        return L.multiPolygon(latlngs);
+        return L.multiPolygon(latlngs, config);
     }
 };
 
