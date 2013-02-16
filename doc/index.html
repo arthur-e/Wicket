@@ -71,6 +71,7 @@ var app = (function () {
                 }
             }
 
+            console.log(this);
             obj = wkt.toObject(this.gmap.defaults); // Make an object
 
             // Add listeners for overlay editing events
@@ -162,7 +163,7 @@ var app = (function () {
                     this.loaded = true;
                     document.getElementById('wkt').value = 'MULTIPOLYGON (((40 40, 20 45, 45 30, 40 40)), ((20 35, 45 20, 30 5, 10 10, 10 30, 20 35), (30 20, 20 25, 20 15, 30 20)))';
                     app.mapIt();
-                    }
+                }
             });
 
             gmap.drawingManager = new google.maps.drawing.DrawingManager({
@@ -226,7 +227,6 @@ var app = (function () {
 }()); // Execute immediately
 </script>
 <body onload="app.gmap=app.init();">
-<body>
     <a href="http://github.com/arthur-e/Wicket">
         <div id="forkme">&nbsp;
         </div>
@@ -245,7 +245,7 @@ var app = (function () {
                     &nbsp;It whispers WKT in your application's ear.
                 </div>
                 <div class="text">
-                    Wicket is a lightweight Javascript library that reads and writes <a href="http://en.wikipedia.org/wiki/Well-known_text#Geometric_objects" target="_blaknk">Well-Known Text (WKT)</a> strings. It can also be extended to parse and to create geometric objects from various mapping frameworks, such as the Google Maps API.
+                    Wicket is a lightweight Javascript library that reads and writes <a href="http://en.wikipedia.org/wiki/Well-known_text#Geometric_objects" target="_blaknk">Well-Known Text (WKT)</a> strings. It can also be extended to parse and to create geometric objects from various mapping frameworks, such as <a href="http://http://leafletjs.com/" target="_blank">Leaflet</a> and the Google Maps API.
                 </div>
                 <div id="form">
                     <textarea type="text" name="wkt" id="wkt"></textarea>
