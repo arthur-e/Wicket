@@ -16,12 +16,11 @@
     <![endif]-->
 </head>
 <title>Wicket - Lightweight Javascript for WKT [Leaflet Sandbox]</title>
-<script src="/static/leaflet/0.4.4/leaflet-src.js"></script>
+<script src="/static/leaflet/0.4.4/leaflet.js"></script>
 <script src="/static/leaflet/plugins/leaflet-providers-0.0.1.js"></script>
-<script src="/static/wicket/wicket.src.js" type="text/javascript"></script>
-<script src="/static/wicket/wicket-leaflet.src.js" type="text/javascript"></script>
+<script src="/static/wicket/wicket.js" type="text/javascript"></script>
+<script src="/static/wicket/wicket-leaflet.js" type="text/javascript"></script>
 <script type="text/javascript">
-var foo; // FIXME For debugging only
 var app = (function () {
     return {
         features: [],
@@ -45,10 +44,15 @@ var app = (function () {
         },
         /**
          * Maps the current contents of the textarea.
-         * @return  {Object}    Some sort of geometry object
+         * @param   editable    {Boolean}   Indicates that the feature drawn should be editable
+         * @return              {Object}    Some sort of geometry object
          */
-        mapIt: function () {
-            var el, obj, wkt;
+        mapIt: function (editable) {
+            var config, el, obj, wkt;
+
+            if (editable === undefined) {
+                editable = true;
+            }
 
             el = document.getElementById('wkt');
             wkt = new Wkt.Wkt();
@@ -71,6 +75,9 @@ var app = (function () {
                     }
                 }
             }
+
+            config = this.map.defaults;
+            config.editable = editable;
 
             obj = wkt.toObject(this.map.defaults); // Make an object
 
@@ -132,6 +139,9 @@ var app = (function () {
             osmDataAttr = 'Map data ' + osmMapAttr;
 
             // Stamen //////////////////////////////////////////////////////////////////////
+
+            // Courtesy of Stefan Seelman's leaflet-providers extension
+            // https://github.com/seelmann/leaflet-providers
             stamenAttr = 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; ' + osmDataAttr;
             L.TileLayer.Stamen = L.TileLayer.Common.extend({
                 url: 'http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png',
@@ -164,8 +174,14 @@ var app = (function () {
             });
 
             leaflet.map.defaults = {
-                icon: 'red_dot.png',
-                shadow: 'dot_shadow.png',
+                icon: new L.Icon({
+                    iconUrl: 'red_dot.png',
+                    iconSize: [16, 16],
+                    iconAnchor: [8, 8],
+                    shadowUrl: 'dot_shadow.png',
+                    shadowSize: [16, 16],
+                    shadowAnchor: [8, 8]
+                }),
                 editable: true,
                 color: '#990000',
                 weight: 3,
@@ -183,9 +199,9 @@ var app = (function () {
                 }
             });
 
+            // There are no 'edit' events, so let's catch editing at its most
+            //  fundamental: the mouseup event on the map
             leaflet.map.on('mouseup', function () {
-                console.log('update text');
-                console.log(that);
                 that.updateText()
             });
 
@@ -199,7 +215,7 @@ var app = (function () {
 
 }());
 </script>
-<body onload="app.map=app.init();app.mapIt();">
+<body onload="app.map=app.init();app.mapIt(false);">
     <a href="http://github.com/arthur-e/Wicket">
         <div id="forkme">&nbsp;
         </div>
