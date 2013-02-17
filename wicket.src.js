@@ -262,6 +262,10 @@ var Wkt = (function () { // Execute function immediately
                         parts.push('(' + this.extract.polygon.apply(this, [multipolygon[i]]) + ')');
                     }
                     return parts.join(',');
+                },
+
+                'geometrycollection': function (str) {
+                    console.log('The geometrycollection WKT type is not yet supported.');
                 }
             };
 

@@ -6,7 +6,7 @@ Wkt.Wkt.prototype.isRectangle = false;
  *  vertex; calls itself recursively to deal with nested Arrays.
  */
 Wkt.coordsFromLatLngs = function (arr) {
-    var i, j, coords;
+    var i, coords;
 
     coords = [];
     for (i = 0; i < arr.length; i += 1) {
@@ -41,8 +41,7 @@ Wkt.Wkt.prototype.construct = {
     multipoint: function (config) {
         var i,
             layers = [],
-            coords = this.components,
-            latlng;
+            coords = this.components;
 
         for (i = 0; i < coords.length; i += 1) {
             layers.push(this.construct.point.call(this, config, coords[i]));
@@ -76,6 +75,19 @@ Wkt.Wkt.prototype.construct = {
             latlngs = this.coordsToLatLngs(coords, 2);
 
         return L.multiPolygon(latlngs, config);
+    },
+
+    geometrycollection: function (config) {
+        var i, layers;
+
+        layers = [];
+        for (i = 0; i < this.components.length; i += 1) {
+            layers.push(this.construct[this.components[i].type].call(this,
+                this.components[i]));
+        }
+
+        return L.featureGroup(layers, config);
+
     }
 };
 
@@ -101,7 +113,7 @@ L.Util.extend(Wkt.Wkt.prototype, {
  * @return      {Object}    A hash of the 'type' and 'components' thus derived
  */
 Wkt.Wkt.prototype.deconstruct = function (obj) {
-    var i, j, verts, rings, tmp;
+    var attr, features, i, verts, rings, tmp;
 
     // L.Marker ////////////////////////////////////////////////////////////////
     if (obj.setIcon && typeof obj.setIcon === 'function') {
@@ -214,10 +226,38 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
 
     }
 
+    // L.MultiPolyline /////////////////////////////////////////////////////////
+    // L.MultiPolygon //////////////////////////////////////////////////////////
+    // L.LayerGroup ////////////////////////////////////////////////////////////
+    // L.FeatureGroup //////////////////////////////////////////////////////////
+    if (obj.getBounds && typeof obj.getBounds === 'function' && !obj.getLatLngs) {
+        // MultiPolyline and MultiPolygon objects, like FeatureCollection
+        //  objects, have a getBounds method; objects that inherit from Polyline
+        //  also have this method, so we distinguish be checking that
+        //  MultiPolyline and Multipolygon objects do not have getLatLngs()
+
+        features = [];
+        tmp = obj._layers;
+
+        for (attr in tmp) {
+            if (tmp.hasOwnProperty(attr)) {
+                if (tmp[attr].getLatLngs) {
+                    // Recursively deconstruct each layer
+                    features.push(this.deconstruct(tmp[attr]));
+                }
+            }
+        }
+
+        return {
+            type: 'geometrycollection',
+            components: features
+        };
+
+    }
+
     // L.Circle ////////////////////////////////////////////////////////////////
     if (obj.getBounds && obj.getRadius) {
         // Circle is the only overlay class with both the getBounds and getRadius properties
-
         console.log('Deconstruction of L.Circle objects is not yet supported');
 
     } else {

@@ -61,6 +61,10 @@ Once installed, minification can be invoked at the command line, as in the follo
 
     java -jar /usr/local/closure/compiler.jar --compilation_level WHITESPACE_ONLY --js wicket-leaflet.src.js --js_output_file wicket-leaflet.js 
 
+There is now a script included that will do this automatically for all JavaScript files:
+
+    . refactor.sh
+
 ###################
 ### Conventions ###
 ###################
