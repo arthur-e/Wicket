@@ -116,6 +116,46 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
         };
     }
 
+    // L.Rectangle /////////////////////////////////////////////////////////////
+    if (obj.spliceLatLngs && typeof obj.spliceLatLngs === 'function'
+            // Rectangle inherits spliceLatLngs() from Polygon, like Polyline,
+            //  but neither of those have the setBounds method
+            && obj.setBounds && typeof obj.setBounds === 'function') {
+
+        // Rectangles have to be detected BEFORE Polygons/Polylines in order for
+        // them to be recognized as POLYGONS and not POLYLINES
+        tmp = obj.getBounds(); // L.LatLngBounds instance
+        return {
+            type: 'polygon',
+            isRectangle: true,
+            components: [
+                [
+                    { // NW corner
+                        x: tmp.getSouthWest().lng,
+                        y: tmp.getNorthEast().lat
+                    },
+                    { // NE corner
+                        x: tmp.getNorthEast().lng,
+                        y: tmp.getNorthEast().lat
+                    },
+                    { // SE corner
+                        x: tmp.getNorthEast().lng,
+                        y: tmp.getSouthWest().lat
+                    },
+                    { // SW corner
+                        x: tmp.getSouthWest().lng,
+                        y: tmp.getSouthWest().lat
+                    },
+                    { // NW corner (again, for closure)
+                        x: tmp.getSouthWest().lng,
+                        y: tmp.getNorthEast().lat
+                    }
+                ]
+            ]
+        };
+
+    }
+
     // L.Polyline //////////////////////////////////////////////////////////////
     // L.Polygon ///////////////////////////////////////////////////////////////
     if (obj.spliceLatLngs && typeof obj.spliceLatLngs === 'function') {
@@ -170,44 +210,6 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
         return {
             type: 'polygon',
             components: rings
-        };
-
-    }
-
-    // L.Rectangle /////////////////////////////////////////////////////////////
-    if (obj.spliceLatLngs && typeof obj.spliceLatLngs === 'function'
-            // Rectangle inherits spliceLatLngs() from Polygon, like Polyline,
-            //  but neither of those have the setBounds method
-            && obj.setBounds && typeof obj.setBounds === 'function') {
-
-        tmp = obj.getBounds(); // L.LatLngBounds instance
-        return {
-            type: 'polygon',
-            isRectangle: true,
-            components: [
-                [
-                    { // NW corner
-                        x: tmp.getSouthWest().lng,
-                        y: tmp.getNorthEast().lat
-                    },
-                    { // NE corner
-                        x: tmp.getNorthEast().lng,
-                        y: tmp.getNorthEast().lat
-                    },
-                    { // SE corner
-                        x: tmp.getNorthEast().lng,
-                        y: tmp.getSouthWest().lat
-                    },
-                    { // SW corner
-                        x: tmp.getSouthWest().lng,
-                        y: tmp.getSouthWest().lat
-                    },
-                    { // NW corner (again, for closure)
-                        x: tmp.getSouthWest().lng,
-                        y: tmp.getNorthEast().lat
-                    }
-                ]
-            ]
         };
 
     }

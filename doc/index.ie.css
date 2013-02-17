@@ -5,6 +5,10 @@ label:hover {color:#333;}
 a:link,
 a:visited {color:#460;text-decoration:none;}
 
+.leaflet-container .leaflet-control-attribution {color:white;background:none !important;box-shadow:none !important;}
+.leaflet-container .leaflet-control-attribution a:link,
+.leaflet-container .leaflet-control-attribution a:visited {color:#8C0;}
+
 .attribute {width:290px;float:right;padding:10px 0;text-align:left;font-size:10px;line-height:16px;}
 .menu {float:left;margin:0;padding:0;list-style:none;}
 .menu a {display:inline-block;margin:0;padding:5px 0 10px;margin:0 25px 0 0;border-top:5px solid transparent;}

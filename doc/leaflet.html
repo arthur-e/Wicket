@@ -19,8 +19,8 @@
 <script src="/static/leaflet/0.5.1/leaflet.js"></script>
 <!--See https://github.com/seelmann/leaflet-providers for below-->
 <script src="/static/leaflet/plugins/leaflet-providers-0.0.2.js"></script>
-<script src="/static/wicket/wicket.js" type="text/javascript"></script>
-<script src="/static/wicket/wicket-leaflet.js" type="text/javascript"></script>
+<script src="/static/wicket/wicket.src.js" type="text/javascript"></script>
+<script src="/static/wicket/wicket-leaflet.src.js" type="text/javascript"></script>
 <script type="text/javascript">
 var app = (function () {
     return {
@@ -148,7 +148,7 @@ var app = (function () {
             // Configure map ///////////////////////////////////////////////////
             leaflet.map = L.map('canvas', {
                 zoomControl: false,
-                attributionControl: false,
+                attributionControl: true,
                 layers: [
                     leaflet.baseLayers['Stamen Toner Map'],
                 ]
@@ -238,8 +238,7 @@ var app = (function () {
                 <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_GB">
                     <img alt="Wicket is licensed under a Creative Commons Attribution-ShareAlike 3.0 Unported License" style="float:right;border-width:0;vertical-align:middle;" src="http://i.creativecommons.org/l/by-sa/3.0/80x15.png" />
                 </a><br />
-                Wicket is released under the <a href="https://github.com/arthur-e/Wicket/blob/master/LICENSE" target="_blank">GPL v3</a><br />
-                Toner Map &copy; <a href="http://content.stamen.com/toner_v2_is_live" target="_blank">Stamen</a>
+                Wicket is released under the <a href="https://github.com/arthur-e/Wicket/blob/master/LICENSE" target="_blank">GPL v3</a>
             </div>
         </div>
     </div>
