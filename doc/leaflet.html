@@ -16,8 +16,9 @@
     <![endif]-->
 </head>
 <title>Wicket - Lightweight Javascript for WKT [Leaflet Sandbox]</title>
-<script src="/static/leaflet/0.4.4/leaflet.js"></script>
-<script src="/static/leaflet/plugins/leaflet-providers-0.0.1.js"></script>
+<script src="/static/leaflet/0.5.1/leaflet.js"></script>
+<!--See https://github.com/seelmann/leaflet-providers for below-->
+<script src="/static/leaflet/plugins/leaflet-providers-0.0.2.js"></script>
 <script src="/static/wicket/wicket.js" type="text/javascript"></script>
 <script src="/static/wicket/wicket-leaflet.js" type="text/javascript"></script>
 <script type="text/javascript">
@@ -140,28 +141,8 @@ var app = (function () {
 
             // Stamen //////////////////////////////////////////////////////////////////////
 
-            // Courtesy of Stefan Seelman's leaflet-providers extension
-            // https://github.com/seelmann/leaflet-providers
-            stamenAttr = 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; ' + osmDataAttr;
-            L.TileLayer.Stamen = L.TileLayer.Common.extend({
-                url: 'http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png',
-                options: {
-                    attribution: stamenAttr,
-                    subdomains: ['a', 'b', 'c', 'd'],
-                    minZoom: 0,
-                    maxZoom: 20
-                }
-            });
-            L.TileLayer.Stamen.Toner = L.TileLayer.Stamen;
-            L.TileLayer.Stamen.TonerLines = L.TileLayer.Stamen.extend({
-                url: 'http://{s}.tile.stamen.com/toner-lines/{z}/{x}/{y}.png'
-            });
-            L.TileLayer.Stamen.TonerLabels = L.TileLayer.Stamen.extend({
-                url: 'http://{s}.tile.stamen.com/toner-labels/{z}/{x}/{y}.png'
-            });
-
             leaflet.baseLayers = {
-                'Stamen Toner Map': new L.TileLayer.Stamen.Toner()
+                'Stamen Toner Map': L.TileLayer.provider('Stamen.Toner')
             };
 
             // Configure map ///////////////////////////////////////////////////
@@ -183,10 +164,10 @@ var app = (function () {
                     shadowAnchor: [8, 8]
                 }),
                 editable: true,
-                color: '#990000',
+                color: '#AA0000',
                 weight: 3,
                 opacity: 1.0,
-                fillColor: '#990000',
+                fillColor: '#AA0000',
                 fillOpacity: 0.2
             };
 
@@ -217,8 +198,6 @@ var app = (function () {
 </script>
 <body onload="app.map=app.init();app.mapIt(false);">
     <a href="http://github.com/arthur-e/Wicket">
-        <div id="forkme">&nbsp;
-        </div>
     </a>
     <div id="head">
         <div class="wrapper">
@@ -227,6 +206,8 @@ var app = (function () {
     <div id="ribbon">
         <div class="wrapper">
             <div id="canvas">
+                <div id="forkme">&nbsp;
+                </div>
             </div>
             <div id="controls">
                 <div class="title">
@@ -253,7 +234,12 @@ var app = (function () {
                 <a href="http://github.com/arthur-e/Wicket">"Fork me on GitHub!"</a>
             </div>
             <div class="attribute">
-                &copy; 2012 K. Arthur Endsley
+                Design &copy; 2012-2013 <a href="mailto:kaendsle@mtu.edu">K. Arthur Endsley</a>
+                <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_GB">
+                    <img alt="Wicket is licensed under a Creative Commons Attribution-ShareAlike 3.0 Unported License" style="float:right;border-width:0;vertical-align:middle;" src="http://i.creativecommons.org/l/by-sa/3.0/80x15.png" />
+                </a><br />
+                Wicket is released under the <a href="https://github.com/arthur-e/Wicket/blob/master/LICENSE" target="_blank">GPL v3</a><br />
+                Toner Map &copy; <a href="http://content.stamen.com/toner_v2_is_live" target="_blank">Stamen</a>
             </div>
         </div>
     </div>

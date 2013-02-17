@@ -5,7 +5,7 @@ label:hover {color:#333;}
 a:link,
 a:visited {color:#460;text-decoration:none;}
 
-.attribute {float:right;padding:10px 0;}
+.attribute {width:290px;float:right;padding:10px 0;text-align:left;font-size:10px;line-height:16px;}
 .menu {float:left;margin:0;padding:0;list-style:none;}
 .menu a {display:inline-block;margin:0;padding:5px 0 10px;margin:0 25px 0 0;border-top:5px solid transparent;}
 .menu a:hover,
@@ -20,7 +20,7 @@ a:visited {color:#460;text-decoration:none;}
 #controls .text {margin:90px 0 0;}
 #controls a:hover,
 #controls a:active {text-decoration:underline;}
-#forkme {width:141px;height:141px;z-index:9999;position:absolute;left:0;top:0;background:transparent url(https://s3.amazonaws.com/github/ribbons/forkme_left_darkblue_121621.png) no-repeat left top;}
+#forkme {width:141px;height:141px;z-index:9999;position:absolute;left:0;top:0;background:transparent url(https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png) no-repeat left top;}
 #form {margin:10px 0 0;font-size:14px;color:#666;font-family:CabinItalic,sans-serif;}
 #form #wkt {width:100%;height:150px;border:1px solid #999;padding:3px;resize:none;}
 #form #urlify {vertical-align:baseline;margin:10px 5px 0 0;}

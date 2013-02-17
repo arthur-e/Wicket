@@ -2,7 +2,7 @@
 # Wicket #
 ##########
 
-Updated **February 4, 2013** by K. Arthur Endsley. Check out the [live demo](http://geojam.net/static/wicket/doc/).
+Updated **February 17, 2013** by K. Arthur Endsley. Check out the [live demo](http://geojam.net/static/wicket/doc/). There is also a [Leaflet Sandbox](http://geojam.net/static/wicket/doc/leaflet.html) available.
 
 #############
 ## License ##
