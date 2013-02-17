@@ -2,26 +2,29 @@
 Wkt.Wkt.prototype.isRectangle = false;
 
 /**
- * Accepts an Array (arr) of LatLngs from which it extracts each one as a
- *  vertex; calls itself recursively to deal with nested Arrays.
+ * Truncates an Array of coordinates by the closing coordinate when it is
+ * equal to the first coordinate given--this is only to be used for closed
+ * geometries in order to provide merely an "implied" closure to Leaflet.
+ * @param   coords  {Array}     An Array of x,y coordinates (objects)
+ * @return          {Array}
  */
-Wkt.coordsFromLatLngs = function (arr) {
-    var i, coords;
+Wkt.Wkt.prototype.trunc = function (coords) {
+    var i, verts = [];
 
-    coords = [];
-    for (i = 0; i < arr.length; i += 1) {
-        if (Wkt.isArray(arr[i])) {
-            coords.push(this.coordsFromLatLngs(arr[i]));
+    for (i = 0; i < coords.length; i += 1) {
+        if (Wkt.isArray(coords[i])) {
+            verts.push(this.trunc(coords[i]));
 
         } else {
-            coords.push({
-                x: arr[i].lng,
-                y: arr[i].lat
-            });
+
+            // Add the first coord, but skip the last if it is identical
+            if (i === 0 || !this.sameCoords(coords[0], coords[i])) {
+                verts.push(coords[i]);
+            }
         }
     }
 
-    return coords;
+    return verts;
 };
 
 /**
@@ -65,25 +68,27 @@ Wkt.Wkt.prototype.construct = {
     },
 
     polygon: function (config) {
-        var coords = this.components,
+        // Truncate the coordinates to remove the closing coordinate
+        var coords = this.trunc(this.components),
             latlngs = this.coordsToLatLngs(coords, 1);
         return L.polygon(latlngs, config);
     },
 
     multipolygon: function (config) {
-        var coords = this.components,
+        // Truncate the coordinates to remove the closing coordinate
+        var coords = this.trunc(this.components),
             latlngs = this.coordsToLatLngs(coords, 2);
 
         return L.multiPolygon(latlngs, config);
     },
 
     geometrycollection: function (config) {
-        var i, layers;
+        var comps, i, layers;
 
+        comps = this.trunc(this.components);
         layers = [];
         for (i = 0; i < this.components.length; i += 1) {
-            layers.push(this.construct[this.components[i].type].call(this,
-                this.components[i]));
+            layers.push(this.construct[comps[i].type].call(this, comps[i]));
         }
 
         return L.featureGroup(layers, config);
@@ -113,11 +118,33 @@ L.Util.extend(Wkt.Wkt.prototype, {
  * @return      {Object}    A hash of the 'type' and 'components' thus derived
  */
 Wkt.Wkt.prototype.deconstruct = function (obj) {
-    var attr, features, i, verts, rings, tmp;
+    var attr, coordsFromLatLngs, features, i, verts, rings, tmp;
+
+    /**
+     * Accepts an Array (arr) of LatLngs from which it extracts each one as a
+     *  vertex; calls itself recursively to deal with nested Arrays.
+     */
+    coordsFromLatLngs = function (arr) {
+        var i, coords;
+
+        coords = [];
+        for (i = 0; i < arr.length; i += 1) {
+            if (Wkt.isArray(arr[i])) {
+                coords.push(coordsFromLatLngs(arr[i]));
+
+            } else {
+                coords.push({
+                    x: arr[i].lng,
+                    y: arr[i].lat
+                });
+            }
+        }
+
+        return coords;
+    };
 
     // L.Marker ////////////////////////////////////////////////////////////////
-    if (obj.setIcon && typeof obj.setIcon === 'function') {
-        // Only Markers, among all Leaflet objects, have the setIcon method
+    if (obj.constructor === L.Marker || obj.constructor === L.marker) {
 
         return {
             type: 'point',
@@ -129,13 +156,7 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
     }
 
     // L.Rectangle /////////////////////////////////////////////////////////////
-    if (obj.spliceLatLngs && typeof obj.spliceLatLngs === 'function'
-            // Rectangle inherits spliceLatLngs() from Polygon, like Polyline,
-            //  but neither of those have the setBounds method
-            && obj.setBounds && typeof obj.setBounds === 'function') {
-
-        // Rectangles have to be detected BEFORE Polygons/Polylines in order for
-        // them to be recognized as POLYGONS and not POLYLINES
+    if (obj.constructor === L.Rectangle || obj.constructor === L.rectangle) {
         tmp = obj.getBounds(); // L.LatLngBounds instance
         return {
             type: 'polygon',
@@ -169,17 +190,10 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
     }
 
     // L.Polyline //////////////////////////////////////////////////////////////
-    // L.Polygon ///////////////////////////////////////////////////////////////
-    if (obj.spliceLatLngs && typeof obj.spliceLatLngs === 'function') {
-        // Both Polylines and Polygons have the spliceLatLngs method, which
-        //  means we have a decision to make! We will infer the WKT geometry
-        //  type based on...
-
+    if (obj.constructor === L.Polyline || obj.constructor === L.polyline) {
         verts = [];
         tmp = obj.getLatLngs();
 
-        // ...whether or not the path is closed. It will be a LINESTRING if
-        //  the path is not closed (first and last coordinate pairs are the same).
         if (!tmp[0].equals(tmp[tmp.length - 1])) {
 
             for (i = 0; i < tmp.length; i += 1) {
@@ -195,9 +209,14 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
             };
 
         }
+    }
 
-        // ...It will be a POLYGON if the path is closed.
+    // L.Polygon ///////////////////////////////////////////////////////////////
+
+    if (obj.constructor === L.Polygon || obj.constructor === L.polygon) {
         rings = [];
+        verts = [];
+        tmp = obj.getLatLngs();
 
         // First, we deal with the boundary points
         for (i = 0; i < obj._latlngs.length; i += 1) {
@@ -216,7 +235,7 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
 
         // Now, any holes
         if (obj._holes.length > 0) {
-            rings.push(Wkt.coordsFromLatLngs(obj._holes)[0]);
+            rings.push(coordsFromLatLngs(obj._holes)[0]);
         }
 
         return {
@@ -230,11 +249,8 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
     // L.MultiPolygon //////////////////////////////////////////////////////////
     // L.LayerGroup ////////////////////////////////////////////////////////////
     // L.FeatureGroup //////////////////////////////////////////////////////////
-    if (obj.getBounds && typeof obj.getBounds === 'function' && !obj.getLatLngs) {
-        // MultiPolyline and MultiPolygon objects, like FeatureCollection
-        //  objects, have a getBounds method; objects that inherit from Polyline
-        //  also have this method, so we distinguish be checking that
-        //  MultiPolyline and Multipolygon objects do not have getLatLngs()
+    if (obj.constructor === L.MultiPolyline || obj.constructor === L.MultiPolygon
+            || obj.constructor === L.LayerGroup || obj.constructor === L.FeatureGroup) {
 
         features = [];
         tmp = obj._layers;
@@ -249,15 +265,38 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
         }
 
         return {
-            type: 'geometrycollection',
-            components: features
+
+            type: (function () {
+                switch (obj.constructor) {
+                case L.MultiPolyline:
+                    return 'multilinestring';
+                case L.MultiPolygon:
+                    return 'multipolygon';
+                default:
+                    return 'geometrycollection';
+                }
+            }()),
+
+            components: (function () {
+                // Pluck the components from each Wkt
+                var i, comps;
+
+                comps = [];
+                for (i = 0; i < features.length; i += 1) {
+                    if (features[i].components) {
+                        comps.push(features[i].components);
+                    }
+                }
+
+                return comps;
+            }())
+
         };
 
     }
 
     // L.Circle ////////////////////////////////////////////////////////////////
-    if (obj.getBounds && obj.getRadius) {
-        // Circle is the only overlay class with both the getBounds and getRadius properties
+    if (obj.constructor === L.Rectangle || obj.constructor === L.rectangle) {
         console.log('Deconstruction of L.Circle objects is not yet supported');
 
     } else {

@@ -167,6 +167,7 @@ var app = (function () {
                 color: '#AA0000',
                 weight: 3,
                 opacity: 1.0,
+                editable: true,
                 fillColor: '#AA0000',
                 fillOpacity: 0.2
             };
@@ -196,7 +197,7 @@ var app = (function () {
 
 }());
 </script>
-<body onload="app.map=app.init();app.mapIt(false);">
+<body onload="app.map=app.init();app.mapIt(true);">
     <a href="http://github.com/arthur-e/Wicket">
     </a>
     <div id="head">
@@ -205,9 +206,10 @@ var app = (function () {
     </div>
     <div id="ribbon">
         <div class="wrapper">
-            <div id="canvas">
                 <div id="forkme">&nbsp;
                 </div>
+
+            <div id="canvas">
             </div>
             <div id="controls">
                 <div class="title">

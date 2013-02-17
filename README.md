@@ -4,6 +4,8 @@
 
 Updated **February 17, 2013** by K. Arthur Endsley. Check out the [live demo](http://geojam.net/static/wicket/doc/). There is also a [Leaflet Sandbox](http://geojam.net/static/wicket/doc/leaflet.html) available.
 
+**New:** Wicket's Leaflet extension now supports deconstruction (generating WKT) from Leaflet objects.
+
 #############
 ## License ##
 #############
@@ -61,7 +63,7 @@ Once installed, minification can be invoked at the command line, as in the follo
 
     java -jar /usr/local/closure/compiler.jar --compilation_level WHITESPACE_ONLY --js wicket-leaflet.src.js --js_output_file wicket-leaflet.js 
 
-There is now a script included that will do this automatically for all JavaScript files:
+There is now a script included that will do this automatically for all of Wicket's source code:
 
     . refactor.sh
 

@@ -108,6 +108,16 @@ var Wkt = (function () { // Execute function immediately
             this.components = undefined;
 
             /**
+             * Compares two x,y coordinates for equality.
+             * @param   a   {Object}    An object with x and y properties
+             * @param   b   {Object}    An object with x and y properties
+             * @return      {Boolean}
+             */
+            this.sameCoords = function (a, b) {
+                return (a.x === b.x && a.y === b.y);
+            };
+
+            /**
              * Sets internal geometry (components) from framework geometry (e.g.
              * Google Polygon objects or google.maps.Polygon).
              * @param   obj {Object}    The framework-dependent geometry representation
