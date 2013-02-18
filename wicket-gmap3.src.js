@@ -211,7 +211,7 @@ Wkt.Wkt.prototype.construct = {
  * @return      {Object}    A hash of the 'type' and 'components' thus derived
  */
 Wkt.Wkt.prototype.deconstruct = function (obj) {
-    var i, j, verts, rings, tmp;
+    var features, i, j, verts, rings, tmp;
 
     // google.maps.Marker //////////////////////////////////////////////////////
     if (obj.getPosition && typeof obj.getPosition === 'function') {
@@ -225,8 +225,10 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
             }]
         };
 
+    }
+
     // google.maps.Polyline ////////////////////////////////////////////////////
-    } else if (obj.getPath && !obj.getPaths) {
+    if (obj.getPath && !obj.getPaths) {
         // Polylines have a single path (getPath) not paths (getPaths)
 
         verts = [];
@@ -243,8 +245,10 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
             components: verts
         };
 
+    }
+
     // google.maps.Polygon /////////////////////////////////////////////////////
-    } else if (obj.getPaths) {
+    if (obj.getPaths) {
         // Polygon is the only class with the getPaths property
 
         // TODO Polygons with holes cannot be distinguished from multipolygons
@@ -259,11 +263,13 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
                     y: tmp.getAt(j).lat()
                 });
             }
-
-            verts.push({ // Add the first coordinate again for closure
-                x: tmp.getAt(0).lng(),
-                y: tmp.getAt(0).lat()
-            });
+            
+            if (!tmp.getAt(tmp.length - 1).equals(tmp.getAt(0))) {
+                verts.push({ // Add the first coordinate again for closure
+                    x: tmp.getAt(0).lng(),
+                    y: tmp.getAt(0).lat()
+                });
+            }
 
             // Since we can't distinguish between single polygons with holes
             //  and multipolygons, we always create multipolygons
@@ -279,8 +285,10 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
             components: rings
         };
 
+    }
+
     // google.maps.Rectangle ///////////////////////////////////////////////////
-    } else if (obj.getBounds && !obj.getRadius) {
+    if (obj.getBounds && !obj.getRadius) {
         // Rectangle is only overlay class with getBounds property and not getRadius property
 
         tmp = obj.getBounds();
@@ -313,8 +321,60 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
             ]
         };
 
+    }
+
+    if (Wkt.isArray(obj)) {
+        features = [];
+
+        for (i = 0; i < obj.length; i += 1) {
+            features.push(this.deconstruct.call(this, obj[i]));
+        }
+
+        return {
+
+            type: (function () {
+                var k, type = obj[0].constructor;
+
+                for (k = 0; k < obj.length; k += 1) {
+                    // Check that all items have the same constructor as the first item
+                    if (obj[k].constructor !== type) {
+                        // If they don't, type is heterogeneous geometry collection
+                        return 'geometrycollection'
+                    }
+                }
+
+                switch (type) {
+                case google.maps.Marker:
+                    return 'multipoint';
+                case google.maps.Polyline:
+                    return 'multilinestring';
+                case google.maps.Polygon:
+                    return 'multipolygon';
+                default:
+                    return 'geometrycollection';
+                }
+
+            }()),
+            components: (function () {
+                // Pluck the components from each Wkt
+                var i, comps;
+
+                comps = [];
+                for (i = 0; i < features.length; i += 1) {
+                    if (features[i].components) {
+                        comps.push(features[i].components);
+                    }
+                }
+
+                return comps;
+            }())
+
+        };
+
+    }
+
     // google.maps.Circle //////////////////////////////////////////////////////
-    } else if (obj.getBounds && obj.getRadius) {
+    if (obj.getBounds && obj.getRadius) {
         // Circle is the only overlay class with both the getBounds and getRadius properties
 
         console.log('Deconstruction of google.maps.Circle objects is not yet supported');

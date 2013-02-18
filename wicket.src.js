@@ -80,6 +80,7 @@ var Wkt = (function () { // Execute function immediately
                 'numeric': /-*\d+\.*\d+/,
                 'comma': /\s*,\s*/,
                 'parenComma': /\)\s*,\s*\(/,
+                'coord': /-*\d+\.*\d+ -*\d+\.*\d+/, // e.g. "24 -14"
                 'doubleParenComma': /\)\s*\)\s*,\s*\(\s*\(/,
                 'trimParens': /^\s*\(?(.*?)\)?\s*$/
             };
@@ -338,11 +339,17 @@ var Wkt = (function () { // Execute function immediately
                 'multilinestring': function (str) {
                     var i, components, line, lines;
                     components = [];
-                    lines = trim(str).split(this.regExes.parenComma);
+
+                    lines = trim(str).split(this.regExes.doubleParenComma);
+                    if (lines.length === 1) { // If that didn't work...
+                        lines = trim(str).split(this.regExes.parenComma);
+                    }
+
                     for (i = 0; i < lines.length; i += 1) {
                         line = lines[i].replace(this.regExes.trimParens, '$1');
                         components.push(this.ingest.linestring.apply(this, [line]));
                     }
+
                     return components;
                 },
 

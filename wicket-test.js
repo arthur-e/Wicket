@@ -22,7 +22,7 @@ multipoint2 = 'MULTIPOINT(10 40,40 30,20 20,30 10)';
 
 multilinestring = 'MULTILINESTRING((10 10,20 20,10 40),(40 40,30 30,40 20,30 10))';
 
-// Anothe way of describing the same multiple lines
+// Another way of describing the same multiple lines
 multilinestring2 = 'MULTILINESTRING(((10 10),(20 20),(10 40)),((40 40),(30 30),(40 20),(30 10)))';
 
 // Two polygons without holes
@@ -41,10 +41,10 @@ runTests = function() {
         linestring,
         polygon,
         polygon2, 
-        //multipoint, 
-        //multipoint2, 
-        //multilinestring,
-        //multilinestring2, 
+        multipoint, 
+        //multipoint2, // Not written canonically; won't pass test
+        //multilinestring, // Not written canonically; won't pass test
+        multilinestring2,  
         multipolygon, 
         multipolygon2,
         multipolygon3
@@ -65,10 +65,9 @@ runTests = function() {
 
         if (wkt.write() !== cases[i]) {
             console.log("Exception in runTests()");
-            foo = obj;
             throw {
                 name: "AssertionError",
-                message: ('Expect output "' + wkt.write() + '" did not match input "' + cases[i] + '"')
+                message: ('Expected output "' + wkt.write() + '" did not match input "' + cases[i] + '"')
             }
         }
     }
