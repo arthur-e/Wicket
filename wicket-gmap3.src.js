@@ -330,3 +330,5 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
  * whether or not a closed polygon geometry should be interpreted as a rectangle.
  */
 Wkt.Wkt.prototype.isRectangle = false;
+
+
