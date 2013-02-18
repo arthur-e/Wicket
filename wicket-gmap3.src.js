@@ -18,11 +18,12 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-google.maps.Marker.prototype.type = 'marker';
-google.maps.Polyline.prototype.type = 'polyline';
-google.maps.Polygon.prototype.type = 'polygon';
-google.maps.Rectangle.prototype.type = 'rectangle';
-google.maps.Circle.prototype.type = 'circle';
+
+/**
+ * A framework-dependent flag, set for each Wkt.Wkt() instance, that indicates
+ * whether or not a closed polygon geometry should be interpreted as a rectangle.
+ */
+Wkt.Wkt.prototype.isRectangle = false;
 
 /**
  * An object of framework-dependent construction methods used to generate
@@ -214,8 +215,7 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
     var features, i, j, verts, rings, tmp;
 
     // google.maps.Marker //////////////////////////////////////////////////////
-    if (obj.getPosition && typeof obj.getPosition === 'function') {
-        // Only Markers, among all overlays, have the getPosition property
+    if (obj.constructor === google.maps.Marker) {
 
         return {
             type: 'point',
@@ -228,8 +228,7 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
     }
 
     // google.maps.Polyline ////////////////////////////////////////////////////
-    if (obj.getPath && !obj.getPaths) {
-        // Polylines have a single path (getPath) not paths (getPaths)
+    if (obj.constructor === google.maps.Polyline) {
 
         verts = [];
         for (i = 0; i < obj.getPath().length; i += 1) {
@@ -248,8 +247,7 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
     }
 
     // google.maps.Polygon /////////////////////////////////////////////////////
-    if (obj.getPaths) {
-        // Polygon is the only class with the getPaths property
+    if (obj.constructor === google.maps.Polygon) {
 
         // TODO Polygons with holes cannot be distinguished from multipolygons
         rings = [];
@@ -288,8 +286,7 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
     }
 
     // google.maps.Rectangle ///////////////////////////////////////////////////
-    if (obj.getBounds && !obj.getRadius) {
-        // Rectangle is only overlay class with getBounds property and not getRadius property
+    if (obj.constructor === google.maps.Rectangle) {
 
         tmp = obj.getBounds();
         return {
@@ -384,11 +381,4 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
     }
 
 };
-
-/**
- * A framework-dependent flag, set for each Wkt.Wkt() instance, that indicates
- * whether or not a closed polygon geometry should be interpreted as a rectangle.
- */
-Wkt.Wkt.prototype.isRectangle = false;
-
 
