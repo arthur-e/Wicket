@@ -1,0 +1,249 @@
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="http://geojam.net/static/font/Cabin.css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <!-- Conditional commenting for non-IE browsers -->
+        <!--[if !IE]><!-->
+            <link rel="stylesheet" type="text/css" href="http://geojam.net/static/wicket/doc/index.css" />
+        <!--<![endif]-->
+    <!-- Conditional commenting for IE 6.x -->
+        <!--[if IE]>
+            <link rel="stylesheet" type="text/css" href="http://geojam.net/static/wicket/doc/index.ie.css" />
+        <![endif]-->
+        <link rel="stylesheet" href="http://geojam.net/static/leaflet/0.5.1/dist/leaflet.css" />
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="/static/leaflet/0.5.1/dist/leaflet.ie.css" />
+    <![endif]-->
+</head>
+<title>Wicket - Lightweight Javascript for WKT [Leaflet Sandbox]</title>
+<script src="http://geojam.net/static/leaflet/0.5.1/dist/leaflet.js"></script>
+<!--See https://github.com/seelmann/leaflet-providers for below-->
+<script src="http://geojam.net/static/leaflet/plugins/leaflet-providers/leaflet-providers.js"></script>
+<script src="http://geojam.net/static/wicket/wicket.src.js" type="text/javascript"></script>
+<script src="http://geojam.net/static/wicket/wicket-leaflet.src.js" type="text/javascript"></script>
+<script src="http://geojam.net/static/wicket/wicket-test.js" type="text/javascript"></script>
+<script type="text/javascript">
+var app = (function () {
+    return {
+        features: [],
+        /**
+         * Clears the map contents.
+         */
+        clearMap: function () {
+            var i;
+            for (i in this.features) {
+                if (this.features.hasOwnProperty(i)) {
+                    this.map.removeLayer(this.features[i]);
+                }
+            }
+            this.features.length = 0;
+        },
+        /**
+         * Clears the current contents of the textarea.
+         */
+        clearText: function () {
+            document.getElementById('wkt').value = '';
+        },
+        /**
+         * Maps the current contents of the textarea.
+         * @param   editable    {Boolean}   Indicates that the feature drawn should be editable
+         * @return              {Object}    Some sort of geometry object
+         */
+        mapIt: function (editable) {
+            var config, el, obj, wkt;
+
+            if (editable === undefined) {
+                editable = true;
+            }
+
+            el = document.getElementById('wkt');
+            wkt = new Wkt.Wkt();
+
+            if (el.last === el.value) { // Remember the last string
+                return; // Do nothing if the WKT string hasn't changed
+            } else {
+                el.last = el.value;
+            }
+
+            try { // Catch any malformed WKT strings
+                wkt.read(el.value);
+            } catch (e1) {
+                try {
+                    wkt.read(el.value.replace('\n', '').replace('\r', '').replace('\t', ''));
+                } catch (e2) {
+                    if (e2.name === 'WKTError') {
+                        alert('Wicket could not understand the WKT string you entered. Check that you have parentheses balanced, and try removing tabs and newline characters.');
+                        return;
+                    }
+                }
+            }
+
+            config = this.map.defaults;
+            config.editable = editable;
+
+            obj = wkt.toObject(this.map.defaults); // Make an object
+
+            // Add listeners for overlay editing events
+            if (wkt.type === 'polygon' || wkt.type === 'linestring') {
+            }
+
+            if (Wkt.isArray(obj)) { // Distinguish multigeometries (Arrays) from objects
+                for (i in obj) {
+                    if (obj.hasOwnProperty(i) && !Wkt.isArray(obj[i])) {
+                        obj[i].addTo(this.map);
+                        this.features.push(obj[i]);
+                    }
+                }
+            } else {
+                obj.addTo(this.map); // Add it to the map
+                this.features.push(obj);
+            }
+
+            return obj;
+        },
+
+        /**
+         * Updates the textarea based on the first available feature.
+         */
+        updateText: function () {
+            var wkt = new Wkt.Wkt();
+            wkt.fromObject(this.features[0]);
+            document.getElementById('wkt').value = wkt.write();
+        },
+
+        /**
+         * Formats the textarea contents for a URL.
+         * @param   checked {Boolean}   The check state of the associated checkbox
+         */
+        urlify: function (checked) {
+            var wkt = new Wkt.Wkt();
+            wkt.read(document.getElementById('wkt').value);
+            wkt.delimiter = (checked) ? '+' : ' ';
+            document.getElementById('wkt').value = wkt.write();
+            return wkt;
+        },
+
+        /**
+         * Application entry point.
+         * @return  {<L.map>} The Leaflet instance
+         */
+        init: function () {
+            var leaflet, osmMapAttr, osmDataAttr, stamenAttr, that;
+
+            that = this;
+
+            leaflet = {
+                baseLayers: undefined,
+                overlays: undefined
+            };
+
+            osmMapAttr = '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>';
+            osmDataAttr = 'Map data ' + osmMapAttr;
+
+            // Stamen //////////////////////////////////////////////////////////////////////
+
+            leaflet.baseLayers = {
+                'Stamen Toner Map': L.TileLayer.provider('Stamen.Toner')
+            };
+
+            // Configure map ///////////////////////////////////////////////////
+            leaflet.map = L.map('canvas', {
+                zoomControl: false,
+                attributionControl: true,
+                layers: [
+                    leaflet.baseLayers['Stamen Toner Map'],
+                ]
+            });
+
+            leaflet.map.defaults = {
+                icon: new L.Icon({
+                    iconUrl: 'red_dot.png',
+                    iconSize: [16, 16],
+                    iconAnchor: [8, 8],
+                    shadowUrl: 'dot_shadow.png',
+                    shadowSize: [16, 16],
+                    shadowAnchor: [8, 8]
+                }),
+                editable: true,
+                color: '#AA0000',
+                weight: 3,
+                opacity: 1.0,
+                editable: true,
+                fillColor: '#AA0000',
+                fillOpacity: 0.2
+            };
+
+            // Set event handlers //////////////////////////////////////////////
+            leaflet.map.loaded = false;
+            leaflet.map.on('load', function () {
+                if (!this.loaded) {
+                    this.loaded = true;
+                    document.getElementById('wkt').value = 'MULTIPOLYGON (((40 40, 20 45, 45 30, 40 40)), ((20 35, 45 20, 30 5, 10 10, 10 30, 20 35), (30 20, 20 25, 20 15, 30 20)))';
+                }
+            });
+
+            // There are no 'edit' events, so let's catch editing at its most
+            //  fundamental: the mouseup event on the map
+            leaflet.map.on('mouseup', function () {
+                that.updateText()
+            });
+
+            // Initialize the map //////////////////////////////////////////////
+            leaflet.map.setView([10, 20], 2);
+
+            return leaflet.map;
+        }
+
+    };
+
+}());
+</script>
+<body onload="app.map=app.init();app.mapIt(true);">
+    <a href="http://github.com/arthur-e/Wicket">
+    </a>
+    <div id="head">
+        <div class="wrapper">
+        </div>
+    </div>
+    <div id="ribbon">
+        <div class="wrapper">
+                <div id="forkme">&nbsp;
+                </div>
+
+            <div id="canvas">
+            </div>
+            <div id="controls">
+                <div class="title">
+                    <div class="brand">Wicket</div>
+                    &nbsp;It whispers WKT in your application's ear.
+                </div>
+                <div class="text">
+                    Wicket is a lightweight Javascript library that reads and writes <a href="http://en.wikipedia.org/wiki/Well-known_text#Geometric_objects" target="_blaknk">Well-Known Text (WKT)</a> strings. It can also be extended to parse and to create geometric objects from various mapping frameworks, such as <a href="http://http://leafletjs.com/" target="_blank">Leaflet</a> and the <a href="./sandbox-gmaps3.html">Google Maps API</a>.
+                </div>
+                <div id="form">
+                    <textarea type="text" name="wkt" id="wkt"></textarea>
+                    <label><input type="checkbox" name="urlify" id="urlify" onchange="app.urlify(this.checked);" />Format for URLs</label>
+                    <input type="submit" id="submit" value="Map It!" onclick="app.clearMap();app.mapIt();" />
+                    <input type="reset" id="reset" value="Clear Map" onclick="app.clearText();app.clearMap();" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="foot">
+        <div class="wrapper">
+            <div class="menu" id="nav">
+                <a href="/">Home</a>
+                <a href="mailto:kaendsle@mtu.edu">Contact Me</a>
+                <a href="http://github.com/arthur-e/Wicket">"Fork me on GitHub!"</a>
+            </div>
+            <div class="attribute">
+                Design &copy; 2012-2013 <a href="mailto:kaendsle@mtu.edu">K. Arthur Endsley</a>
+                <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_GB">
+                    <img alt="Wicket is licensed under a Creative Commons Attribution-ShareAlike 3.0 Unported License" style="float:right;border-width:0;vertical-align:middle;" src="http://i.creativecommons.org/l/by-sa/3.0/80x15.png" />
+                </a><br />
+                Wicket is released under the <a href="https://github.com/arthur-e/Wicket/blob/master/LICENSE" target="_blank">GPL v3</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
