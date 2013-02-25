@@ -2,9 +2,9 @@
 # Wicket #
 ##########
 
-Updated **February 17, 2013** by K. Arthur Endsley. Check out the [live demo](http://geojam.net/static/wicket/doc/). There is also a [Leaflet Sandbox](http://geojam.net/static/wicket/doc/leaflet.html) available.
+Updated **February 24, 2013** by K. Arthur Endsley. Check out the [live demo](http://geojam.net/static/wicket/doc/). There is also a [Leaflet Sandbox](http://geojam.net/static/wicket/doc/leaflet.html) available.
 
-**New:** Wicket's Leaflet extension now supports deconstruction (generating WKT) from Leaflet objects.
+**New:** Wicket's Leaflet extension now supports deconstruction (generating WKT) from Leaflet objects. Active development is on branch "dev" but you may also find bugfixes there.
 
 #############
 ## License ##

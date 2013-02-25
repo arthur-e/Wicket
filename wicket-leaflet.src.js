@@ -235,7 +235,9 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
 
         // Now, any holes
         if (obj._holes.length > 0) {
-            rings.push(coordsFromLatLngs(obj._holes)[0]);
+            verts = coordsFromLatLngs(obj._holes)[0];
+            verts.push(verts[0]); // Copy the beginning coords again for closture
+            rings.push(verts);
         }
 
         return {
@@ -272,6 +274,39 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
                     return 'multilinestring';
                 case L.MultiPolygon:
                     return 'multipolygon';
+                case L.FeatureGroup:
+                    return (function () {
+                        var i, mpgon, mpline, mpoint;
+
+                        // Assume that all layers are of one type (any one type)
+                        mpgon, mpline, mpoint = true;
+
+                        for (i in obj._layers) {
+                            if (obj._layers.hasOwnProperty(i)) {
+                                if (obj._layers[i].constructor !== L.Marker) {
+                                    mpoint = false;
+                                }
+                                if (obj._layers[i].constructor !== L.Polyline) {
+                                    mpline = false;
+                                }
+                                if (obj._layers[i].constructor !== L.Polygon) {
+                                    mpgon = false;
+                                }
+                            }
+                        }
+
+                        if (mpoint) {
+                            return 'multipoint';
+                        }
+                        if (mpline) {
+                            return 'multilinestring';
+                        }
+                        if (mpgon) {
+                            return 'multipolygon';
+                        }
+                        return 'geometrycollection';
+
+                    }());
                 default:
                     return 'geometrycollection';
                 }
