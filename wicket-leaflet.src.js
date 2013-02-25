@@ -145,7 +145,6 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
 
     // L.Marker ////////////////////////////////////////////////////////////////
     if (obj.constructor === L.Marker || obj.constructor === L.marker) {
-
         return {
             type: 'point',
             components: [{
@@ -259,7 +258,7 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
 
         for (attr in tmp) {
             if (tmp.hasOwnProperty(attr)) {
-                if (tmp[attr].getLatLngs) {
+                if (tmp[attr].getLatLngs || tmp[attr].getLatLng) {
                     // Recursively deconstruct each layer
                     features.push(this.deconstruct(tmp[attr]));
                 }

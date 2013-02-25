@@ -2,7 +2,7 @@
 # Wicket #
 ##########
 
-Updated **February 24, 2013** by K. Arthur Endsley. Check out the [live demo](http://geojam.net/static/wicket/doc/). There is also a [Leaflet Sandbox](http://geojam.net/static/wicket/doc/leaflet.html) available.
+Updated **February 25, 2013** by K. Arthur Endsley. Check out the [live demo](http://geojam.net/static/wicket/doc/). There is also a [Leaflet Sandbox](http://geojam.net/static/wicket/doc/leaflet.html) available.
 
 **New:** Wicket's Leaflet extension now supports deconstruction (generating WKT) from Leaflet objects. Active development is on branch "dev" but you may also find bugfixes there.
 
@@ -74,7 +74,18 @@ There is now a script included that will do this automatically for all of Wicket
 The base library, wicket.js, contains the Wkt.Wkt base object.
 This object doesn't do anything on its own except read in WKT strings, allow the underlying geometry to be manipulated programmatically, and write WKT strings.
 By loading additional libraries, such as wicket-gmap3.js, users can transform between between WKT and the features of a given framework (e.g. google.maps.Polygon instances). 
-he intent is to add support for new frameworks as additional Javascript files that alter the Wkt.Wkt prototype.
+The intent is to add support for new frameworks as additional Javascript files that alter the Wkt.Wkt prototype.
+
+**Wicket write WKT a certain way:**
+
+    MULTIPOINT((10 40),(40 30),(20 20),(30 10))
+
+Instead of:
+
+    MULTIPOINT(10 40,40 30,20 20,30 10)
+
+It will read in both strings and parse them correctly, but it is the first one that will always be written.
+I'd like to add a config property to Wkt() instances that allows the specification whether or not Wicket should write WKT with extra parentheses.
 
 **To extend Wicket**, nominally by writing bindings for a new mapping library, add a new file with a name like wicket-libname.src.js (and corresponding minified version wicket-libname.js) where "libname" is some reasonably short, well-known name for the mapping library.
 

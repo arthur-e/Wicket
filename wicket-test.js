@@ -73,6 +73,8 @@ runTests = function() {
     }
 
     console.log('All tests were successful!');
+
+    return true;
 }
 
 
