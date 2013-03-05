@@ -67,7 +67,7 @@ runTests = function() {
             console.log("Exception in runTests()");
             throw {
                 name: "AssertionError",
-                message: ('Expected output "' + wkt.write() + '" did not match input "' + cases[i] + '"')
+                message: ('Output "' + wkt.write() + '" did not match expected "' + cases[i] + '"')
             }
         }
     }
