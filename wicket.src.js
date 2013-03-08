@@ -222,8 +222,8 @@ var Wkt = (function () { // Execute function immediately
                 },
                 /**
                  * Return a WKT string representing multiple atoms (points)
-                 * @param   point   {Array}     Multiple x-and-y objects
-                 * @return          {String}    The WKT representation
+                 * @param   multipoint  {Array}     Multiple x-and-y objects
+                 * @return              {String}    The WKT representation
                  */
                 'multipoint': function (multipoint) {
                     var i, parts = [];
@@ -234,8 +234,8 @@ var Wkt = (function () { // Execute function immediately
                 },
                 /**
                  * Return a WKT string representing a chain (linestring) of atoms
-                 * @param   point   {Array}     Multiple x-and-y objects
-                 * @return          {String}    The WKT representation
+                 * @param   linestring  {Array}     Multiple x-and-y objects
+                 * @return              {String}    The WKT representation
                  */
                 'linestring': function (linestring) {
                     // Extraction of linestrings is the same as for points
@@ -243,8 +243,8 @@ var Wkt = (function () { // Execute function immediately
                 },
                 /**
                  * Return a WKT string representing multiple chains (multilinestring) of atoms
-                 * @param   point   {Array}     Multiple of multiple x-and-y objects
-                 * @return          {String}    The WKT representation
+                 * @param   multilinestring {Array}     Multiple of multiple x-and-y objects
+                 * @return                  {String}    The WKT representation
                  */
                 'multilinestring': function (multilinestring) {
                     var i, parts = [];
@@ -255,7 +255,7 @@ var Wkt = (function () { // Execute function immediately
                 },
                 /**
                  * Return a WKT string representing multiple atoms in closed series (polygon)
-                 * @param   point   {Array}     Collection of ordered x-and-y objects
+                 * @param   polygon {Array}     Collection of ordered x-and-y objects
                  * @return          {String}    The WKT representation
                  */
                 'polygon': function (polygon) {
@@ -264,8 +264,8 @@ var Wkt = (function () { // Execute function immediately
                 },
                 /**
                  * Return a WKT string representing multiple closed series (multipolygons) of multiple atoms
-                 * @param   point   {Array}     Collection of ordered x-and-y objects
-                 * @return          {String}    The WKT representation
+                 * @param   multipolygon    {Array}     Collection of ordered x-and-y objects
+                 * @return                  {String}    The WKT representation
                  */
                 'multipolygon': function (multipolygon) {
                     var i, parts = [];
