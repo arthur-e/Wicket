@@ -97,8 +97,6 @@ Wkt.Wkt.prototype.construct = {
 };
 
 L.Util.extend(Wkt.Wkt.prototype, {
-    // TODO Take one fewer vertices, as Leaflet does not expect a closing vertex
-    //  (which in WKT is the first vertex repeated)
     coordsToLatLngs: L.GeoJSON.coordsToLatLngs,
     // TODO Why doesn't the coordsToLatLng function in L.GeoJSON already suffice?
     coordsToLatLng: function (coords, reverse) {
