@@ -26,11 +26,17 @@
 var app = (function () {
     return {
         features: [],
+
         /**
          * Clears the map contents.
          */
         clearMap: function () {
             var i;
+
+            // Reset the remembered last string (so that we can clear the map,
+            //  paste the same string, and see it again)
+            document.getElementById('wkt').last = '';
+
             for (i in this.features) {
                 if (this.features.hasOwnProperty(i)) {
                     this.map.removeLayer(this.features[i]);
@@ -38,19 +44,25 @@ var app = (function () {
             }
             this.features.length = 0;
         },
+
         /**
          * Clears the current contents of the textarea.
          */
         clearText: function () {
             document.getElementById('wkt').value = '';
         },
+
         /**
          * Maps the current contents of the textarea.
          * @param   editable    {Boolean}   Indicates that the feature drawn should be editable
+         * @param   focus       {Boolean}   Indicates that the map should pan and/or zoom to new features
          * @return              {Object}    Some sort of geometry object
          */
-        mapIt: function (editable) {
+        mapIt: function (editable, focus) {
             var config, el, obj, wkt;
+
+            // Indicates that the map should pan and/or zoom to new features
+            focus = focus || false;
 
             if (editable === undefined) {
                 editable = true;
@@ -97,6 +109,16 @@ var app = (function () {
             } else {
                 obj.addTo(this.map); // Add it to the map
                 this.features.push(obj);
+            }
+
+            // Pan the map to the feature
+            if (focus && obj.getBounds !== undefined && typeof obj.getBounds === 'function') {
+                // For objects that have defined bounds or a way to get them
+                this.map.fitBounds(obj.getBounds());
+            } else {
+                if (focus && obj.getLatLng !== undefined && typeof obj.getLatLng === 'function') {
+                    this.map.panTo(obj.getLatLng());
+                }
             }
 
             return obj;
@@ -148,7 +170,7 @@ var app = (function () {
 
             // Configure map ///////////////////////////////////////////////////
             leaflet.map = L.map('canvas', {
-                zoomControl: false,
+                zoomControl: true,
                 attributionControl: true,
                 layers: [
                     leaflet.baseLayers['Stamen Toner Map'],
@@ -198,7 +220,7 @@ var app = (function () {
 
 }());
 </script>
-<body onload="app.map=app.init();app.mapIt(true);">
+<body onload="app.map=app.init();app.mapIt(true, false);">
     <div id="head">
         <div class="wrapper">
         </div>
@@ -222,7 +244,7 @@ var app = (function () {
                 <div id="form">
                     <textarea type="text" name="wkt" id="wkt"></textarea>
                     <label><input type="checkbox" name="urlify" id="urlify" onchange="app.urlify(this.checked);" />Format for URLs</label>
-                    <input type="submit" id="submit" value="Map It!" onclick="app.clearMap();app.mapIt();" />
+                    <input type="submit" id="submit" value="Map It!" onclick="app.clearMap();app.mapIt(true, true);" />
                     <input type="reset" id="reset" value="Clear Map" onclick="app.clearText();app.clearMap();" />
                 </div>
             </div>
