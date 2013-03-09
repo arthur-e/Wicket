@@ -1,5 +1,6 @@
 /*global console, document, window*/
-/**
+/** @license
+ *
  *  Copyright (C) 2012 K. Arthur Endsley (kaendsle@mtu.edu)
  *  Michigan Tech Research Institute (MTRI)
  *  3600 Green Court, Suite 100, Ann Arbor, MI, 48105

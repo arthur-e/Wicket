@@ -1,3 +1,24 @@
+/*
+
+
+ Copyright (C) 2012 K. Arthur Endsley (kaendsle@mtu.edu)
+ Michigan Tech Research Institute (MTRI)
+ 3600 Green Court, Suite 100, Ann Arbor, MI, 48105
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
 Wkt.Wkt.prototype.isRectangle=false;Wkt.Wkt.prototype.trunc=function(coords){var i,verts=[];for(i=0;i<coords.length;i+=1)if(Wkt.isArray(coords[i]))verts.push(this.trunc(coords[i]));else if(i===0||!this.sameCoords(coords[0],coords[i]))verts.push(coords[i]);return verts};
 Wkt.Wkt.prototype.construct={point:function(config,component){var coord=component||this.components;if(coord instanceof Array)coord=coord[0];return L.marker(this.coordsToLatLng(coord),config)},multipoint:function(config){var i,layers=[],coords=this.components;for(i=0;i<coords.length;i+=1)layers.push(this.construct.point.call(this,config,coords[i]));return L.featureGroup(layers,config)},linestring:function(config,component){var coords=component||this.components,latlngs=this.coordsToLatLngs(coords);
 return L.polyline(latlngs,config)},multilinestring:function(config){var coords=this.components,latlngs=this.coordsToLatLngs(coords,1);return L.multiPolyline(latlngs,config)},polygon:function(config){var coords=this.trunc(this.components),latlngs=this.coordsToLatLngs(coords,1);return L.polygon(latlngs,config)},multipolygon:function(config){var coords=this.trunc(this.components),latlngs=this.coordsToLatLngs(coords,2);return L.multiPolygon(latlngs,config)},geometrycollection:function(config){var comps,

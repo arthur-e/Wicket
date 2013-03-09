@@ -1,4 +1,30 @@
 /*global L, Wkt, console*/
+
+/** @license
+ *
+ *  Copyright (C) 2012 K. Arthur Endsley (kaendsle@mtu.edu)
+ *  Michigan Tech Research Institute (MTRI)
+ *  3600 Green Court, Suite 100, Ann Arbor, MI, 48105
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+/**
+ * A framework-dependent flag, set for each Wkt.Wkt() instance, that indicates
+ * whether or not a closed polygon geometry should be interpreted as a rectangle.
+ */
 Wkt.Wkt.prototype.isRectangle = false;
 
 /**
@@ -32,6 +58,12 @@ Wkt.Wkt.prototype.trunc = function (coords) {
  * objects belonging to the various geometry classes of the framework.
  */
 Wkt.Wkt.prototype.construct = {
+    /**
+     * Creates the framework's equivalent point geometry object.
+     * @param   config      {Object}    An optional properties hash the object should use
+     * @param   component   {Object}    An optional component to build from
+     * @return              {L.marker}
+     */
     point: function (config, component) {
         var coord = component || this.components;
         if (coord instanceof Array) {
@@ -41,6 +73,11 @@ Wkt.Wkt.prototype.construct = {
         return L.marker(this.coordsToLatLng(coord), config);
     },
 
+    /**
+     * Creates the framework's equivalent multipoint geometry object.
+     * @param   config  {Object}    An optional properties hash the object should use
+     * @return          {L.featureGroup}
+     */
     multipoint: function (config) {
         var i,
             layers = [],
@@ -53,6 +90,12 @@ Wkt.Wkt.prototype.construct = {
         return L.featureGroup(layers, config);
     },
 
+    /**
+     * Creates the framework's equivalent linestring geometry object.
+     * @param   config      {Object}    An optional properties hash the object should use
+     * @param   component   {Object}    An optional component to build from
+     * @return              {L.polyline}
+     */
     linestring: function (config, component) {
         var coords = component || this.components,
             latlngs = this.coordsToLatLngs(coords);
@@ -60,6 +103,11 @@ Wkt.Wkt.prototype.construct = {
         return L.polyline(latlngs, config);
     },
 
+    /**
+     * Creates the framework's equivalent multilinestring geometry object.
+     * @param   config  {Object}    An optional properties hash the object should use
+     * @return          {L.multiPolyline}
+     */
     multilinestring: function (config) {
         var coords = this.components,
             latlngs = this.coordsToLatLngs(coords, 1);
@@ -67,6 +115,11 @@ Wkt.Wkt.prototype.construct = {
         return L.multiPolyline(latlngs, config);
     },
 
+    /**
+     * Creates the framework's equivalent polygon geometry object.
+     * @param   config      {Object}    An optional properties hash the object should use
+     * @return              {L.multiPolygon}
+     */
     polygon: function (config) {
         // Truncate the coordinates to remove the closing coordinate
         var coords = this.trunc(this.components),
@@ -74,6 +127,11 @@ Wkt.Wkt.prototype.construct = {
         return L.polygon(latlngs, config);
     },
 
+    /**
+     * Creates the framework's equivalent multipolygon geometry object.
+     * @param   config  {Object}    An optional properties hash the object should use
+     * @return          {L.multiPolygon}
+     */
     multipolygon: function (config) {
         // Truncate the coordinates to remove the closing coordinate
         var coords = this.trunc(this.components),
@@ -82,6 +140,11 @@ Wkt.Wkt.prototype.construct = {
         return L.multiPolygon(latlngs, config);
     },
 
+    /**
+     * Creates the framework's equivalent collection of geometry objects.
+     * @param   config  {Object}    An optional properties hash the object should use
+     * @return          {L.featureGroup}
+     */
     geometrycollection: function (config) {
         var comps, i, layers;
 
