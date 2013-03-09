@@ -60,7 +60,7 @@ var app = (function () {
          * @return              {Object}    Some sort of geometry object
          */
         mapIt: function (editable, focus) {
-            var config, el, obj, wkt;
+            var config, el, obj, symbol, wkt;
 
             // Indicates that the map should pan and/or zoom to new features
             focus = focus || false;
@@ -91,36 +91,34 @@ var app = (function () {
                 }
             }
 
-            config = this.map.defaults;
-            config.editable = editable;
+            config = {
+                spatialReference: {
+                    wkid: 4326 // WGS84 unprojected
+                },
+                editable: editable
+            };
 
-            obj = wkt.toObject(this.map.defaults); // Make an object
+            obj = wkt.toObject(config); // Make an object
 
-            // Add listeners for overlay editing events
-            if (wkt.type === 'polygon' || wkt.type === 'linestring') {
+            switch (obj.type) {
+                case "point":
+                    symbol = new esri.symbol.SimpleMarkerSymbol(esri.symbol.SimpleMarkerSymbol.STYLE_SQUARE, 10, new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([255,0,0]), 1), new dojo.Color([0,255,0,0.25]));
+                    break;
+                case "polyline":
+                    symbol = new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_DASH, new dojo.Color([255,0,0]), 1);
+                    break;
+                case "polygon":
+                    symbol = new esri.symbol.SimpleFillSymbol(esri.symbol.SimpleFillSymbol.STYLE_SOLID, new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_DASHDOT, new dojo.Color([255,0,0]), 2), new dojo.Color([255,255,0,0.25]));
+                    break;
+                case "extent":
+                    symbol = new esri.symbol.SimpleFillSymbol(esri.symbol.SimpleFillSymbol.STYLE_SOLID, new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_DASHDOT, new dojo.Color([255,0,0]), 2), new dojo.Color([255,255,0,0.25]));
+                    break;
+                case "multipoint":
+                    symbol = new esri.symbol.SimpleMarkerSymbol(esri.symbol.SimpleMarkerSymbol.STYLE_DIAMOND, 20, new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([0,0,0]), 1), new dojo.Color([255,255,0,0.5]));
+                    break;
             }
 
-            if (Wkt.isArray(obj)) { // Distinguish multigeometries (Arrays) from objects
-                for (i in obj) {
-                    if (obj.hasOwnProperty(i) && !Wkt.isArray(obj[i])) {
-                        obj[i].addTo(this.map);
-                        this.features.push(obj[i]);
-                    }
-                }
-            } else {
-                obj.addTo(this.map); // Add it to the map
-                this.features.push(obj);
-            }
-
-            // Pan the map to the feature
-            if (focus && obj.getBounds !== undefined && typeof obj.getBounds === 'function') {
-                // For objects that have defined bounds or a way to get them
-                this.map.fitBounds(obj.getBounds());
-            } else {
-                if (focus && obj.getLatLng !== undefined && typeof obj.getLatLng === 'function') {
-                    this.map.panTo(obj.getLatLng());
-                }
-            }
+            this.map.graphics.add(new esri.Graphic(obj, symbol));
 
             return obj;
         },
@@ -153,7 +151,7 @@ var app = (function () {
         init: function () {
             var map = new esri.Map('canvas', {
                 center: [10, 20],
-                zoom: 3,
+                zoom: 2,
                 basemap: 'oceans'
             });
 
@@ -170,10 +168,10 @@ var app = (function () {
 }());
 
 dojo.require('esri.map');
-dojo.addOnLoad(app.init);
+//dojo.addOnLoad(app.init); // Not necessary; see <body> tag
 
 </script>
-<body><!--onload="app.map=app.init();app.mapIt(true, false);">-->
+<body onload="app.map=app.init();">
     <div id="head">
         <div class="wrapper">
         </div>
