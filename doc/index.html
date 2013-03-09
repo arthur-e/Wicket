@@ -30,6 +30,11 @@ var app = (function () {
          */
         clearMap: function () {
             var i;
+
+            // Reset the remembered last string (so that we can clear the map,
+            //  paste the same string, and see it again)
+            document.getElementById('wkt').last = '';
+
             for (i in this.features) {
                 if (this.features.hasOwnProperty(i)) {
                     this.features[i].setMap(null);
@@ -102,6 +107,21 @@ var app = (function () {
             } else {
                 obj.setMap(this.gmap); // Add it to the map
                 this.features.push(obj);
+            }
+
+            // Pan the map to the feature
+            if (obj.getBounds !== undefined && typeof obj.getBounds === 'function') {
+                // For objects that have defined bounds or a way to get them
+                this.gmap.fitBounds(obj.getBounds());
+            } else {
+                if (obj.getPath !== undefined && typeof obj.getPath === 'function') {
+                // For Polygons and Polylines
+                this.gmap.panTo(obj.getPath().getAt(0));
+                } else { // But points (Markers) are different
+                    if (obj.getPosition !== undefined && typeof obj.getPosition === 'function') {
+                        this.gmap.panTo(obj.getPosition());
+                    }
+                }
             }
 
             return obj;
