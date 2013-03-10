@@ -141,21 +141,49 @@ Wkt.Wkt.prototype.construct = {
      * @return              {esri.geometry.Polygon}
      */
     multipolygon: function (config) {
+        var that = this;
         config = config || {};
         config.spatialReference = (config.spatialReference || config.srs) ? config.spatialReference || config.srs : undefined;
 
         return new esri.geometry.Polygon({
             // Create an Array of rings...
-            rings: this.components.map(function (i) {
-                // ...Within which are Arrays of (outer) rings (polygons)
-                return i.map(function (j) {
-                    // ...Within which are (possibly) Arrays of (inner) rings (holes)
-                    return j.map(function (k) {
-                        console.log(k);
-                        return [k.x, k.y];
+            rings: (function () {
+                var i, j, holey, newRings, rings;
+
+                holey = false; // Assume there are no inner rings (holes)
+                rings = that.components.map(function (i) {
+                    // ...Within which are Arrays of (outer) rings (polygons)
+                    var rings = i.map(function (j) {
+                        // ...Within which are (possibly) Arrays of (inner) rings (holes)
+                        return j.map(function (k) {
+                            return [k.x, k.y];
+                        });
                     });
-                })[0];
-            }),
+
+                    holey = (rings.length > 1);
+
+                    return rings;
+                });
+
+                if (!holey && rings[0].length > 1) { // Easy, if there are no inner rings (holes)
+                    // But we add the second condition to check that we're not too deeply nested
+                    return rings;
+                }
+
+                newRings = [];
+                for (i = 0; i < rings.length; i += 1) {
+                    if (rings[i].length > 1) {
+                        for (j = 0; j < rings[i].length; j += 1) {
+                            newRings.push(rings[i][j]);
+                        }
+                    } else {
+                        newRings.push(rings[i][0]);
+                    }
+                }
+
+                return newRings;
+
+            }()),
             spatialReference: config.spatialReference
         });
     }
