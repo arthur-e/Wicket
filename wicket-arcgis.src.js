@@ -112,6 +112,52 @@ Wkt.Wkt.prototype.construct = {
             }),
             spatialReference: config.spatialReference
         });
+    },
+
+    /**
+     * Creates the framework's equivalent polygon geometry object.
+     * @param   config      {Object}    An optional properties hash the object should use
+     * @return              {esri.geometry.Polygon}
+     */
+    polygon: function (config) {
+        config = config || {};
+        config.spatialReference = (config.spatialReference || config.srs) ? config.spatialReference || config.srs : undefined;
+
+        return new esri.geometry.Polygon({
+            // Create an Array of rings...
+            rings: this.components.map(function (i) {
+                // ...Within which are Arrays of coordinate pairs (vertices)
+                return i.map(function (j) {
+                    return [j.x, j.y];
+                });
+            }),
+            spatialReference: config.spatialReference
+        });
+    },
+
+    /**
+     * Creates the framework's equivalent multipolygon geometry object.
+     * @param   config      {Object}    An optional properties hash the object should use
+     * @return              {esri.geometry.Polygon}
+     */
+    multipolygon: function (config) {
+        config = config || {};
+        config.spatialReference = (config.spatialReference || config.srs) ? config.spatialReference || config.srs : undefined;
+
+        return new esri.geometry.Polygon({
+            // Create an Array of rings...
+            rings: this.components.map(function (i) {
+                // ...Within which are Arrays of (outer) rings (polygons)
+                return i.map(function (j) {
+                    // ...Within which are (possibly) Arrays of (inner) rings (holes)
+                    return j.map(function (k) {
+                        console.log(k);
+                        return [k.x, k.y];
+                    });
+                })[0];
+            }),
+            spatialReference: config.spatialReference
+        });
     }
 
 };
