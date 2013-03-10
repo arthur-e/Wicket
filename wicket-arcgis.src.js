@@ -71,7 +71,49 @@ Wkt.Wkt.prototype.construct = {
             }),
             spatialReference: config.spatialReference
         });
+    },
+
+    /**
+     * Creates the framework's equivalent linestring geometry object.
+     * @param   config      {Object}    An optional properties hash the object should use
+     * @return              {esri.geometry.Polyline}
+     */
+    linestring: function (config) {
+        config = config || {};
+        config.spatialReference = (config.spatialReference || config.srs) ? config.spatialReference || config.srs : undefined;
+
+        return new esri.geometry.Polyline({
+            // Create an Array of paths...
+            paths: [
+                this.components.map(function (i) {
+                    return [i.x, i.y];
+                })
+            ],
+            spatialReference: config.spatialReference
+        });
+    },
+
+    /**
+     * Creates the framework's equivalent multilinestring geometry object.
+     * @param   config      {Object}    An optional properties hash the object should use
+     * @return              {esri.geometry.Polyline}
+     */
+    multilinestring: function (config) {
+        config = config || {};
+        config.spatialReference = (config.spatialReference || config.srs) ? config.spatialReference || config.srs : undefined;
+
+        return new esri.geometry.Polyline({
+            // Create an Array of paths...
+            paths: this.components.map(function (i) {
+                // ...Within which are Arrays of coordinate pairs (vertices)
+                return i.map(function (j) {
+                    return [j.x, j.y];
+                });
+            }),
+            spatialReference: config.spatialReference
+        });
     }
+
 };
 
 /**

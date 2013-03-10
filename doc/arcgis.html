@@ -40,7 +40,7 @@ var app = (function () {
 
             for (i in this.features) {
                 if (this.features.hasOwnProperty(i)) {
-                    this.map.removeLayer(this.features[i]);
+                    this.map.graphics.remove(this.features[i]);
                 }
             }
             this.features.length = 0;
@@ -119,6 +119,8 @@ var app = (function () {
             }
 
             this.map.graphics.add(new esri.Graphic(obj, symbol));
+
+            this.features.push(obj);
 
             return obj;
         },
