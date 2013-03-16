@@ -1,5 +1,6 @@
 /*global Wkt, google, document, window, console*/
-/**
+/** @license
+ *
  *  Copyright (C) 2012 K. Arthur Endsley (kaendsle@mtu.edu)
  *  Michigan Tech Research Institute (MTRI)
  *  3600 Green Court, Suite 100, Ann Arbor, MI, 48105
@@ -19,8 +20,10 @@
  *
  */
 
-// NOTE: The Google Maps API extension requirest JavaScript 1.6 or higher, due
-//  its dependence on the Array functions map, indexOf, and lastIndexOf
+/* @preserve
+ * NOTE: The Google Maps API extension requirest JavaScript 1.6 or higher, due
+    its dependence on the Array functions map, indexOf, and lastIndexOf
+ */
 
 /**
  * A framework-dependent flag, set for each Wkt.Wkt() instance, that indicates
@@ -39,7 +42,7 @@ Wkt.Wkt.prototype.construct = {
      * @param   component   {Object}    An optional component to build from
      * @return              {google.maps.Marker}
      */
-    'point': function (config, component) {
+    point: function (config, component) {
         var c = component || this.components;
 
         config = config || {};
@@ -54,7 +57,7 @@ Wkt.Wkt.prototype.construct = {
      * @param   config  {Object}    An optional properties hash the object should use
      * @return          {Array}     Array containing multiple google.maps.Marker
      */
-    'multipoint': function (config) {
+    multipoint: function (config) {
         var i, c, arr;
 
         c = this.components;
@@ -71,12 +74,12 @@ Wkt.Wkt.prototype.construct = {
     },
 
     /**
-     * Creates the framework's equivalent multipoint geometry object.
+     * Creates the framework's equivalent linestring geometry object.
      * @param   config      {Object}    An optional properties hash the object should use
      * @param   component   {Object}    An optional component to build from
      * @return              {google.maps.Polyline}
      */
-    'linestring': function (config, component) {
+    linestring: function (config, component) {
         var i, c;
 
         c = component || this.components;
@@ -99,7 +102,7 @@ Wkt.Wkt.prototype.construct = {
      * @param   config  {Object}    An optional properties hash the object should use
      * @return          {Array}     Array containing multiple google.maps.Polyline instances
      */
-    'multilinestring': function (config) {
+    multilinestring: function (config) {
         var i, c, arr;
 
         c = this.components;
@@ -124,7 +127,7 @@ Wkt.Wkt.prototype.construct = {
      * @param   config      {Object}    An optional properties hash the object should use
      * @return              {google.maps.Polygon}
      */
-    'polygon': function (config) {
+    polygon: function (config) {
         var j, k, c, rings, verts;
 
         c = this.components;
@@ -167,7 +170,7 @@ Wkt.Wkt.prototype.construct = {
      * @param   config  {Object}    An optional properties hash the object should use
      * @return          {Array}     Array containing multiple google.maps.Polygon
      */
-    'multipolygon': function (config) {
+    multipolygon: function (config) {
         var i, j, k, c, rings, verts;
 
         c = this.components;
