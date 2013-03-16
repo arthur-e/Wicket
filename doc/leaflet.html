@@ -150,7 +150,7 @@ var app = (function () {
          * @return  {<L.map>} The Leaflet instance
          */
         init: function () {
-            var leaflet, osmMapAttr, osmDataAttr, stamenAttr, that;
+            var leaflet, that;
 
             that = this;
 
@@ -159,13 +159,10 @@ var app = (function () {
                 overlays: undefined
             };
 
-            osmMapAttr = '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>';
-            osmDataAttr = 'Map data ' + osmMapAttr;
-
             // Stamen //////////////////////////////////////////////////////////////////////
 
             leaflet.baseLayers = {
-                'Stamen Toner Map': L.TileLayer.provider('Stamen.Toner')
+                'Stamen Toner Map': L.tileLayer.provider('Stamen.Toner')
             };
 
             // Configure map ///////////////////////////////////////////////////
