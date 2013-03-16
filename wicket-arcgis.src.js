@@ -191,6 +191,48 @@ Wkt.Wkt.prototype.construct = {
 };
 
 /**
+ * A test for determining whether one ring is an inner ring of another; tests
+ * to see whether the first argument (ring1) is an inner ring of the second
+ * (ring2) argument
+ * @param   ring1   {Array} An Array of vertices that describe a ring in an esri.geometry.Polygon instance
+ * @param   ring2   {Array} An Array of vertices that describe a ring in an esri.geometry.Polygon instance
+ * @param   srs     {esri.SpatialReference} The SRS to conduct this test within
+ * @return          {Boolean}
+ */
+Wkt.isInnerRingOf = function (ring1, ring2, srs) {
+    var contained, i, ply, pnt;
+
+    console.log(ring1); //FIXME
+    console.log(ring2); //FIXME
+
+    // Though less common, we assume that the first ring is an inner ring of the
+    //  second as this is a stricter case (all vertices must be contained);
+    //  we'll test this against the contrary where at least one vertex of the
+    //  first ring is not contained by the second ring (ergo, not an inner ring)
+    contained = true;
+
+    ply = new esri.geometry.Polygon({ // Create single polygon from second ring
+        rings: [ring2],
+        spatialReference: srs
+    });
+
+    for (i = 0; i < ring1.length; i += 1) {
+        // Sample a vertex of the first ring
+        pnt = new esri.geometry.Point(ring1[i][0], ring1[i][1], srs);
+
+        // Now we have a test for inner rings: if the second ring does not
+        //  contain every vertex of the first, then the first ring cannot be
+        //  an inner ring of the second
+        if (!ply.contains(pnt)) {
+            contained = false;
+            break;
+        }
+    }
+
+    return contained;
+};
+
+/**
  * A framework-dependent deconstruction method used to generate internal
  * geometric representations from instances of framework geometry. This method
  * uses object detection to attempt to classify members of framework geometry
@@ -199,7 +241,7 @@ Wkt.Wkt.prototype.construct = {
  * @return      {Object}    A hash of the 'type' and 'components' thus derived
  */
 Wkt.Wkt.prototype.deconstruct = function (obj) {
-    var digest, i, j, paths, rings, verts;
+    var i, j, lastRing, paths, rings, verts;
 
     // esri.geometry.Point /////////////////////////////////////////////////////
     if (obj.constructor === esri.geometry.Point) {
@@ -267,25 +309,39 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
         rings = [];
         for (i = 0; i < obj.rings.length; i += 1) {
             verts = [];
+
             for (j = 0; j < obj.rings[i].length; j += 1) {
                 verts.push({
                     x: obj.rings[i][j][0], // First item is longitude, second is latitude
                     y: obj.rings[i][j][1]
                 });
             }
-            rings.push(verts);
+
+            if (i > 0) {
+                if (Wkt.isInnerRingOf(verts, rings[0][i - 1][0]), obj.spatialReference) {
+                    console.log('inner ring detected!'); //FIXME
+                    rings[rings.length - 1].push(verts);
+                } else {
+                    rings.push([[verts]]);
+                }
+            } else {
+                rings.push([[verts]]);
+            }
+
         }
 
-        if (obj.rings.length > 1) {
+        bar = rings;
+
+        if (rings[0].length > 1) {
             return {
                 type: 'multipolygon',
-                components: [rings]
+                components: rings[0]
             };
         }
 
         return {
             type: 'polygon',
-            components: rings
+            components: rings[0][0]
         };
 
     }

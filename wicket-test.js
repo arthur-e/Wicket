@@ -37,24 +37,28 @@ multipolygon3 = 'MULTIPOLYGON(((40 40,20 45,45 30,40 40)),((20 35,45 20,30 5,10 
 runTests = function() {
     var i, cases, wkt, obj;
     cases = [
-        point,
-        linestring,
+//        point,
+//        linestring,
         polygon,
         polygon2, 
-        multipoint, 
+//        multipoint, 
         //multipoint2, // Not written canonically; won't pass test
         //multilinestring, // Not written canonically; won't pass test
-        multilinestring2,  
+//        multilinestring2,  
         multipolygon, 
         multipolygon2,
         multipolygon3
     ];
 
     for (i = 0; i < cases.length; i += 1) {
+        console.log("Running test case " + i);
+
         wkt = new Wkt.Wkt();
 
         wkt.read(cases[i]);
         obj = wkt.toObject();
+
+        foo = obj;
 
         wkt = new Wkt.Wkt();
         wkt.fromObject(obj);
