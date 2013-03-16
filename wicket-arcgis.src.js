@@ -199,4 +199,78 @@ Wkt.Wkt.prototype.construct = {
  * @return      {Object}    A hash of the 'type' and 'components' thus derived
  */
 Wkt.Wkt.prototype.deconstruct = function (obj) {
+    var digest, i, j, paths, rings, verts;
+
+    // esri.geometry.Point /////////////////////////////////////////////////////
+    if (obj.constructor === esri.geometry.Point) {
+
+        return {
+            type: 'point',
+            components: [{
+                x: obj.getLongitude(),
+                y: obj.getLatitude()
+            }]
+        };
+
+    }
+
+    // esri.geometry.Polyline //////////////////////////////////////////////////
+    if (obj.constructor === esri.geometry.Polyline) {
+
+        paths = [];
+        for (i = 0; i < obj.paths.length; i += 1) {
+            verts = [];
+            for (j = 0; j < obj.paths[i].length; j += 1) {
+                verts.push({
+                    x: obj.paths[i][j][0], // First item is longitude, second is latitude
+                    y: obj.paths[i][j][1]
+                });
+            }
+            paths.push(verts);
+        }
+
+        if (obj.paths.length > 1) { // More than one path means more than one linestring
+            return {
+                type: 'multilinestring',
+                components: paths
+            };
+        }
+
+        return {
+            type: 'linestring',
+            components: verts
+        };
+
+    }
+
+    // esri.geometry.Polygon ///////////////////////////////////////////////////
+    if (obj.constructor === esri.geometry.Polygon) {
+
+        rings = [];
+        for (i = 0; i < obj.rings.length; i += 1) {
+            verts = [];
+            for (j = 0; j < obj.rings[i].length; j += 1) {
+                verts.push({
+                    x: obj.rings[i][j][0], // First item is longitude, second is latitude
+                    y: obj.rings[i][j][1]
+                });
+            }
+            rings.push(verts);
+        }
+
+        if (obj.rings.length > 1) {
+            return {
+                type: 'multipolygon',
+                components: [rings]
+            };
+        }
+
+        return {
+            type: 'polygon',
+            components: rings
+        };
+
+    }
 };
+
+

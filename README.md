@@ -112,7 +112,8 @@ An Array of multiple coordinates specifies a collection of connected points in a
         {x: -83.34, y: 42.34}
     ]
 
-An Array can also contain other Arrays. In these cases, the contained Array(s) can each represent one of two geometry types. The contained Array might reprsent a single polygon (i.e. POLYGON feature):
+An Array can also contain other Arrays. In these cases, the contained Array(s) can each represent one of two geometry types.
+The contained Array might reprsent a single polygon (i.e. POLYGON feature):
 
     [
         [
@@ -124,7 +125,7 @@ An Array can also contain other Arrays. In these cases, the contained Array(s) c
         ]
     ]
 
-It might also represent a LINESTRING feature. Both POLYGON and LINESTRING features are internally represented the same way. The difference between the two is specified elsewhere (in the Wkt instance's type) and must be retained. In this particular example (above), we can see that the first coordinate in the Array is repeated at the end, meaning that the geometry is closed. We can therefore infer it represents a POLYGON and not a LINESTRING even before we plot it. Wicket retains the *type* of the feature and will always remember which it is.
+The above example cannot represent a LINESTRING feature (one of the few type-based constraints on the internal representations), however it may represent a MULTILINESTRING feature. Both POLYGON and MULTILINESTRING features are internally represented the same way. The difference between the two is specified elsewhere (in the Wkt instance's type) and must be retained. In this particular example (above), we can see that the first coordinate in the Array is repeated at the end, meaning that the geometry is closed. We can therefore infer it represents a POLYGON and not a MULTILINESTRING even before we plot it. Wicket retains the *type* of the feature and will always remember which it is.
 
 Similarly, multiple nested Arrays might reprsent a MULTIPOLYGON feature:
 
