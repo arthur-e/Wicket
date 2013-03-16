@@ -214,6 +214,24 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
 
     }
 
+    // esri.geometry.Multipoint ////////////////////////////////////////////////
+    if (obj.constructor === esri.geometry.Multipoint) {
+
+        verts = [];
+        for (i = 0; i < obj.points.length; i += 1) {
+            verts.push([{
+                x: obj.points[i][0],
+                y: obj.points[i][1]
+            }]);
+        }
+
+        return {
+            type: 'multipoint',
+            components: verts
+        };
+
+    }
+
     // esri.geometry.Polyline //////////////////////////////////////////////////
     if (obj.constructor === esri.geometry.Polyline) {
 
