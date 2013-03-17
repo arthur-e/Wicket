@@ -2,9 +2,12 @@
 # Wicket #
 ##########
 
-Updated **March 17, 2013** by K. Arthur Endsley. Check out the [live demo](http://geojam.net/static/wicket/doc/). There is also a [Leaflet Sandbox](http://geojam.net/static/wicket/doc/leaflet.html) available.
+Updated **March 17, 2013** by K. Arthur Endsley. Check out the [live demo](http://arthur-e.github.com/Wicket/sandbox-gmaps3.html). Wicket supports the following mapping libraries (see their sandboxes):
+* [Leaflet](http://arthur-e.github.com/Wicket/)
+* [Google Maps API](http://arthur-e.github.com/Wicket/sandbox-gmaps3.html)
+* [ESRI ArcGIS JavaScript API](http://arthur-e.github.com/Wicket/sandbox-arcgis.html)
 
-**New:** Wicket now includes an ArcGIS JavaScript API extension [check out the sandbox](http://geojam.net/static/wicket/doc/leaflet.html). There is an [issue with the deconstruction of multiple polygons](https://github.com/arthur-e/Wicket/issues/16) in the Google Maps API extension. Active development is on branch "dev" but you may also find bugfixes there.
+**New:** Wicket now includes an ArcGIS JavaScript API extension [check out the sandbox](http://arthur-e.github.com/Wicket/sandbox-arcgis.html). There is an [issue with the deconstruction of multiple polygons](https://github.com/arthur-e/Wicket/issues/16) in the Google Maps API extension. Active development is on branch "dev" but you may also find bugfixes there.
 
 #############
 ## License ##
