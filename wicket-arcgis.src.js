@@ -202,9 +202,6 @@ Wkt.Wkt.prototype.construct = {
 Wkt.isInnerRingOf = function (ring1, ring2, srs) {
     var contained, i, ply, pnt;
 
-    console.log(ring1); //FIXME
-    console.log(ring2); //FIXME
-
     // Though less common, we assume that the first ring is an inner ring of the
     //  second as this is a stricter case (all vertices must be contained);
     //  we'll test this against the contrary where at least one vertex of the
@@ -212,13 +209,18 @@ Wkt.isInnerRingOf = function (ring1, ring2, srs) {
     contained = true;
 
     ply = new esri.geometry.Polygon({ // Create single polygon from second ring
-        rings: [ring2],
+        rings: ring2.map(function (i) {
+            // ...Within which are Arrays of coordinate pairs (vertices)
+            return i.map(function (j) {
+                return [j.x, j.y];
+            });
+        }),
         spatialReference: srs
     });
 
     for (i = 0; i < ring1.length; i += 1) {
         // Sample a vertex of the first ring
-        pnt = new esri.geometry.Point(ring1[i][0], ring1[i][1], srs);
+        pnt = new esri.geometry.Point(ring1[i].x, ring1[i].y, srs);
 
         // Now we have a test for inner rings: if the second ring does not
         //  contain every vertex of the first, then the first ring cannot be
@@ -318,30 +320,27 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
             }
 
             if (i > 0) {
-                if (Wkt.isInnerRingOf(verts, rings[0][i - 1][0]), obj.spatialReference) {
-                    console.log('inner ring detected!'); //FIXME
+                if (Wkt.isInnerRingOf(verts, rings[i - 1], obj.spatialReference)) {
                     rings[rings.length - 1].push(verts);
                 } else {
-                    rings.push([[verts]]);
+                    rings.push([verts]);
                 }
             } else {
-                rings.push([[verts]]);
+                rings.push([verts]);
             }
 
         }
 
-        bar = rings;
-
-        if (rings[0].length > 1) {
+        if (rings.length > 1) {
             return {
                 type: 'multipolygon',
-                components: rings[0]
+                components: rings
             };
         }
 
         return {
             type: 'polygon',
-            components: rings[0][0]
+            components: rings[0]
         };
 
     }
