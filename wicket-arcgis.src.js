@@ -46,7 +46,7 @@ Wkt.Wkt.prototype.construct = {
 
         if (config) {
             // Allow the specification of a coordinate system
-            coord.spatialReference = config.spatialReference | config.srs;
+            coord.spatialReference = config.spatialReference || config.srs;
         }
 
         return new esri.geometry.Point(coord);
@@ -59,7 +59,9 @@ Wkt.Wkt.prototype.construct = {
      */
     multipoint: function (config) {
         config = config || {};
-        config.spatialReference = (config.spatialReference || config.srs) ? config.spatialReference || config.srs : undefined;
+        if (!config.spatialReference && config.srs) {
+            config.spatialReference = config.srs;
+        }
 
         return new esri.geometry.Multipoint({
             // Create an Array of [x, y] coords from each point among the components
@@ -80,7 +82,9 @@ Wkt.Wkt.prototype.construct = {
      */
     linestring: function (config) {
         config = config || {};
-        config.spatialReference = (config.spatialReference || config.srs) ? config.spatialReference || config.srs : undefined;
+        if (!config.spatialReference && config.srs) {
+            config.spatialReference = config.srs;
+        }
 
         return new esri.geometry.Polyline({
             // Create an Array of paths...
@@ -100,7 +104,9 @@ Wkt.Wkt.prototype.construct = {
      */
     multilinestring: function (config) {
         config = config || {};
-        config.spatialReference = (config.spatialReference || config.srs) ? config.spatialReference || config.srs : undefined;
+        if (!config.spatialReference && config.srs) {
+            config.spatialReference = config.srs;
+        }
 
         return new esri.geometry.Polyline({
             // Create an Array of paths...
@@ -121,7 +127,9 @@ Wkt.Wkt.prototype.construct = {
      */
     polygon: function (config) {
         config = config || {};
-        config.spatialReference = (config.spatialReference || config.srs) ? config.spatialReference || config.srs : undefined;
+        if (!config.spatialReference && config.srs) {
+            config.spatialReference = config.srs;
+        }
 
         return new esri.geometry.Polygon({
             // Create an Array of rings...
@@ -143,7 +151,9 @@ Wkt.Wkt.prototype.construct = {
     multipolygon: function (config) {
         var that = this;
         config = config || {};
-        config.spatialReference = (config.spatialReference || config.srs) ? config.spatialReference || config.srs : undefined;
+        if (!config.spatialReference && config.srs) {
+            config.spatialReference = config.srs;
+        }
 
         return new esri.geometry.Polygon({
             // Create an Array of rings...
@@ -243,7 +253,7 @@ Wkt.isInnerRingOf = function (ring1, ring2, srs) {
  * @return      {Object}    A hash of the 'type' and 'components' thus derived
  */
 Wkt.Wkt.prototype.deconstruct = function (obj) {
-    var i, j, lastRing, paths, rings, verts;
+    var i, j, paths, rings, verts;
 
     // esri.geometry.Point /////////////////////////////////////////////////////
     if (obj.constructor === esri.geometry.Point) {
