@@ -51,10 +51,14 @@ runTests = function() {
     ];
 
     for (i = 0; i < cases.length; i += 1) {
+        console.log("Running test case " + i);
+
         wkt = new Wkt.Wkt();
 
         wkt.read(cases[i]);
         obj = wkt.toObject();
+
+        foo = obj; // Implied global
 
         wkt = new Wkt.Wkt();
         wkt.fromObject(obj);
