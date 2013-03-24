@@ -22,12 +22,14 @@
  */
 
 /**
+ * @augments Wkt.Wkt
  * A framework-dependent flag, set for each Wkt.Wkt() instance, that indicates
  * whether or not a closed polygon geometry should be interpreted as a rectangle.
  */
 Wkt.Wkt.prototype.isRectangle = false;
 
 /**
+ * @augments Wkt.Wkt
  * Truncates an Array of coordinates by the closing coordinate when it is
  * equal to the first coordinate given--this is only to be used for closed
  * geometries in order to provide merely an "implied" closure to Leaflet.
@@ -54,6 +56,7 @@ Wkt.Wkt.prototype.trunc = function (coords) {
 };
 
 /**
+ * @augments Wkt.Wkt
  * An object of framework-dependent construction methods used to generate
  * objects belonging to the various geometry classes of the framework.
  */
@@ -171,6 +174,7 @@ L.Util.extend(Wkt.Wkt.prototype, {
 });
 
 /**
+ * @augments Wkt.Wkt
  * A framework-dependent deconstruction method used to generate internal
  * geometric representations from instances of framework geometry. This method
  * uses object detection to attempt to classify members of framework geometry
@@ -339,7 +343,9 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
                         var i, mpgon, mpline, mpoint;
 
                         // Assume that all layers are of one type (any one type)
-                        mpgon, mpline, mpoint = true;
+                        mpgon = true;
+                        mpline = true;
+                        mpoint = true;
 
                         for (i in obj._layers) {
                             if (obj._layers.hasOwnProperty(i)) {

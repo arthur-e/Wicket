@@ -26,12 +26,14 @@
  */
 
 /**
+ * @augments Wkt.Wkt
  * A framework-dependent flag, set for each Wkt.Wkt() instance, that indicates
  * whether or not a closed polygon geometry should be interpreted as a rectangle.
  */
 Wkt.Wkt.prototype.isRectangle = false;
 
 /**
+ * @augments Wkt.Wkt
  * An object of framework-dependent construction methods used to generate
  * objects belonging to the various geometry classes of the framework.
  */
@@ -148,9 +150,9 @@ Wkt.Wkt.prototype.construct = {
             } // eo for each vertex
 
             if (j !== 0) { // Reverse the order of coordinates in inner rings
-            	if (config.reverseInnerPolygons == null || config.reverseInnerPolygons) {
-                	  verts.reverse();
-              	}
+                if (config.reverseInnerPolygons == null || config.reverseInnerPolygons) {
+                    verts.reverse();
+                }
             }
 
             rings.push(verts);
@@ -210,6 +212,7 @@ Wkt.Wkt.prototype.construct = {
 };
 
 /**
+ * @augments Wkt.Wkt
  * A framework-dependent deconstruction method used to generate internal
  * geometric representations from instances of framework geometry. This method
  * uses object detection to attempt to classify members of framework geometry
@@ -303,7 +306,7 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
                     y: tmp.getAt(j).lat()
                 });
             }
-            
+
             if (!tmp.getAt(tmp.length - 1).equals(tmp.getAt(0))) {
                 verts.push({ // Add the first coordinate again for closure
                     x: tmp.getAt(0).lng(),
@@ -314,11 +317,11 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
             if (obj.getPaths().length > 1 && i > 0) {
                 // If this and the last ring have the same signs...
                 if (sign(obj.getPaths().getAt(i)) > 0 && sign(obj.getPaths().getAt(i - 1)) > 0
-                    || sign(obj.getPaths().getAt(i)) < 0 && sign(obj.getPaths().getAt(i - 1)) < 0) {
+                        || sign(obj.getPaths().getAt(i)) < 0 && sign(obj.getPaths().getAt(i - 1)) < 0) {
                     // ...They must both be inner rings (or both be outer rings, in a multipolygon)
                     verts = [verts]; // Wrap multipolygons once more (collection)
                 }
-                    
+
             }
 
             //TODO This makes mistakes when a second polygon has holes; it sees them all as individual polygons
@@ -387,7 +390,7 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
                     // Check that all items have the same constructor as the first item
                     if (obj[k].constructor !== type) {
                         // If they don't, type is heterogeneous geometry collection
-                        return 'geometrycollection'
+                        return 'geometrycollection';
                     }
                 }
 

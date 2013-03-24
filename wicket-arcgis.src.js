@@ -22,12 +22,18 @@
 
 /* @preserve
  * NOTE: The ESRI ArcGIS API extension requirest JavaScript 1.6 or higher, due
-    its dependence on the Array functions map, indexOf, and lastIndexOf
+ *  its dependence on the Array functions map, indexOf, and lastIndexOf
  */
 
+/**
+ * @augments Wkt.Wkt
+ * A framework-dependent flag, set for each Wkt.Wkt() instance, that indicates
+ * whether or not a closed polygon geometry should be interpreted as a rectangle.
+ */
 Wkt.Wkt.prototype.isRectangle = false;
 
 /**
+ * @augments Wkt.Wkt
  * An object of framework-dependent construction methods used to generate
  * objects belonging to the various geometry classes of the framework.
  */
@@ -245,6 +251,7 @@ Wkt.isInnerRingOf = function (ring1, ring2, srs) {
 };
 
 /**
+ * @augments Wkt.Wkt
  * A framework-dependent deconstruction method used to generate internal
  * geometric representations from instances of framework geometry. This method
  * uses object detection to attempt to classify members of framework geometry

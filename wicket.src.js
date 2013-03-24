@@ -19,57 +19,70 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+/**
+ * @desc The Wkt namespace.
+ * @namespace
+ * @global
+ */
 var Wkt = (function () { // Execute function immediately
 
     return {
-        // The default delimiter for separating components of atomic geometry (coordinates)
+        /**
+         * The default delimiter for separating components of atomic geometry (coordinates)
+         * @member Wkt.delimiter
+         * @default ' '
+         */
         delimiter: ' ',
 
         /**
          * Determines whether or not the passed Object is an Array.
          * @param   obj {Object}    The Object in question
          * @return      {Boolean}
+         * @member Wkt.isArray
          */
         isArray: function (obj) {
-            return !!(obj && obj.constructor == Array);
+            return !!(obj && obj.constructor === Array);
         },
 
         /**
          * An object for reading WKT strings and writing geographic features
-         * @param   {String}    An optional WKT string for immediate read
-         * @return  {Wkt.Wkt}
+         * @constructor Wkt.Wkt
+         * @param   initializer {String}    An optional WKT string for immediate read
+         * @return              {Wkt.Wkt}
+         * @memberof Wkt
          */
         Wkt: function (initializer) {
             var beginsWith, endsWith, trim;
 
             /**
-             * @private
              * Returns true if the substring is found at the beginning of the string.
              * @param   str {String}    The String to search
              * @param   sub {String}    The substring of interest
              * @return      {Boolean}
+             * @private
              */
             beginsWith = function (str, sub) {
                 return str.substring(0, sub.length) === sub;
             };
 
             /**
-             * @private
              * Returns true if the substring is found at the end of the string.
              * @param   str {String}    The String to search
              * @param   sub {String}    The substring of interest
              * @return      {Boolean}
+             * @private
              */
             endsWith = function (str, sub) {
                 return str.substring(str.length - sub.length) === sub;
             };
 
             /**
-             * @private
              * Removes given character String(s) from a String.
              * @param   str {String}    The String to search
              * @param   sub {String}    The String character(s) to trim
              * @return      {String}    The trimmed string
+             * @private
              */
             trim = function (str, sub) {
                 sub = sub || ' '; // Defaults to trimming spaces
@@ -86,6 +99,8 @@ var Wkt = (function () { // Execute function immediately
 
             /**
              * The default delimiter between X and Y coordinates.
+             * @memberof Wkt.Wkt
+             * @default Wkt.delimiter
              */
             this.delimiter = Wkt.delimiter;
 
@@ -94,11 +109,14 @@ var Wkt = (function () { // Execute function immediately
              * MULTIPOINT strings. Examples; both are valid WKT:
              * If true: MULTIPOINT((30 10),(10 30),(40 40))
              * If false: MULTIPOINT(30 10,10 30,40 40)
+             * @memberof Wkt.Wkt
+             * @default true
              */
-            this.wrapVertices = false;
+            this.wrapVertices = true;
 
             /**
              * Some regular expressions copied from OpenLayers.Format.WKT.js
+             * @memberof Wkt.Wkt
              */
             this.regExes = {
                 'typeStr': /^\s*(\w+)\s*\(\s*(.*)\s*\)\s*$/,
@@ -114,6 +132,8 @@ var Wkt = (function () { // Execute function immediately
             /**
              * Returns true if the internal geometry is a collection of geometries.
              * @return  {Boolean}   Returns true when it is a collection
+             * @memberof Wkt.Wkt
+             * @method
              */
             this.isCollection = function () {
                 switch (this.type.slice(0, 5)) {
@@ -131,6 +151,7 @@ var Wkt = (function () { // Execute function immediately
 
             /**
              * The internal representation of geometry--the "components" of geometry.
+             * @memberof Wkt.Wkt
              */
             this.components = undefined;
 
@@ -139,6 +160,8 @@ var Wkt = (function () { // Execute function immediately
              * @param   a   {Object}    An object with x and y properties
              * @param   b   {Object}    An object with x and y properties
              * @return      {Boolean}
+             * @memberof Wkt.Wkt
+             * @method
              */
             this.sameCoords = function (a, b) {
                 return (a.x === b.x && a.y === b.y);
@@ -149,6 +172,8 @@ var Wkt = (function () { // Execute function immediately
              * Google Polygon objects or google.maps.Polygon).
              * @param   obj {Object}    The framework-dependent geometry representation
              * @return      {Wkt.Wkt}   The object itself
+             * @memberof Wkt.Wkt
+             * @method
              */
             this.fromObject = function (obj) {
                 var result = this.deconstruct.call(this, obj);
@@ -163,6 +188,8 @@ var Wkt = (function () { // Execute function immediately
              * construction methods and available geometry classes.
              * @param   config  {Object}    An optional framework-dependent properties specification
              * @return          {Object}    The framework-dependent geometry representation
+             * @memberof Wkt.Wkt
+             * @method
              */
             this.toObject = function (config) {
                 return this.construct[this.type].call(this, config);
@@ -172,6 +199,8 @@ var Wkt = (function () { // Execute function immediately
              * Reads a WKT string, validating and incorporating it.
              * @param   wkt {String}    A WKT string
              * @return      {Array}     An Array of internal geometry objects
+             * @memberof Wkt.Wkt
+             * @method
              */
             this.read = function (wkt) {
                 var matches;
@@ -187,7 +216,7 @@ var Wkt = (function () { // Execute function immediately
                     throw {
                         name: "WKTError",
                         message: "Invalid WKT string provided to read()"
-                    }
+                    };
                 }
                 return this.components;
             }; // eo readWkt
@@ -196,6 +225,8 @@ var Wkt = (function () { // Execute function immediately
              * Writes a WKT string.
              * @param   components  {Array}     An Array of internal geometry objects
              * @return              {String}    The corresponding WKT representation
+             * @memberof Wkt.Wkt
+             * @method
              */
             this.write = function (components) {
                 var i, pieces, data;
@@ -239,12 +270,17 @@ var Wkt = (function () { // Execute function immediately
             /**
              * This object contains functions as property names that extract WKT
              * strings from the internal representation.
+             * @memberof Wkt.Wkt
+             * @namespace Wkt.Wkt.extract
+             * @instance
              */
             this.extract = {
                 /**
                  * Return a WKT string representing atomic (point) geometry
                  * @param   point   {Object}    An object with x and y properties
                  * @return          {String}    The WKT representation
+                 * @memberof Wkt.Wkt.extract
+                 * @instance
                  */
                 point: function (point) {
                     return point.x + this.delimiter + point.y;
@@ -254,6 +290,8 @@ var Wkt = (function () { // Execute function immediately
                  * Return a WKT string representing multiple atoms (points)
                  * @param   multipoint  {Array}     Multiple x-and-y objects
                  * @return              {String}    The WKT representation
+                 * @memberof Wkt.Wkt.extract
+                 * @instance
                  */
                 multipoint: function (multipoint) {
                     var i, parts = [], s;
@@ -275,6 +313,8 @@ var Wkt = (function () { // Execute function immediately
                  * Return a WKT string representing a chain (linestring) of atoms
                  * @param   linestring  {Array}     Multiple x-and-y objects
                  * @return              {String}    The WKT representation
+                 * @memberof Wkt.Wkt.extract
+                 * @instance
                  */
                 linestring: function (linestring) {
                     // Extraction of linestrings is the same as for points
@@ -285,6 +325,8 @@ var Wkt = (function () { // Execute function immediately
                  * Return a WKT string representing multiple chains (multilinestring) of atoms
                  * @param   multilinestring {Array}     Multiple of multiple x-and-y objects
                  * @return                  {String}    The WKT representation
+                 * @memberof Wkt.Wkt.extract
+                 * @instance
                  */
                 multilinestring: function (multilinestring) {
                     var i, parts = [];
@@ -300,6 +342,8 @@ var Wkt = (function () { // Execute function immediately
                  * Return a WKT string representing multiple atoms in closed series (polygon)
                  * @param   polygon {Array}     Collection of ordered x-and-y objects
                  * @return          {String}    The WKT representation
+                 * @memberof Wkt.Wkt.extract
+                 * @instance
                  */
                 polygon: function (polygon) {
                     // Extraction of polygons is the same as for multipoints
@@ -310,6 +354,8 @@ var Wkt = (function () { // Execute function immediately
                  * Return a WKT string representing multiple closed series (multipolygons) of multiple atoms
                  * @param   multipolygon    {Array}     Collection of ordered x-and-y objects
                  * @return                  {String}    The WKT representation
+                 * @memberof Wkt.Wkt.extract
+                 * @instance
                  */
                 multipolygon: function (multipolygon) {
                     var i, parts = [];
@@ -327,12 +373,17 @@ var Wkt = (function () { // Execute function immediately
             /**
              * This object contains functions as property names that ingest WKT
              * strings into the internal representation.
+             * @memberof Wkt.Wkt
+             * @namespace Wkt.Wkt.ingest
+             * @instance
              */
             this.ingest = {
 
                 /**
                  * Return point feature given a point WKT fragment.
                  * @param   str {String}    A WKT fragment representing the point
+                 * @memberof Wkt.Wkt.ingest
+                 * @instance
                  */
                 point: function (str) {
                     var coords = trim(str).split(this.regExes.spaces);
@@ -346,6 +397,8 @@ var Wkt = (function () { // Execute function immediately
                 /**
                  * Return a multipoint feature given a multipoint WKT fragment.
                  * @param   str {String}    A WKT fragment representing the multipoint
+                 * @memberof Wkt.Wkt.ingest
+                 * @instance
                  */
                 multipoint: function (str) {
                     var i, components, points;
@@ -360,6 +413,8 @@ var Wkt = (function () { // Execute function immediately
                 /**
                  * Return a linestring feature given a linestring WKT fragment.
                  * @param   str {String}    A WKT fragment representing the linestring
+                 * @memberof Wkt.Wkt.ingest
+                 * @instance
                  */
                 linestring: function (str) {
                     var i, multipoints, components;
@@ -379,6 +434,8 @@ var Wkt = (function () { // Execute function immediately
                 /**
                  * Return a multilinestring feature given a multilinestring WKT fragment.
                  * @param   str {String}    A WKT fragment representing the multilinestring
+                 * @memberof Wkt.Wkt.ingest
+                 * @instance
                  */
                 multilinestring: function (str) {
                     var i, components, line, lines;
@@ -400,6 +457,8 @@ var Wkt = (function () { // Execute function immediately
                 /**
                  * Return a polygon feature given a polygon WKT fragment.
                  * @param   str {String}    A WKT fragment representing the polygon
+                 * @memberof Wkt.Wkt.ingest
+                 * @instance
                  */
                 polygon: function (str) {
                     var i, j, components, subcomponents, ring, rings;
@@ -423,6 +482,8 @@ var Wkt = (function () { // Execute function immediately
                 /**
                  * Return a multipolygon feature given a multipolygon WKT fragment.
                  * @param   str {String}    A WKT fragment representing the multipolygon
+                 * @memberof Wkt.Wkt.ingest
+                 * @instance
                  */
                 multipolygon: function (str) {
                     var i, components, polygon, polygons;
@@ -438,6 +499,8 @@ var Wkt = (function () { // Execute function immediately
                 /**
                  * Return an array of features given a geometrycollection WKT fragment.
                  * @param   str {String}    A WKT fragment representing the geometry collection
+                 * @memberof Wkt.Wkt.ingest
+                 * @instance
                  */
                 geometrycollection: function (str) {
                     console.log('The geometrycollection WKT type is not yet supported.');
