@@ -2,12 +2,12 @@
 # Wicket #
 ##########
 
-Updated **March 17, 2013** by K. Arthur Endsley. Check out the [live demo](http://arthur-e.github.com/Wicket/sandbox-gmaps3.html). Wicket supports the following mapping libraries (see their sandboxes):
+Updated **March 28, 2013** by K. Arthur Endsley. Check out the [live demo](http://arthur-e.github.com/Wicket/sandbox-gmaps3.html). Wicket supports the following mapping libraries (see their sandboxes):
 * [Leaflet](http://arthur-e.github.com/Wicket/)
 * [Google Maps API](http://arthur-e.github.com/Wicket/sandbox-gmaps3.html)
 * [ESRI ArcGIS JavaScript API](http://arthur-e.github.com/Wicket/sandbox-arcgis.html)
 
-**New:** Wicket now includes an ArcGIS JavaScript API extension [check out the sandbox](http://arthur-e.github.com/Wicket/sandbox-arcgis.html). There is an [issue with the deconstruction of multiple polygons](https://github.com/arthur-e/Wicket/issues/16) in the Google Maps API extension. Active development is on branch "dev" but you may also find bugfixes there.
+**New:** Wicket now includes an ArcGIS JavaScript API extension [check out the sandbox](http://arthur-e.github.com/Wicket/sandbox-arcgis.html). There is a (philosophical) [issue with the deconstruction of multiple polygons](https://github.com/arthur-e/Wicket/issues/16) in the Google Maps API extension.
 
 #############
 ## License ##
@@ -21,9 +21,39 @@ Accordingly:
 > the Free Software Foundation, either version 3 of the License, or
 > (at your option) any later version.
 
-################
-## Motivation ##
-################
+###################
+## Documentation ##
+###################
+
+Documentation can be generated with [JSDoc 3](https://github.com/jsdoc3/jsdoc). I'm not a JSDoc 3 expert; feel free to revise the tags.
+
+    git clone git://github.com/jsdoc3/jsdoc.git
+    # Run the tests
+    ./jsdoc3 -T
+    # Get to work
+    ./jsdoc3 /var/www/static/wicket/wicket.src.js
+
+#######################
+## Build Information ##
+#######################
+
+Minified versions of JavaScript files were generated using Google's [Closure compiler](https://developers.google.com/closure/compiler/docs/gettingstarted_app).
+Once installed, minification can be invoked at the command line, as in the following example:
+
+    java -jar /usr/local/closure/compiler.jar --compilation_level WHITESPACE_ONLY --js wicket-leaflet.src.js --js_output_file wicket-leaflet.js 
+
+There is now a script included that will do this automatically for all of Wicket's source code:
+
+    . refactor.sh
+
+
+##############
+## Colophon ##
+##############
+
+##################
+### Motivation ###
+##################
 
 Wicket was created out of the need for a lightweight Javascript library that can translate Well-Known Text (WKT) strings into geographic features.
 This problem arose in the context of [OpenClimateGIS](https://github.com/arthur-e/OpenClimateGIS), a web framework for accessing and subsetting online climate data.
@@ -37,10 +67,6 @@ In the (apparent) absence of a lightweight, easy-to-use WKT library in Javascrip
 That is what Wicket aspires to be: lightweight, framework-agnostic, and useful.
 I hope it achieves these goals.
 If you find it isn't living up to that and you have ideas on how to improve it, please fork the code or [drop me a line](mailto:kaendsle@mtu.edu).
-
-##############
-## Colophon ##
-##############
 
 ########################
 ### Acknowledgements ###
@@ -56,19 +82,6 @@ Contributors:
 * [cuyahoga](https://github.com/cuyahoga) - Option to reverse inner ring geometry in Google Maps API extension
 * [Tom Nightingale (thegreat)](https://github.com/thegreat) - **Leaflet extension!**
 * [Aaron Ogle](https://github.com/atogle)
-
-#########################
-### Build Information ###
-#########################
-
-Minified versions of JavaScript files were generated using Google's [Closure compiler](https://developers.google.com/closure/compiler/docs/gettingstarted_app).
-Once installed, minification can be invoked at the command line, as in the following example:
-
-    java -jar /usr/local/closure/compiler.jar --compilation_level WHITESPACE_ONLY --js wicket-leaflet.src.js --js_output_file wicket-leaflet.js 
-
-There is now a script included that will do this automatically for all of Wicket's source code:
-
-    . refactor.sh
 
 ###################
 ### Conventions ###
