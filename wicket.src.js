@@ -22,6 +22,7 @@
 
 /**
  * @desc The Wkt namespace.
+ * @property    {String}    delimiter   - The default delimiter for separating components of atomic geometry (coordinates)
  * @namespace
  * @global
  */
@@ -30,8 +31,7 @@ var Wkt = (function () { // Execute function immediately
     return {
         /**
          * The default delimiter for separating components of atomic geometry (coordinates)
-         * @member Wkt.delimiter
-         * @default ' '
+         * @ignore
          */
         delimiter: ' ',
 
@@ -40,6 +40,7 @@ var Wkt = (function () { // Execute function immediately
          * @param   obj {Object}    The Object in question
          * @return      {Boolean}
          * @member Wkt.isArray
+         * @method
          */
         isArray: function (obj) {
             return !!(obj && obj.constructor === Array);
@@ -49,6 +50,10 @@ var Wkt = (function () { // Execute function immediately
          * An object for reading WKT strings and writing geographic features
          * @constructor Wkt.Wkt
          * @param   initializer {String}    An optional WKT string for immediate read
+         * @property            {Array}     components      - Holder for atomic geometry objects (internal representation of geometric components)
+         * @property            {String}    delimiter       - The default delimiter for separating components of atomic geometry (coordinates)
+         * @property            {Object}    regExes         - Some regular expressions copied from OpenLayers.Format.WKT.js
+         * @property            {Boolean}   wrapVerticies   - True to wrap vertices in MULTIPOINT geometries; If true: MULTIPOINT((30 10),(10 30),(40 40)); If false: MULTIPOINT(30 10,10 30,40 40)
          * @return              {Wkt.Wkt}
          * @memberof Wkt
          */
@@ -99,8 +104,7 @@ var Wkt = (function () { // Execute function immediately
 
             /**
              * The default delimiter between X and Y coordinates.
-             * @memberof Wkt.Wkt
-             * @default Wkt.delimiter
+             * @ignore
              */
             this.delimiter = Wkt.delimiter;
 
@@ -109,14 +113,13 @@ var Wkt = (function () { // Execute function immediately
              * MULTIPOINT strings. Examples; both are valid WKT:
              * If true: MULTIPOINT((30 10),(10 30),(40 40))
              * If false: MULTIPOINT(30 10,10 30,40 40)
-             * @memberof Wkt.Wkt
-             * @default true
+             * @ignore
              */
             this.wrapVertices = true;
 
             /**
              * Some regular expressions copied from OpenLayers.Format.WKT.js
-             * @memberof Wkt.Wkt
+             * @ignore
              */
             this.regExes = {
                 'typeStr': /^\s*(\w+)\s*\(\s*(.*)\s*\)\s*$/,
@@ -128,6 +131,12 @@ var Wkt = (function () { // Execute function immediately
                 'doubleParenComma': /\)\s*\)\s*,\s*\(\s*\(/,
                 'trimParens': /^\s*\(?(.*?)\)?\s*$/
             };
+
+            /**
+             * The internal representation of geometry--the "components" of geometry.
+             * @ignore
+             */
+            this.components = undefined;
 
             /**
              * Returns true if the internal geometry is a collection of geometries.
@@ -148,12 +157,6 @@ var Wkt = (function () { // Execute function immediately
                     return false;
                 }
             };
-
-            /**
-             * The internal representation of geometry--the "components" of geometry.
-             * @memberof Wkt.Wkt
-             */
-            this.components = undefined;
 
             /**
              * Compares two x,y coordinates for equality.
