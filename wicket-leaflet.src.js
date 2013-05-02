@@ -298,7 +298,7 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
         rings.push(verts);
 
         // Now, any holes
-        if (obj._holes.length > 0) {
+        if (obj._holes && obj._holes.length > 0) {
             verts = coordsFromLatLngs(obj._holes)[0];
             verts.push(verts[0]); // Copy the beginning coords again for closture
             rings.push(verts);
