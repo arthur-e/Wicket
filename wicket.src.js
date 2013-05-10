@@ -349,8 +349,8 @@ var Wkt = (function () { // Execute function immediately
                  * @instance
                  */
                 polygon: function (polygon) {
-                    // Extraction of polygons is the same as for multipoints
-                    return this.extract.multipoint.apply(this, [polygon]);
+                    // Extraction of polygons is the same as for multilinestrings
+                    return this.extract.multilinestring.apply(this, [polygon]);
                 },
 
                 /**
