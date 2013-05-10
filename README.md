@@ -1,6 +1,6 @@
 # Wicket #
 
-Updated **May 9, 2013**. Wicket is a lightweight library for translating between [Well-Known Text](http://en.wikipedia.org/wiki/Well-known_text) and various client-side mapping frameworks:
+Updated **May 9, 2013**. Wicket is a lightweight library for translating between [Well-Known Text (WKT)](http://en.wikipedia.org/wiki/Well-known_text) and various client-side mapping frameworks:
 * [Leaflet](http://arthur-e.github.com/Wicket/)
 * [Google Maps API](http://arthur-e.github.com/Wicket/sandbox-gmaps3.html)
 * [ESRI ArcGIS JavaScript API](http://arthur-e.github.com/Wicket/sandbox-arcgis.html)

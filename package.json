@@ -1,0 +1,65 @@
+{
+    "name": "wicket",
+    "version": "0.1.0",
+    "description": "A modest library for moving between Well-Known Text (WKT) and various framework geometries",
+    "keywords": [
+        "wkt",
+        "map",
+        "mapping",
+        "geometry",
+        "leaflet"
+   ],
+   "maintainers": [
+       {
+           "name": "K. Arthur Endsley",
+           "email": "kaendsle@mtu.edu",
+           "web": "https://github.com/arthur-e" 
+       } 
+   ],
+   "contributors": [
+       {
+           "name": "K. Arthur Endsley",
+           "email": "kaendsle@mtu.edu",
+           "web": "https://github.com/arthur-e" 
+       },
+       {
+           "name": "cuyahoga",
+           "web": "https://github.com/cuyahoga" 
+       },
+       {
+           "name": "Tom Nightingale",
+           "web": "https://github.com/thegreat" 
+       },
+       {
+           "name": "Aaron Ogle",
+           "web": "https://github.com/atogle" 
+       },
+       {
+           "name": "James Seppi",
+           "web": "https://github.com/jseppi" 
+       }
+   ],
+   "bugs": {
+       "mail": "kaendsle@mtu.edu",
+       "web": "https://github.com/arthur-e/Wicket/issues" 
+   },
+   "licenses": [
+       {
+           "type": "GPLv3",
+           "url": "https://raw.github.com/arthur-e/Wicket/master/LICENSE" 
+       } 
+   ],
+   "repositories": [
+       {
+           "type": "git",
+           "url": "https://github.com/arthur-e/Wicket" 
+       } 
+   ],
+   "os": ["linux", "macos", "win"],
+   "cpu": ["x86", "ppc", "x86_64"],
+   "engines": ["v8", "ejs", "node", "rhino"],
+   "scripts": {
+       "build": "refactor.sh",
+       "test": "wicket-test.js" 
+   }
+}
