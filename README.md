@@ -19,13 +19,17 @@ Accordingly:
 
 ## Documentation ##
 
-Documentation can be generated with [JSDoc 3](https://github.com/jsdoc3/jsdoc). I'm not a JSDoc 3 expert; feel free to revise the tags.
+Read the documentation [here](http://arthur-e.github.io/Wicket/doc/out/). Documentation can be generated with [JSDoc 3](https://github.com/jsdoc3/jsdoc). I'm not a JSDoc 3 expert; feel free to revise the tags.
 
     git clone git://github.com/jsdoc3/jsdoc.git
-    # Run the tests
-    ./jsdoc3 -T
-    # Get to work
-    ./jsdoc3 /var/www/static/wicket/wicket.src.js
+    ./jsdoc /var/www/static/wicket/wicket.src.js
+
+Or, with Node installed:
+
+    sudo npm install -g git://github.com/jsdoc3/jsdoc.git
+    jsdoc /var/www/static/wicket/wicket.src.js
+
+Either way, make sure you invoke `jsdoc` from a directory you can write to; it will output documentation to your current working directory.
 
 ## Build Information ##
 
@@ -46,7 +50,7 @@ There is now a script included that will do this automatically for all of Wicket
     cd jasmine/dist
     sudo unzip ./*.zip
 
-Once you have Jasmine installed and the paths match those expected in `tests/SpecRunner.html` (or you changed them to match your Jasmine installation) then just point your browser to `localhost/static/wicket/SpecRunner.html`.
+Once you have Jasmine installed and the paths match those expected in `tests/SpecRunner.html` (or you changed them to match your Jasmine installation) then just point your browser to `localhost/static/wicket/tests/SpecRunner.html`.
 
 ## Example ##
 The following examples work in any of the mapping environments, as Wicket has a uniform API regardless of the client-side mapping library you're using.
