@@ -1,6 +1,6 @@
 # Wicket #
 
-Updated **May 9, 2013**. Wicket is a lightweight library for translating between [Well-Known Text (WKT)](http://en.wikipedia.org/wiki/Well-known_text) and various client-side mapping frameworks:
+Updated **May 11, 2013**. Wicket is a lightweight library for translating between [Well-Known Text (WKT)](http://en.wikipedia.org/wiki/Well-known_text) and various client-side mapping frameworks:
 * [Leaflet](http://arthur-e.github.com/Wicket/)
 * [Google Maps API](http://arthur-e.github.com/Wicket/sandbox-gmaps3.html)
 * [ESRI ArcGIS JavaScript API](http://arthur-e.github.com/Wicket/sandbox-arcgis.html)
@@ -29,7 +29,7 @@ Documentation can be generated with [JSDoc 3](https://github.com/jsdoc3/jsdoc). 
 
 ## Build Information ##
 
-Minified versions of JavaScript files were generated using Google's [Closure compiler](https://developers.google.com/closure/compiler/docs/gettingstarted_app).
+**Minified versions** of JavaScript files were generated using Google's [Closure compiler](https://developers.google.com/closure/compiler/docs/gettingstarted_app).
 Once installed, minification can be invoked at the command line, as in the following example:
 
     java -jar /usr/local/closure/compiler.jar --compilation_level WHITESPACE_ONLY --js wicket-leaflet.src.js --js_output_file wicket-leaflet.js 
@@ -37,6 +37,16 @@ Once installed, minification can be invoked at the command line, as in the follo
 There is now a script included that will do this automatically for all of Wicket's source code:
 
     . refactor.sh
+
+**Testing** Wicket is easy if you already have [Jasmine](https://github.com/pivotal/jasmine) installed. Here's a quick script to (describe how to) install it if you don't:
+
+    sudo mkdir -p /var/www/static/
+    cd /var/www/static/
+    sudo git clone git://github.com/pivotal/jasmine.git
+    cd jasmine/dist
+    sudo unzip ./*.zip
+
+Once you have Jasmine installed and the paths match those expected in `tests/SpecRunner.html` (or you changed them to match your Jasmine installation) then just point your browser to `localhost/static/wicket/SpecRunner.html`.
 
 ## Example ##
 The following examples work in any of the mapping environments, as Wicket has a uniform API regardless of the client-side mapping library you're using.
