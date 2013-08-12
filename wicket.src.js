@@ -125,7 +125,7 @@ var Wkt = (function () { // Execute function immediately
             this.regExes = {
                 'typeStr': /^\s*(\w+)\s*\(\s*(.*)\s*\)\s*$/,
                 'spaces': /\s+|\+/, // Matches the '+' or the empty space
-                'numeric': /-*\d+\.*\d+/,
+                'numeric': /-*\d+(\.*\d+)?/,
                 'comma': /\s*,\s*/,
                 'parenComma': /\)\s*,\s*\(/,
                 'coord': /-*\d+\.*\d+ -*\d+\.*\d+/, // e.g. "24 -14"
@@ -210,6 +210,24 @@ Wkt.Wkt.prototype.fromObject = function (obj) {
  */
 Wkt.Wkt.prototype.toObject = function (config) {
     return this.construct[this.type].call(this, config);
+};
+
+/**
+ * Absorbs the geometry of another Wkt.Wkt instance, merging it with its own,
+ * creating a collection (MULTI-geometry) based on their types, which must agree.
+ * For example, creates a MULTIPOLYGON from a POLYGON type merged with another
+ * POLYGON type.
+ * @memberof Wkt.Wkt
+ * @method
+ */
+Wkt.Wkt.prototype.merge = function (wkt) {
+    if (this.type !== wkt.type) {
+        throw TypeError('The input geometry types must agree');
+    }
+
+    this.components.concat(wkt.components)
+
+    this.type = 'multi' + this.type;
 };
 
 /**

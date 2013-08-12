@@ -1,28 +1,29 @@
 /*
 
 
- Copyright (C) 2012 K. Arthur Endsley (kaendsle@mtu.edu)
- Michigan Tech Research Institute (MTRI)
- 3600 Green Court, Suite 100, Ann Arbor, MI, 48105
+  Copyright (C) 2012 K. Arthur Endsley (kaendsle@mtu.edu)
+  Michigan Tech Research Institute (MTRI)
+  3600 Green Court, Suite 100, Ann Arbor, MI, 48105
 
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 var Wkt=function(){var beginsWith,endsWith;beginsWith=function(str,sub){return str.substring(0,sub.length)===sub};endsWith=function(str,sub){return str.substring(str.length-sub.length)===sub};return{delimiter:" ",isArray:function(obj){return!!(obj&&obj.constructor===Array)},trim:function(str,sub){sub=sub||" ";while(beginsWith(str,sub))str=str.substring(1);while(endsWith(str,sub))str=str.substring(0,str.length-1);return str},Wkt:function(initializer){this.delimiter=Wkt.delimiter;this.wrapVertices=
-true;this.regExes={typeStr:/^\s*(\w+)\s*\(\s*(.*)\s*\)\s*$/,spaces:/\s+|\+/,numeric:/-*\d+\.*\d+/,comma:/\s*,\s*/,parenComma:/\)\s*,\s*\(/,coord:/-*\d+\.*\d+ -*\d+\.*\d+/,doubleParenComma:/\)\s*\)\s*,\s*\(\s*\(/,trimParens:/^\s*\(?(.*?)\)?\s*$/};this.components=undefined;if(initializer&&typeof initializer==="string")this.read(initializer);else if(this.fromGeometry)this.fromGeometry(initializer)}}}();
+true;this.regExes={"typeStr":/^\s*(\w+)\s*\(\s*(.*)\s*\)\s*$/,"spaces":/\s+|\+/,"numeric":/-*\d+(\.*\d+)?/,"comma":/\s*,\s*/,"parenComma":/\)\s*,\s*\(/,"coord":/-*\d+\.*\d+ -*\d+\.*\d+/,"doubleParenComma":/\)\s*\)\s*,\s*\(\s*\(/,"trimParens":/^\s*\(?(.*?)\)?\s*$/};this.components=undefined;if(initializer&&typeof initializer==="string")this.read(initializer);else if(this.fromGeometry)this.fromGeometry(initializer)}}}();
 Wkt.Wkt.prototype.isCollection=function(){switch(this.type.slice(0,5)){case "multi":return true;case "polyg":return true;default:return false}};Wkt.Wkt.prototype.sameCoords=function(a,b){return a.x===b.x&&a.y===b.y};Wkt.Wkt.prototype.fromObject=function(obj){var result=this.deconstruct.call(this,obj);this.components=result.components;this.isRectangle=result.isRectangle||false;this.type=result.type;return this};
-Wkt.Wkt.prototype.toObject=function(config){return this.construct[this.type].call(this,config)};Wkt.Wkt.prototype.read=function(wkt){var matches;matches=this.regExes.typeStr.exec(wkt);if(matches){this.type=matches[1].toLowerCase();this.base=matches[2];if(this.ingest[this.type])this.components=this.ingest[this.type].apply(this,[this.base])}else{console.log("Invalid WKT string provided to read()");throw{name:"WKTError",message:"Invalid WKT string provided to read()"};}return this.components};
+Wkt.Wkt.prototype.toObject=function(config){return this.construct[this.type].call(this,config)};Wkt.Wkt.prototype.merge=function(wkt){if(this.type!==wkt.type)throw TypeError("The input geometry types must agree");this.components.concat(wkt.components);this.type="multi"+this.type};
+Wkt.Wkt.prototype.read=function(wkt){var matches;matches=this.regExes.typeStr.exec(wkt);if(matches){this.type=matches[1].toLowerCase();this.base=matches[2];if(this.ingest[this.type])this.components=this.ingest[this.type].apply(this,[this.base])}else{console.log("Invalid WKT string provided to read()");throw{name:"WKTError",message:"Invalid WKT string provided to read()"};}return this.components};
 Wkt.Wkt.prototype.write=function(components){var i,pieces,data;components=components||this.components;pieces=[];pieces.push(this.type.toUpperCase()+"(");for(i=0;i<components.length;i+=1){if(this.isCollection()&&i>0)pieces.push(",");if(!this.extract[this.type])return null;data=this.extract[this.type].apply(this,[components[i]]);if(this.isCollection()&&this.type!=="multipoint")pieces.push("("+data+")");else{pieces.push(data);if(i!==components.length-1&&this.type!=="multipoint")pieces.push(",")}}pieces.push(")");
 return pieces.join("")};
 Wkt.Wkt.prototype.extract={point:function(point){return point.x+this.delimiter+point.y},multipoint:function(multipoint){var i,parts=[],s;for(i=0;i<multipoint.length;i+=1){s=this.extract.point.apply(this,[multipoint[i]]);if(this.wrapVertices)s="("+s+")";parts.push(s)}return parts.join(",")},linestring:function(linestring){return this.extract.point.apply(this,[linestring])},multilinestring:function(multilinestring){var i,parts=[];for(i=0;i<multilinestring.length;i+=1)parts.push(this.extract.linestring.apply(this,[multilinestring[i]]));

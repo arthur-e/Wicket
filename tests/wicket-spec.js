@@ -17,7 +17,7 @@ describe('Consistent Design Patterns', function () {
 
 });
 
-describe('Standard WKT Test Cases', function () {
+describe('Standard WKT Test Cases: ', function () {
     var cases, wkt;
 
     wkt = new Wkt.Wkt();
@@ -160,7 +160,7 @@ describe('Standard WKT Test Cases', function () {
 
     };
 
-    describe('Reading WKT Strings', function () {
+    describe('Reading WKT Strings: ', function () {
 
         afterEach(function () {
             wkt.delimiter = ' ';
@@ -285,7 +285,7 @@ describe('Standard WKT Test Cases', function () {
 
     }); // eo describe()
 
-    describe('Writing Well-Formed WKT Strings', function () {
+    describe('Writing Well-Formed WKT Strings: ', function () {
 
         afterEach(function () {
             wkt.wrapVertices = false;
@@ -397,7 +397,7 @@ describe('Standard WKT Test Cases', function () {
 
 }); // eo describe()
 
-describe('Arbitrary WKT Test Cases', function () {
+describe('Arbitrary WKT Test Cases: ', function () {
     var cases, wkt;
 
     wkt = new Wkt.Wkt();
@@ -451,7 +451,7 @@ describe('Arbitrary WKT Test Cases', function () {
         expect(wkt.write()).toBe('MULTIPOINT((9.12345 40),(40 30),(20 19.999999),(30 10.000001))');
     });
 
-    describe('Working with Random Coordinates', function () {
+    describe('Working with Random Coordinates: ', function () {
         var c;
 
         it('should read and write arbitrary POINT string', function () {
@@ -477,5 +477,105 @@ describe('Arbitrary WKT Test Cases', function () {
 
     });
 });
+
+describe('Edge Cases: ', function () {
+    var wkt = new Wkt.Wkt();
+
+    afterEach(function () {
+        wkt.wrapVertices = false;
+        wkt.delimiter = ' ';
+    });
+
+    it('should read a POINT string with single-digit coordinates', function () {
+        var test = {
+            str: 'POINT(4 4)',
+            cmp: [
+                {x: 4, y: 4}
+            ]
+        };
+
+        wkt.read(test.str);
+
+        expect(wkt.type).toBe('point');
+        expect(wkt.isCollection()).toBe(false);
+        expect(wkt.components).toEqual(test.cmp);
+
+        // Now try it for URLs
+        wkt.delimiter = '+';
+        wkt.read(test.str.replace(/ /g, '+'));
+        expect(wkt.components).toEqual(test.cmp);
+    });
+
+    it('should read a LINESTRING string with single-digit coordinates', function () {
+        var test = {
+            str: 'LINESTRING(4 4,3 5,6 7)',
+            cmp: [
+                {x: 4, y: 4},
+                {x: 3, y: 5},
+                {x: 6, y: 7}
+            ]
+        };
+
+        wkt.read(test.str);
+
+        expect(wkt.type).toBe('linestring');
+        expect(wkt.isCollection()).toBe(false);
+        expect(wkt.components).toEqual(test.cmp);
+
+        // Now try it for URLs
+        wkt.delimiter = '+';
+        wkt.read(test.str.replace(/ /g, '+'));
+        expect(wkt.components).toEqual(test.cmp);
+    });
+
+    it('should read a POLYGON string with single-digit coordinates', function () {
+        var test = {
+            str: 'POLYGON((4 4,3 5,6 7,7 5,4 4))',
+            cmp: [[
+                {x: 4, y: 4},
+                {x: 3, y: 5},
+                {x: 6, y: 7},
+                {x: 7, y: 5},
+                {x: 4, y: 4}
+            ]]
+        };
+
+        wkt.read(test.str);
+
+        expect(wkt.type).toBe('polygon');
+        expect(wkt.isCollection()).toBe(true);
+        expect(wkt.components).toEqual(test.cmp);
+
+        // Now try it for URLs
+        wkt.delimiter = '+';
+        wkt.read(test.str.replace(/ /g, '+'));
+        expect(wkt.components).toEqual(test.cmp);
+    });
+
+    it('should read a POLYGON string with excess precision', function () {
+        var test = {
+            str: 'POLYGON((4.1234 4,3 5,6 7,7 5.5678,4 4))',
+            cmp: [[
+                {x: 4.1234, y: 4},
+                {x: 3, y: 5},
+                {x: 6, y: 7},
+                {x: 7, y: 5.5678},
+                {x: 4, y: 4}
+            ]]
+        };
+
+        wkt.read(test.str);
+
+        expect(wkt.type).toBe('polygon');
+        expect(wkt.isCollection()).toBe(true);
+        expect(wkt.components).toEqual(test.cmp);
+
+        // Now try it for URLs
+        wkt.delimiter = '+';
+        wkt.read(test.str.replace(/ /g, '+'));
+        expect(wkt.components).toEqual(test.cmp);
+    });
+}); // eo describe()
+
 
 
