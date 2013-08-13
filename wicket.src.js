@@ -97,6 +97,7 @@ var Wkt = (function () { // Execute function immediately
          * @property            {Array}     components      - Holder for atomic geometry objects (internal representation of geometric components)
          * @property            {String}    delimiter       - The default delimiter for separating components of atomic geometry (coordinates)
          * @property            {Object}    regExes         - Some regular expressions copied from OpenLayers.Format.WKT.js
+         * @property            {String}    type            - The Well-Known Text name (e.g. 'point') of the geometry
          * @property            {Boolean}   wrapVerticies   - True to wrap vertices in MULTIPOINT geometries; If true: MULTIPOINT((30 10),(10 30),(40 40)); If false: MULTIPOINT(30 10,10 30,40 40)
          * @return              {Wkt.Wkt}
          * @memberof Wkt
@@ -142,9 +143,9 @@ var Wkt = (function () { // Execute function immediately
             // An initial WKT string may be provided
             if (initializer && typeof initializer === 'string') {
                 this.read(initializer);
-            } else if (this.fromGeometry) { // Or, an initial geometry object to be read
-                this.fromGeometry(initializer);
-            }
+            } else if (initializer && typeof initializer !== undefined) {
+                this.fromObject(initializer);
+            } 
 
         }
 
@@ -216,18 +217,45 @@ Wkt.Wkt.prototype.toObject = function (config) {
  * Absorbs the geometry of another Wkt.Wkt instance, merging it with its own,
  * creating a collection (MULTI-geometry) based on their types, which must agree.
  * For example, creates a MULTIPOLYGON from a POLYGON type merged with another
+<<<<<<< HEAD
  * POLYGON type.
+=======
+ * POLYGON type, or adds a POLYGON instance to a MULTIPOLYGON instance.
+>>>>>>> dev
  * @memberof Wkt.Wkt
  * @method
  */
 Wkt.Wkt.prototype.merge = function (wkt) {
+    var prefix = this.type.slice(0, 5);
+
     if (this.type !== wkt.type) {
-        throw TypeError('The input geometry types must agree');
+        if (this.type.slice(5, this.type.length) !== wkt.type) {
+            throw TypeError('The input geometry types must agree or the calling Wkt.Wkt instance must be a multigeometry of the other');
+        }
     }
 
-    this.components.concat(wkt.components)
+    switch (prefix) {
 
-    this.type = 'multi' + this.type;
+        case 'point':
+        this.components = [this.components.concat(wkt.components)];
+        break;
+
+        case 'multi':
+        this.components = this.components.concat((wkt.type.slice(0, 5) === 'multi') ? wkt.components : [wkt.components]);
+        break;
+
+        default:
+        this.components = [
+            this.components,
+            wkt.components
+        ]
+        break;
+
+    }
+
+    if (prefix !== 'multi') {
+        this.type = 'multi' + this.type;
+    }
 };
 
 /**

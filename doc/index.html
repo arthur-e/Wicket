@@ -79,7 +79,7 @@ var app = (function () {
             obj = wkt.toObject(this.gmap.defaults); // Make an object
 
             // Add listeners for overlay editing events
-            if (wkt.type === 'polygon' || wkt.type === 'linestring') {
+            if (!Wkt.isArray(obj) && wkt.type !== 'point') {
                 // New vertex is inserted
                 google.maps.event.addListener(obj.getPath(), 'insert_at', function (n) {
                     app.updateText();
@@ -100,9 +100,25 @@ var app = (function () {
                 for (i in obj) {
                     if (obj.hasOwnProperty(i) && !Wkt.isArray(obj[i])) {
                         obj[i].setMap(this.gmap);
-                        this.features.push(obj[i]);
+                    }
+
+                    if (wkt.type !== 'point') {
+                        // New vertex is inserted
+                        google.maps.event.addListener(obj[i].getPath(), 'insert_at', function (n) {
+                            app.updateTextPart();
+                        });
+                        // Existing vertex is removed (insertion is undone)
+                        google.maps.event.addListener(obj[i].getPath(), 'remove_at', function (n) {
+                            app.updateTextPart();
+                        });
+                        // Existing vertex is moved (set elsewhere)
+                        google.maps.event.addListener(obj[i].getPath(), 'set_at', function (n) {
+                            app.updateTextPart();
+                        });
                     }
                 }
+
+                this.features = this.features.concat(obj);
             } else {
                 obj.setMap(this.gmap); // Add it to the map
                 this.features.push(obj);
@@ -132,6 +148,20 @@ var app = (function () {
             var wkt = new Wkt.Wkt();
             wkt.fromObject(this.features[0]);
             document.getElementById('wkt').value = wkt.write();
+        },
+        updateTextPart: function () {
+            var i, w, v;
+
+            w = new Wkt.Wkt(this.features[0]);
+
+            i = 1;
+            while (i < this.features.length) {
+                v = new Wkt.Wkt(this.features[i]);
+                w.merge(v);
+                i += 1;
+            }
+
+            document.getElementById('wkt').value = w.write();
         },
         /**
          * Formats the textarea contents for a URL.

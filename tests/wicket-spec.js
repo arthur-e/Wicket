@@ -575,7 +575,498 @@ describe('Edge Cases: ', function () {
         wkt.read(test.str.replace(/ /g, '+'));
         expect(wkt.components).toEqual(test.cmp);
     });
+
 }); // eo describe()
 
+describe('Merged WKT Test Cases: ', function () {
+    var cases = {
 
+        pointA: {
+            str: 'POINT(30 10)',
+            cmp: [
+                {x: 30, y: 10}
+            ]
+        },
 
+        pointB: {
+            str: 'POINT(25 45)',
+            cmp: [
+                {x: 25, y: 45}
+            ]
+        },
+
+        linestringA: {
+            str: 'LINESTRING(25 15,15 35,35 35)',
+            cmp: [
+                {x: 25, y: 15},
+                {x: 15, y: 35},
+                {x: 35, y: 35}
+            ]
+        },
+
+        linestringB: {
+            str: 'LINESTRING(30 10,10 30,40 40)',
+            cmp: [
+                {x: 30, y: 10},
+                {x: 10, y: 30},
+                {x: 40, y: 40}
+            ]
+        },
+
+        polygonA: {
+            str: 'POLYGON((30 10,10 20,20 40,40 40,30 10))',
+            cmp: [
+                [
+                    {x: 30, y: 10},
+                    {x: 10, y: 20},
+                    {x: 20, y: 40},
+                    {x: 40, y: 40},
+                    {x: 30, y: 10}
+                ]
+            ]
+        },
+
+        polygonB: {
+            str: 'POLYGON((35 15,15 25,25 45,45 45,35 15))',
+            cmp: [
+                [
+                    {x: 35, y: 15},
+                    {x: 15, y: 25},
+                    {x: 25, y: 45},
+                    {x: 45, y: 45},
+                    {x: 35, y: 15}
+                ]
+            ]
+        },
+
+        polygon2A: {
+            str: 'POLYGON((35 10,10 20,15 40,45 45,35 10),(20 30,35 35,30 20,20 30))',
+            cmp: [
+                [
+                    {x: 35, y: 10},
+                    {x: 10, y: 20},
+                    {x: 15, y: 40},
+                    {x: 45, y: 45},
+                    {x: 35, y: 10}
+                ], [
+                    {x: 20, y: 30},
+                    {x: 35, y: 35},
+                    {x: 30, y: 20},
+                    {x: 20, y: 30}
+                ]
+            ]
+        },
+
+        polygon2B: {
+            str: 'POLYGON((135 110,110 120,115 140,145 145,135 110),(120 130,135 135,130 120,120 130))',
+            cmp: [
+                [
+                    {x: 135, y: 110},
+                    {x: 110, y: 120},
+                    {x: 115, y: 140},
+                    {x: 145, y: 145},
+                    {x: 135, y: 110}
+                ], [
+                    {x: 120, y: 130},
+                    {x: 135, y: 135},
+                    {x: 130, y: 120},
+                    {x: 120, y: 130}
+                ]
+            ]
+        },
+
+        multipointA: {
+            str: 'MULTIPOINT((10 40),(40 30),(20 20),(30 10))',
+            cmp: [
+                [{x: 10, y: 40}],
+                [{x: 40, y: 30}],
+                [{x: 20, y: 20}],
+                [{x: 30, y: 10}]
+            ]
+        },
+
+        multipointB: {
+            str: 'MULTIPOINT((15 45),(45 35),(25 25),(35 15))',
+            cmp: [
+                [{x: 15, y: 45}],
+                [{x: 45, y: 35}],
+                [{x: 25, y: 25}],
+                [{x: 35, y: 15}]
+            ]
+        },
+
+        multilinestringA: {
+            str: 'MULTILINESTRING((10 10,20 20,10 40),(40 40,30 30,40 20,30 10))',
+            cmp: [
+                [
+                    {x: 10, y: 10},
+                    {x: 20, y: 20},
+                    {x: 10, y: 40}
+                ], [
+                    {x: 40, y: 40},
+                    {x: 30, y: 30},
+                    {x: 40, y: 20},
+                    {x: 30, y: 10}
+                ]
+            ]
+        },
+
+        multilinestringB: {
+            str: 'MULTILINESTRING((15 15,25 25,15 45),(45 45,35 35,45 25,35 15))',
+            cmp: [
+                [
+                    {x: 15, y: 15},
+                    {x: 25, y: 25},
+                    {x: 15, y: 45}
+                ], [
+                    {x: 45, y: 45},
+                    {x: 35, y: 35},
+                    {x: 45, y: 25},
+                    {x: 35, y: 15}
+                ]
+            ]
+        },
+
+        multipolygonA: {
+            str: 'MULTIPOLYGON(((30 20,10 40,45 40,30 20)),((15 5,40 10,10 20,5 10,15 5)))',
+            cmp: [
+                [
+                    [
+                        {x: 30, y: 20},
+                        {x: 10, y: 40},
+                        {x: 45, y: 40},
+                        {x: 30, y: 20},
+                    ]
+                ], [
+                    [
+                        {x: 15, y: 5},
+                        {x: 40, y: 10},
+                        {x: 10, y: 20},
+                        {x: 5, y: 10},
+                        {x: 15, y: 5}
+                    ]
+                ]
+            ]
+        },
+
+        multipolygonB: {
+            str: 'MULTIPOLYGON(((130 120,110 140,145 140,130 120)),((115 15,140 110,110 120,15 110,115 15)))',
+            cmp: [
+                [
+                    [
+                        {x: 130, y: 120},
+                        {x: 110, y: 140},
+                        {x: 145, y: 140},
+                        {x: 130, y: 120},
+                    ]
+                ], [
+                    [
+                        {x: 115, y: 15},
+                        {x: 140, y: 110},
+                        {x: 110, y: 120},
+                        {x: 15, y: 110},
+                        {x: 115, y: 15}
+                    ]
+                ]
+            ]
+        }
+
+    };
+
+    it('should merge POINT strings together', function () {
+        var a = new Wkt.Wkt(cases.pointA.str),
+            b = new Wkt.Wkt(cases.pointB.str);
+
+        a.merge(b);
+        expect(a.type).toBe('multipoint');
+        expect(b.type).toBe('point');
+        expect(a.isCollection()).toBe(true);
+        expect(b.isCollection()).toBe(false);
+        expect(a.write()).toBe('MULTIPOINT((30 10),(25 45))');
+        expect(a.components).toEqual([[
+            {x: 30, y: 10},
+            {x: 25, y: 45}
+        ]]);
+
+    });
+
+    it('should merge LINESTRING strings together', function () {
+        var a = new Wkt.Wkt(cases.linestringA.str),
+            b = new Wkt.Wkt(cases.linestringB.str);
+
+        a.merge(b);
+        expect(a.type).toBe('multilinestring');
+        expect(b.type).toBe('linestring');
+        expect(a.isCollection()).toBe(true);
+        expect(b.isCollection()).toBe(false);
+        expect(a.write()).toBe('MULTILINESTRING((25 15,15 35,35 35),(30 10,10 30,40 40))');
+        expect(a.components).toEqual([[
+            {x: 25, y: 15},
+            {x: 15, y: 35},
+            {x: 35, y: 35}
+        ], [
+            {x: 30, y: 10},
+            {x: 10, y: 30},
+            {x: 40, y: 40}
+        ]]);
+
+    });
+
+    it('should merge POLYGON strings together', function () {
+        var a = new Wkt.Wkt(cases.polygonA.str),
+            b = new Wkt.Wkt(cases.polygonB.str);
+
+        a.merge(b);
+        expect(a.type).toBe('multipolygon');
+        expect(b.type).toBe('polygon');
+        expect(a.isCollection()).toBe(true);
+        expect(b.isCollection()).toBe(true);
+        expect(a.write()).toBe('MULTIPOLYGON(((30 10,10 20,20 40,40 40,30 10)),((35 15,15 25,25 45,45 45,35 15)))');
+        expect(a.components).toEqual([[[
+            {x: 30, y: 10},
+            {x: 10, y: 20},
+            {x: 20, y: 40},
+            {x: 40, y: 40},
+            {x: 30, y: 10}
+        ]], [[
+            {x: 35, y: 15},
+            {x: 15, y: 25},
+            {x: 25, y: 45},
+            {x: 45, y: 45},
+            {x: 35, y: 15}
+        ]]]);
+
+    });
+
+    it('should merge POLYGON strings together even if they have holes', function () {
+        var a = new Wkt.Wkt(cases.polygon2A.str),
+            b = new Wkt.Wkt(cases.polygon2B.str);
+
+        a.merge(b);
+        expect(a.type).toBe('multipolygon');
+        expect(b.type).toBe('polygon');
+        expect(a.isCollection()).toBe(true);
+        expect(b.isCollection()).toBe(true);
+        expect(a.write()).toBe('MULTIPOLYGON(((35 10,10 20,15 40,45 45,35 10),(20 30,35 35,30 20,20 30)),((135 110,110 120,115 140,145 145,135 110),(120 130,135 135,130 120,120 130)))');
+        expect(a.components).toEqual([[
+            [
+                {x: 35, y: 10},
+                {x: 10, y: 20},
+                {x: 15, y: 40},
+                {x: 45, y: 45},
+                {x: 35, y: 10}
+            ], [
+                {x: 20, y: 30},
+                {x: 35, y: 35},
+                {x: 30, y: 20},
+                {x: 20, y: 30}
+            ]
+        ], [
+            [
+                {x: 135, y: 110},
+                {x: 110, y: 120},
+                {x: 115, y: 140},
+                {x: 145, y: 145},
+                {x: 135, y: 110}
+            ], [
+                {x: 120, y: 130},
+                {x: 135, y: 135},
+                {x: 130, y: 120},
+                {x: 120, y: 130}
+            ]
+        ]]);
+
+    });
+
+    it('should merge MULTIPOINT strings together', function () {
+        var a = new Wkt.Wkt(cases.multipointA.str),
+            b = new Wkt.Wkt(cases.multipointB.str);
+
+        a.merge(b);
+        expect(a.type).toBe('multipoint');
+        expect(b.type).toBe('multipoint');
+        expect(a.isCollection()).toBe(true);
+        expect(b.isCollection()).toBe(true);
+        expect(a.write()).toBe('MULTIPOINT((10 40),(40 30),(20 20),(30 10),(15 45),(45 35),(25 25),(35 15))');
+        expect(a.components).toEqual([
+            [{x: 10, y: 40}],
+            [{x: 40, y: 30}],
+            [{x: 20, y: 20}],
+            [{x: 30, y: 10}],
+            [{x: 15, y: 45}],
+            [{x: 45, y: 35}],
+            [{x: 25, y: 25}],
+            [{x: 35, y: 15}]
+        ]);
+
+    });
+
+    it('should merge MULTILINESTRING strings together', function () {
+        var a = new Wkt.Wkt(cases.multilinestringA.str),
+            b = new Wkt.Wkt(cases.multilinestringB.str);
+
+        a.merge(b);
+        expect(a.type).toBe('multilinestring');
+        expect(b.type).toBe('multilinestring');
+        expect(a.isCollection()).toBe(true);
+        expect(b.isCollection()).toBe(true);
+        expect(a.write()).toBe('MULTILINESTRING((10 10,20 20,10 40),(40 40,30 30,40 20,30 10),(15 15,25 25,15 45),(45 45,35 35,45 25,35 15))');
+        expect(a.components).toEqual([
+            [
+                {x: 10, y: 10},
+                {x: 20, y: 20},
+                {x: 10, y: 40}
+            ], [
+                {x: 40, y: 40},
+                {x: 30, y: 30},
+                {x: 40, y: 20},
+                {x: 30, y: 10}
+            ], [
+                {x: 15, y: 15},
+                {x: 25, y: 25},
+                {x: 15, y: 45}
+            ], [
+                {x: 45, y: 45},
+                {x: 35, y: 35},
+                {x: 45, y: 25},
+                {x: 35, y: 15}
+            ]
+        ]);
+
+    });
+
+    it('should merge MULTIPOLYGON strings together', function () {
+        var a = new Wkt.Wkt(cases.multipolygonA.str),
+            b = new Wkt.Wkt(cases.multipolygonB.str);
+
+        a.merge(b);
+        expect(a.type).toBe('multipolygon');
+        expect(b.type).toBe('multipolygon');
+        expect(a.isCollection()).toBe(true);
+        expect(b.isCollection()).toBe(true);
+        expect(a.write()).toBe('MULTIPOLYGON(((30 20,10 40,45 40,30 20)),((15 5,40 10,10 20,5 10,15 5)),((130 120,110 140,145 140,130 120)),((115 15,140 110,110 120,15 110,115 15)))');
+        expect(a.components).toEqual([
+            [
+                [
+                    {x: 30, y: 20},
+                    {x: 10, y: 40},
+                    {x: 45, y: 40},
+                    {x: 30, y: 20},
+                ]
+            ], [
+                [
+                    {x: 15, y: 5},
+                    {x: 40, y: 10},
+                    {x: 10, y: 20},
+                    {x: 5, y: 10},
+                    {x: 15, y: 5}
+                ]
+            ], [
+                [
+                    {x: 130, y: 120},
+                    {x: 110, y: 140},
+                    {x: 145, y: 140},
+                    {x: 130, y: 120},
+                ]
+            ], [
+                [
+                    {x: 115, y: 15},
+                    {x: 140, y: 110},
+                    {x: 110, y: 120},
+                    {x: 15, y: 110},
+                    {x: 115, y: 15}
+                ]
+            ]
+        ]);
+
+    });
+
+    it('should merge POINT strings into MULTIPOINT strings', function () {
+        var a = new Wkt.Wkt(cases.multipointA.str),
+            b = new Wkt.Wkt(cases.pointB.str);
+
+        a.merge(b);
+        expect(a.type).toBe('multipoint');
+        expect(b.type).toBe('point');
+        expect(a.isCollection()).toBe(true);
+        expect(b.isCollection()).toBe(false);
+        expect(a.write()).toBe('MULTIPOINT((10 40),(40 30),(20 20),(30 10),(25 45))');
+        expect(a.components).toEqual([
+            [{x: 10, y: 40}],
+            [{x: 40, y: 30}],
+            [{x: 20, y: 20}],
+            [{x: 30, y: 10}],
+            [{x: 25, y: 45}]
+        ]);
+
+    });
+
+    it('should merge LINESTRING strings into MULTILINESTRING strings', function () {
+        var a = new Wkt.Wkt(cases.multilinestringA.str),
+            b = new Wkt.Wkt(cases.linestringB.str);
+
+        a.merge(b);
+        expect(a.type).toBe('multilinestring');
+        expect(b.type).toBe('linestring');
+        expect(a.isCollection()).toBe(true);
+        expect(b.isCollection()).toBe(false);
+        expect(a.write()).toBe('MULTILINESTRING((10 10,20 20,10 40),(40 40,30 30,40 20,30 10),(30 10,10 30,40 40))');
+        expect(a.components).toEqual([
+            [
+                {x: 10, y: 10},
+                {x: 20, y: 20},
+                {x: 10, y: 40}
+            ], [
+                {x: 40, y: 40},
+                {x: 30, y: 30},
+                {x: 40, y: 20},
+                {x: 30, y: 10}
+            ], [
+                {x: 30, y: 10},
+                {x: 10, y: 30},
+                {x: 40, y: 40}
+            ]
+        ]);
+
+    });
+
+    it('should merge POLYGON strings into MULTIPOLYGON strings', function () {
+        var a = new Wkt.Wkt(cases.multipolygonA.str),
+            b = new Wkt.Wkt(cases.polygonB.str);
+
+        a.merge(b);
+        expect(a.type).toBe('multipolygon');
+        expect(b.type).toBe('polygon');
+        expect(a.isCollection()).toBe(true);
+        expect(b.isCollection()).toBe(true);
+        expect(a.write()).toBe('MULTIPOLYGON(((30 20,10 40,45 40,30 20)),((15 5,40 10,10 20,5 10,15 5)),((35 15,15 25,25 45,45 45,35 15)))');
+        expect(a.components).toEqual([
+            [
+                [
+                    {x: 30, y: 20},
+                    {x: 10, y: 40},
+                    {x: 45, y: 40},
+                    {x: 30, y: 20},
+                ]
+            ], [
+                [
+                    {x: 15, y: 5},
+                    {x: 40, y: 10},
+                    {x: 10, y: 20},
+                    {x: 5, y: 10},
+                    {x: 15, y: 5}
+                ]
+            ], [
+                [
+                    {x: 35, y: 15},
+                    {x: 15, y: 25},
+                    {x: 25, y: 45},
+                    {x: 45, y: 45},
+                    {x: 35, y: 15}
+                ]
+            ]
+        ]);
+
+    });
+
+});

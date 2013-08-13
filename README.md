@@ -1,6 +1,6 @@
 # Wicket #
 
-Updated **May 11, 2013**. Wicket is a lightweight library for translating between [Well-Known Text (WKT)](http://en.wikipedia.org/wiki/Well-known_text) and various client-side mapping frameworks:
+Updated **August 12, 2013**. Wicket is a lightweight library for translating between [Well-Known Text (WKT)](http://en.wikipedia.org/wiki/Well-known_text) and various client-side mapping frameworks:
 * [Leaflet](http://arthur-e.github.com/Wicket/)
 * [Google Maps API](http://arthur-e.github.com/Wicket/sandbox-gmaps3.html)
 * [ESRI ArcGIS JavaScript API](http://arthur-e.github.com/Wicket/sandbox-arcgis.html)
@@ -19,7 +19,7 @@ Accordingly:
 
 ## Documentation ##
 
-Read the documentation [here](http://arthur-e.github.io/Wicket/doc/out/). Documentation can be generated with [JSDoc 3](https://github.com/jsdoc3/jsdoc). I'm not a JSDoc 3 expert; feel free to revise the tags.
+Read the documentation [here](http://arthur-e.github.io/Wicket/doc/out/). Documentation can be generated with [JSDoc 3](https://github.com/jsdoc3/jsdoc).
 
     git clone git://github.com/jsdoc3/jsdoc.git
     ./jsdoc /var/www/static/wicket/wicket.src.js
@@ -29,7 +29,7 @@ Or, with Node installed:
     sudo npm install -g git://github.com/jsdoc3/jsdoc.git
     jsdoc /var/www/static/wicket/wicket.src.js
 
-Either way, make sure you invoke `jsdoc` from a directory you can write to; it will output documentation to your current working directory.
+Either way, make sure you invoke `jsdoc` from a directory in which you have write access; it will output documentation to your current working directory.
 
 ## Build Information ##
 
@@ -65,6 +65,10 @@ The following examples work in any of the mapping environments, as Wicket has a 
     console.log(wkt.components);
     // "[ [ {x: 30, y: 10}, {x: 10, y: 30}, ...] ]"
     wkt.components[0][1].x = 15;
+
+    wkt.merge(new Wkt.Wkt('POLYGON((35 15,15 25,25 45,45 45,35 15))'));
+    wkt.write();
+    // MULTIPOLYGON(((30 10,10 20,20 40,40 40,30 10)),((35 15,15 25,25 45,45 45,35 15)))
     
     // Create a geometry object, ready to be mapped!
     wkt.toObject();
