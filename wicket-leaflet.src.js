@@ -299,9 +299,12 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
 
         // Now, any holes
         if (obj._holes && obj._holes.length > 0) {
-            verts = coordsFromLatLngs(obj._holes)[0];
-            verts.push(verts[0]); // Copy the beginning coords again for closture
-            rings.push(verts);
+            // Reworked to support holes properly
+            verts = coordsFromLatLngs(obj._holes);
+            for (i=0; i < verts.length;i++) {
+                verts[i].push(verts[i][0]); // Copy the beginning coords again for closure
+                rings.push(verts[i]);
+            }
         }
 
         return {
