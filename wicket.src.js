@@ -214,14 +214,19 @@ Wkt.Wkt.prototype.toObject = function (config) {
 };
 
 /**
+ * Returns the WKT string representation; the same as the write() method.
+ * @memberof Wkt.Wkt
+ * @method
+ */
+Wkt.Wkt.prototype.toString = function (config) {
+    return this.write();
+};
+
+/**
  * Absorbs the geometry of another Wkt.Wkt instance, merging it with its own,
  * creating a collection (MULTI-geometry) based on their types, which must agree.
  * For example, creates a MULTIPOLYGON from a POLYGON type merged with another
-<<<<<<< HEAD
- * POLYGON type.
-=======
  * POLYGON type, or adds a POLYGON instance to a MULTIPOLYGON instance.
->>>>>>> dev
  * @memberof Wkt.Wkt
  * @method
  */
