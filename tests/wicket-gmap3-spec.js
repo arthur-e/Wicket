@@ -236,6 +236,21 @@ describe('Standard WKT Test Cases: ', function () {
                     ]]
                 })
             ]
+        },
+
+        rectangle: {
+            str: 'POLYGON((0 20,0 0,-50 0,-50 20,0 20))',
+            cmp: [[
+                {x: 0, y: 20},
+                {x: 0, y: 0},
+                {x: -50, y: 0},
+                {x: -50, y: 20},
+                {x: 0, y: 20}
+            ]],
+            obj: new google.maps.Rectangle({
+                bounds: new google.maps.LatLngBounds(new google.maps.LatLng(0, -50),
+                    new google.maps.LatLng(20, 0))
+            })
         }
 
     };
@@ -276,6 +291,15 @@ describe('Standard WKT Test Cases: ', function () {
             expect(wkt.isCollection()).toBe(true);
             expect(wkt.components).toEqual(cases.polygon2.cmp);
             expect(wkt.write()).toBe(cases.polygon2.str);
+        });
+
+        it('should convert a Rectangle instance into a POLYGON string', function () {
+            wkt.fromObject(cases.rectangle.obj);
+            expect(wkt.type).toBe('polygon');
+            expect(wkt.isRectangle).toBe(true);
+            expect(wkt.isCollection()).toBe(true);
+            expect(wkt.components).toEqual(cases.rectangle.cmp);
+            expect(wkt.write()).toBe(cases.rectangle.str);
         });
 
         it('should convert an Array of Marker instances into a MULTIPOINT string', function () {
@@ -348,6 +372,16 @@ describe('Standard WKT Test Cases: ', function () {
             expect(wkt.isCollection()).toBe(true);
             expect(wkt.components).toEqual(cases.polygon2.cmp);
             expect(wkt.toObject()).toEqual(cases.polygon2.obj);
+        });
+
+        it('should convert a POLYGON string, with isRectangle=true, into a Rectangle instance', function () {
+            wkt.read(cases.rectangle.str);
+            wkt.isRectangle = true;
+            expect(wkt.type).toBe('polygon');
+            expect(wkt.isCollection()).toBe(true);
+            expect(wkt.components).toEqual(cases.rectangle.cmp);
+            expect(wkt.toObject()).toEqual(cases.rectangle.obj);
+            expect(wkt.toObject().constructor).toEqual(google.maps.Rectangle);
         });
 
         it('should convert a MULTIPOINT string into an Array of Marker instances', function () {

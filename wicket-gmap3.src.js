@@ -163,7 +163,19 @@ Wkt.Wkt.prototype.construct = {
         config.paths = config.paths.concat(rings);
 
         if (this.isRectangle) {
-            console.log('Rectangles are not yet supported; set the isRectangle property to false (default).');
+            return (function () {
+                var bounds, v;
+
+                bounds = new google.maps.LatLngBounds();
+
+                for (v in rings[0]) { // Ought to be only 1 ring in a Rectangle
+                    if (rings[0].hasOwnProperty(v)) {
+                        bounds.extend(rings[0][v]);
+                    }
+                }
+
+                return new google.maps.Rectangle({bounds: bounds});
+            }());
         } else {
             return new google.maps.Polygon(config);
         }
@@ -288,10 +300,6 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
             isRectangle: true,
             components: [
                 [
-                    { // NW corner
-                        x: tmp.getSouthWest().lng(),
-                        y: tmp.getNorthEast().lat()
-                    },
                     { // NE corner
                         x: tmp.getNorthEast().lng(),
                         y: tmp.getNorthEast().lat()
@@ -304,8 +312,12 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
                         x: tmp.getSouthWest().lng(),
                         y: tmp.getSouthWest().lat()
                     },
-                    { // NW corner (again, for closure)
+                    { // NW corner
                         x: tmp.getSouthWest().lng(),
+                        y: tmp.getNorthEast().lat()
+                    },
+                    { // NE corner (again, for closure)
+                        x: tmp.getNorthEast().lng(),
                         y: tmp.getNorthEast().lat()
                     }
                 ]
