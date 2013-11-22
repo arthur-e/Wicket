@@ -569,7 +569,7 @@ Wkt.Wkt.prototype.ingest = {
         var i, multipoints, components;
         // In our x-and-y representation of components, parsing
         //  multipoints is the same as parsing linestrings
-        multipoints = this.ingest.multipoint.apply(th
+        multipoints = this.ingest.multipoint.apply(this, [str]);
         // However, the points need to be joined
         components = [];
         for (i = 0; i < multipoints.length; i += 1) {
