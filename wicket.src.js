@@ -432,7 +432,7 @@ Wkt.Wkt.prototype.extract = {
         }
         return parts.join(',');
     },
-    
+
     /**
      * Return a WKT string representing a 2DBox
      * @param   multipolygon    {Array}     Collection of ordered x-and-y objects
@@ -555,6 +555,25 @@ Wkt.Wkt.prototype.ingest = {
                 });
             }
             components.push(subcomponents);
+        }
+        return components;
+    },
+
+    /**
+     * Return box vertices (which would become the Rectangle bounds)  given a Box WKT fragment.
+     * @param   str {String}    A WKT fragment representing the box
+     * @memberof Wkt.Wkt.ingest
+     * @instance
+     */
+    box: function (str) {
+        var i, multipoints, components;
+        // In our x-and-y representation of components, parsing
+        //  multipoints is the same as parsing linestrings
+        multipoints = this.ingest.multipoint.apply(th
+        // However, the points need to be joined
+        components = [];
+        for (i = 0; i < multipoints.length; i += 1) {
+            components = components.concat(multipoints[i]);
         }
         return components;
     },
