@@ -108,7 +108,7 @@ var Wkt = (function () { // Execute function immediately
              * The default delimiter between X and Y coordinates.
              * @ignore
              */
-            this.delimiter = Wkt.delimiter;
+            this.delimiter = Wkt.delimiter || ' ';
 
             /**
              * Configuration parameter for controlling how Wicket seralizes
@@ -351,7 +351,7 @@ Wkt.Wkt.prototype.extract = {
      * @instance
      */
     point: function (point) {
-        return point.x + this.delimiter + point.y;
+     	return String(point.x) + this.delimiter + String(point.y);
     },
 
     /**
@@ -432,6 +432,18 @@ Wkt.Wkt.prototype.extract = {
         }
         return parts.join(',');
     },
+    
+    /**
+     * Return a WKT string representing a 2DBox
+     * @param   multipolygon    {Array}     Collection of ordered x-and-y objects
+     * @return                  {String}    The WKT representation
+     * @memberof Wkt.Wkt.extract
+     * @instance
+     */
+    box: function (box) {
+       return this.extract.linestring.apply(this, [box]);
+    },
+
 
     geometrycollection: function (str) {
         console.log('The geometrycollection WKT type is not yet supported.');

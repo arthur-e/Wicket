@@ -125,6 +125,26 @@ Wkt.Wkt.prototype.construct = {
     },
 
     /**
+     * Creates the framework's equivalent Box or Rectangle geometry object.
+     * @param   config      {Object}    An optional properties hash the object should use
+     * @param   component   {Object}    An optional component to build from
+     * @return              {google.maps.Rectangle}
+     */
+    box: function (config, component) {
+        var c = component || this.components;
+
+        config = config || {};
+
+        config.bounds = new google.maps.LatLngBounds(
+                            new google.maps.LatLng(c[0].y, c[0].x),
+                            new google.maps.LatLng(c[1].y, c[1].x)
+                            );
+
+
+        return new google.maps.Rectangle(config);
+    },
+
+    /**
      * Creates the framework's equivalent polygon geometry object.
      * @param   config      {Object}    An optional properties hash the object should use
      * @param   component   {Object}    An optional component to build from
