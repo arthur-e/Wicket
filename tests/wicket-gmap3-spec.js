@@ -251,6 +251,18 @@ describe('Standard WKT Test Cases: ', function () {
                 bounds: new google.maps.LatLngBounds(new google.maps.LatLng(0, -50),
                     new google.maps.LatLng(20, 0))
             })
+        },
+
+        box: {
+            str: 'BOX(0 0,20 20)',
+            cmp: [
+                {x: 0, y: 0},
+                {x: 20, y: 20}
+            ],
+            obj: new google.maps.Rectangle({
+                bounds: new google.maps.LatLngBounds(new google.maps.LatLng(0, 0),
+                    new google.maps.LatLng(20, 20))
+            })
         }
 
     };
@@ -414,6 +426,14 @@ describe('Standard WKT Test Cases: ', function () {
             expect(wkt.isCollection()).toBe(true);
             expect(wkt.components).toEqual(cases.multipolygon2.cmp);
             expect(wkt.toObject()).toEqual(cases.multipolygon2.obj);
+        });
+
+        it('should convert a PostGIS 2DBOX string into a Rectangle instance', function () {
+            wkt.read(cases.box.str);
+            expect(wkt.type).toBe('box');
+            expect(wkt.isCollection()).toBe(false);
+            expect(wkt.components).toEqual(cases.box.cmp);
+            expect(wkt.toObject()).toEqual(cases.box.obj);
         });
 
     });

@@ -156,6 +156,14 @@ describe('Standard WKT Test Cases: ', function () {
                     ]
                 ]
             ]
+        },
+
+        box: {
+            str: 'BOX(0 0,20 20)',
+            cmp: [
+                {x: 0, y: 0},
+                {x: 20, y: 20}
+            ]
         }
 
     };
@@ -283,6 +291,19 @@ describe('Standard WKT Test Cases: ', function () {
             expect(wkt.components).toEqual(cases.multipolygon2.cmp);
         });
 
+        it('should read basic PostGIS 2DBOX string', function () {
+            wkt.read(cases.box.str);
+
+            expect(wkt.type).toBe('box');
+            expect(wkt.isCollection()).toBe(false);
+            expect(wkt.components).toEqual(cases.box.cmp);
+
+            // Now try it for URLs
+            wkt.delimiter = '+';
+            wkt.read(cases.box.str.replace(/ /g, '+'));
+            expect(wkt.components).toEqual(cases.box.cmp);
+        });
+
     }); // eo describe()
 
     describe('Writing Well-Formed WKT Strings: ', function () {
@@ -391,6 +412,17 @@ describe('Standard WKT Test Cases: ', function () {
             // Now try it for URLs
             wkt.delimiter = '+';
             expect(wkt.write()).toBe(cases.multipolygon2.str.replace(/ /g, '+'));
+        });
+
+        it('should write basic PostGIS 2DBOX string', function () {
+            wkt.components = cases.box.cmp;
+            wkt.type = 'box';
+
+            expect(wkt.write()).toBe(cases.box.str);
+
+            // Now try it for URLs
+            wkt.delimiter = '+';
+            expect(wkt.write()).toBe(cases.box.str.replace(/ /g, '+'));
         });
 
     });

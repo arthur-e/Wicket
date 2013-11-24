@@ -1,6 +1,6 @@
 # Wicket #
 
-Updated **August 12, 2013**. Wicket is a lightweight library for translating between [Well-Known Text (WKT)](http://en.wikipedia.org/wiki/Well-known_text) and various client-side mapping frameworks:
+Updated **November 24, 2013**. Wicket now supports PostGIS 2DBOX strings and Google Maps API Rectangle instances. Wicket is a lightweight library for translating between [Well-Known Text (WKT)](http://en.wikipedia.org/wiki/Well-known_text) and various client-side mapping frameworks:
 * [Leaflet](http://arthur-e.github.com/Wicket/)
 * [Google Maps API](http://arthur-e.github.com/Wicket/sandbox-gmaps3.html)
 * [ESRI ArcGIS JavaScript API](http://arthur-e.github.com/Wicket/sandbox-arcgis.html)
@@ -16,6 +16,42 @@ Accordingly:
 > it under the terms of the GNU General Public License as published by
 > the Free Software Foundation, either version 3 of the License, or
 > (at your option) any later version.
+
+## Example ##
+
+The following examples work in any of the mapping environments, as Wicket has a uniform API regardless of the client-side mapping library you're using.
+
+    // Create a new Wicket instance
+    var wkt = new Wkt.Wkt();
+    
+    // Read in any kind of WKT string
+    wkt.read("POLYGON ((30 10, 10 20, 20 40, 40 40, 30 10))");
+    
+    // Access and modify the underlying geometry
+    console.log(wkt.components);
+    // "[ [ {x: 30, y: 10}, {x: 10, y: 30}, ...] ]"
+    wkt.components[0][1].x = 15;
+
+    wkt.merge(new Wkt.Wkt('POLYGON((35 15,15 25,25 45,45 45,35 15))'));
+    wkt.write();
+    // MULTIPOLYGON(((30 10,10 20,20 40,40 40,30 10)),((35 15,15 25,25 45,45 45,35 15)))
+    
+    // Create a geometry object, ready to be mapped!
+    wkt.toObject();
+    
+Wicket will read from the geometry objects of any mapping client it understands.
+
+    var wkt = new Wkt.Wkt();
+    
+    // Deconstruct an existing point (or "marker") feature
+    wkt.fromObject(somePointObject);
+    
+    console.log(wkt.components);
+    // "[ {x: 10, y: 30} ]"
+    
+    // Serialize a WKT string from that geometry
+    wkt.write();
+    // "POINT(10 30)"
 
 ## Documentation ##
 
@@ -51,41 +87,6 @@ There is now a script included that will do this automatically for all of Wicket
     sudo unzip ./*.zip
 
 Once you have Jasmine installed and the paths match those expected in `tests/SpecRunner.html` (or you changed them to match your Jasmine installation) then just point your browser to `localhost/static/wicket/tests/SpecRunner.html`.
-
-## Example ##
-The following examples work in any of the mapping environments, as Wicket has a uniform API regardless of the client-side mapping library you're using.
-
-    // Create a new Wicket instance
-    var wkt = new Wkt.Wkt();
-    
-    // Read in any kind of WKT string
-    wkt.read("POLYGON ((30 10, 10 20, 20 40, 40 40, 30 10))");
-    
-    // Access and modify the underlying geometry
-    console.log(wkt.components);
-    // "[ [ {x: 30, y: 10}, {x: 10, y: 30}, ...] ]"
-    wkt.components[0][1].x = 15;
-
-    wkt.merge(new Wkt.Wkt('POLYGON((35 15,15 25,25 45,45 45,35 15))'));
-    wkt.write();
-    // MULTIPOLYGON(((30 10,10 20,20 40,40 40,30 10)),((35 15,15 25,25 45,45 45,35 15)))
-    
-    // Create a geometry object, ready to be mapped!
-    wkt.toObject();
-    
-Wicket will read from the geometry objects of any mapping client it understands.
-
-    var wkt = new Wkt.Wkt();
-    
-    // Deconstruct an existing point (or "marker") feature
-    wkt.fromObject(somePointObject);
-    
-    console.log(wkt.components);
-    // "[ {x: 10, y: 30} ]"
-    
-    // Serialize a WKT string from that geometry
-    wkt.write();
-    // "POINT(10 30)"
 
 ## Colophon ##
 

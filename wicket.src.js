@@ -441,9 +441,8 @@ Wkt.Wkt.prototype.extract = {
      * @instance
      */
     box: function (box) {
-       return this.extract.linestring.apply(this, [box]);
+        return this.extract.linestring.apply(this, [box]);
     },
-
 
     geometrycollection: function (str) {
         console.log('The geometrycollection WKT type is not yet supported.');
@@ -560,21 +559,24 @@ Wkt.Wkt.prototype.ingest = {
     },
 
     /**
-     * Return box vertices (which would become the Rectangle bounds)  given a Box WKT fragment.
+     * Return box vertices (which would become the Rectangle bounds) given a Box WKT fragment.
      * @param   str {String}    A WKT fragment representing the box
      * @memberof Wkt.Wkt.ingest
      * @instance
      */
     box: function (str) {
         var i, multipoints, components;
+
         // In our x-and-y representation of components, parsing
         //  multipoints is the same as parsing linestrings
         multipoints = this.ingest.multipoint.apply(this, [str]);
+
         // However, the points need to be joined
         components = [];
         for (i = 0; i < multipoints.length; i += 1) {
             components = components.concat(multipoints[i]);
         }
+
         return components;
     },
 

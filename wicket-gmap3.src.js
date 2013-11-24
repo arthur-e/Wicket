@@ -136,10 +136,8 @@ Wkt.Wkt.prototype.construct = {
         config = config || {};
 
         config.bounds = new google.maps.LatLngBounds(
-                            new google.maps.LatLng(c[0].y, c[0].x),
-                            new google.maps.LatLng(c[1].y, c[1].x)
-                            );
-
+            new google.maps.LatLng(c[0].y, c[0].x),
+            new google.maps.LatLng(c[1].y, c[1].x));
 
         return new google.maps.Rectangle(config);
     },
