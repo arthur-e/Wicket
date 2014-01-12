@@ -1102,3 +1102,156 @@ describe('Merged WKT Test Cases: ', function () {
     });
 
 });
+
+describe('GeoJSON Construction Cases:', function () {
+	var cases = { // See: http://en.wikipedia.org/wiki/GeoJSON#Geometries
+
+        point: {
+            str: 'POINT(30 10)',
+            json: {
+				'type': 'Point', 
+				'coordinates': [30, 10]
+			}
+        },
+
+        linestring: {
+            str: 'LINESTRING(30 10,10 30,40 40)',
+            json: {
+				'type': 'LineString', 
+				'coordinates': [
+					[30, 10], [10, 30], [40, 40]
+				]
+			}
+        },
+
+        polygon: {
+            str: 'POLYGON((30 10,10 20,20 40,40 40,30 10))',
+            json: {
+				'type': 'Polygon', 
+				'coordinates': [
+					[[30, 10], [40, 40], [20, 40], [10, 20], [30, 10]]
+				]
+			}
+        },
+        
+        polygon2: {
+        	str: 'POLYGON((35 10,45 45,15 40,10 20,35 10),(20 30,35 35,30 20,20 30))',
+        	json: {
+				'type': 'Polygon', 
+				'coordinates': [
+					[[35, 10], [45, 45], [15, 40], [10, 20], [35, 10]], 
+					[[20, 30], [35, 35], [30, 20], [20, 30]]
+				]
+			}
+        },
+
+        multipolygon: {
+            str: 'MULTIPOLYGON(((30 20,10 40,45 40,30 20)),((15 5,40 10,10 20,5 10,15 5)))',
+            json: {
+				'type': 'MultiPolygon', 
+				'coordinates': [
+					[
+						[[30, 20], [45, 40], [10, 40], [30, 20]]
+					], [
+						[[15, 5], [40, 10], [10, 20], [5, 10], [15, 5]]
+					]
+				]
+			}
+        },
+
+        multipolygon2: {
+            str: 'MULTIPOLYGON(((40 40,20 45,45 30,40 40)),((20 35,45 20,30 5,10 10,10 30,20 35),(30 20,20 25,20 15,30 20)))',
+            json: {
+				'type': 'MultiPolygon', 
+				'coordinates': [
+					[
+						[[40, 40], [20, 45], [45, 30], [40, 40]]
+					], [
+						[[20, 35], [10, 30], [10, 10], [30, 5], [45, 20], [20, 35]], 
+						[[30, 20], [20, 15], [20, 25], [30, 20]]
+					]
+				]
+			}
+        },
+
+        multipoint: {
+            str: 'MULTIPOINT((10 40),(40 30),(20 20),(30 10))',
+            json: {
+				'type': 'MultiPoint', 
+				'coordinates': [
+					[10, 40], [40, 30], [20, 20], [30, 10]
+				]
+			}
+        },
+
+        multilinestring: {
+            str: 'MULTILINESTRING((10 10,20 20,10 40),(40 40,30 30,40 20,30 10))',
+    		json: {
+				'type': 'MultiLineString', 
+				'coordinates': [
+					[[10, 10], [20, 20], [10, 40]], 
+					[[40, 40], [30, 30], [40, 20], [30, 10]]
+				]
+			}
+        },
+
+        box: {
+            str: 'BOX(0 0,20 20)',
+            json: {
+            	'type': 'Polygon',
+            	'bbox': [0, 0, 20, 20],
+            	'coordinates': [
+            		[[0, 0], [0, 20], [20, 20], [20, 0], [0, 0]]
+            	]
+            }
+        }
+
+	};
+	
+	it('should create valid JSON for WKT Point type', function () {
+		var a = new Wkt.Wkt(cases.point.str);
+        expect(a.json()).toEqual(cases.point.json);
+	});
+
+	it('should create valid JSON for WKT LineString type', function () {
+		var a = new Wkt.Wkt(cases.linestring.str);
+        expect(a.json()).toEqual(cases.linestring.json);
+	});
+
+	it('should create valid JSON for WKT Polygon type', function () {
+		var a = new Wkt.Wkt(cases.polygon.str);
+        expect(a.json()).toEqual(cases.polygon.json);
+	});
+
+	it('should create valid JSON for WKT Polygon type with a hole', function () {
+		var a = new Wkt.Wkt(cases.polygon2.str);
+        expect(a.json()).toEqual(cases.polygon2.json);
+	});
+	
+	it('should create valid JSON for WKT MultiPolygon type', function () {
+		var a = new Wkt.Wkt(cases.multipolygon.str);
+        expect(a.json()).toEqual(cases.multipolygon.json);
+	});
+	
+	it('should create valid JSON for WKT MultiPolygon type with a hole', function () {
+		var a = new Wkt.Wkt(cases.multipolygon2.str);
+        expect(a.json()).toEqual(cases.multipolygon2.json);
+	});
+	
+	it('should create valid JSON for WKT MultiPoint type', function () {
+		var a = new Wkt.Wkt(cases.multipoint.str);
+        expect(a.json()).toEqual(cases.multipoint.json);
+	});
+	
+	it('should create valid JSON for WKT MultiLineString type', function () {
+		var a = new Wkt.Wkt(cases.multilinestring.str);
+        expect(a.json()).toEqual(cases.multilinestring.json);
+	});
+	
+	it('should create valid JSON for WKT Box type', function () {
+		var a = new Wkt.Wkt(cases.box.str);
+        expect(a.json()).toEqual(cases.box.json);
+	});
+
+});
+

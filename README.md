@@ -85,6 +85,8 @@ There is now a script included that will do this automatically for all of Wicket
     sudo git clone git://github.com/pivotal/jasmine.git
     cd jasmine/dist
     sudo unzip ./*.zip
+    # If using a distribution other than 2.0.0...
+    ln -s jasmine-X.X.X jasmine-2.0.0
 
 Once you have Jasmine installed and the paths match those expected in `tests/SpecRunner.html` (or you changed them to match your Jasmine installation) then just point your browser to `localhost/static/wicket/tests/SpecRunner.html`.
 
