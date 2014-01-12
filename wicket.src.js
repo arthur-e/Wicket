@@ -230,7 +230,7 @@ Wkt.Wkt.prototype.toString = function (config) {
  * @method
  */
  Wkt.Wkt.prototype.toJson = function () {
-	var cs, json, i, j, ring;
+	var cs, json, i, j, k, ring, rings;
 
 	cs = this.components;
     json = {
@@ -282,18 +282,35 @@ Wkt.Wkt.prototype.toString = function (config) {
 
 			// For those nested structures
 			if (Wkt.isArray(cs[i])) {
-				ring = [];
+				rings = [];
 
 				for (j in cs[i]) {
 					if (cs[i].hasOwnProperty(j)) {
 
 						if (cs[i].length > 1) {
-							ring.push([cs[i][j].x, cs[i][j].y]);
+							rings.push([cs[i][j].x, cs[i][j].y]);
+						} else {
+						
+							if (Wkt.isArray(cs[i][j])) { // MULTIPOLYGON							
+								ring = [];
+								
+								for (k in cs[i][j]) {
+									if (cs[i][j].hasOwnProperty(k)) {
+										ring.push([cs[i][j][k].x, cs[i][j][k].y]);
+									}
+								}
+								
+								rings.push(ring);
+
+							} else { // MULTILINESTRING
+								rings = rings.concat([cs[i][j].x, cs[i][j].y]);
+							}
+
 						}
 					}
 				}
 				
-				json.coordinates.push(ring);
+				json.coordinates.push(rings);
 				
 			} else {
 				if (cs.length > 1) { // For LINESTRING type
