@@ -230,20 +230,22 @@ Wkt.Wkt.prototype.toString = function (config) {
  * @method
  */
  Wkt.Wkt.prototype.toJson = function () {
-	var json;
+	var cs, json, i, j, ring;
 
+	cs = this.components;
     json = {
+    	coordinates: [],
 		type: (function () {    
-			var t, type, s;
+			var i, type, s;
 		
 			type = this.regExes.ogcTypes.exec(this.type).slice(1);
 			s = [];
 			
-			for (t in type) {
-				if (type.hasOwnProperty(t)) {
-					if (type[t] !== undefined) {
-						s.push(type[t].toLowerCase().slice(0,1).toUpperCase()
-							+ type[t].toLowerCase().slice(1));
+			for (i in type) {
+				if (type.hasOwnProperty(i)) {
+					if (type[i] !== undefined) {
+						s.push(type[i].toLowerCase().slice(0,1).toUpperCase()
+							+ type[i].toLowerCase().slice(1));
 					}
 				}
 			}
@@ -252,6 +254,46 @@ Wkt.Wkt.prototype.toString = function (config) {
 		}.call(this)).join('')
 	}
 
+	// Wkt BOX type gets a special bbox property in GeoJSON
+	if (this.type.toLowerCase() === 'box') {
+		json.type = 'Polygon';
+		json.bbox = [];
+		for (i in cs) {
+			if (cs.hasOwnProperty(i)) {
+				json.bbox.concat([cs[i].x, cs[i].y]);
+			}
+		}
+	}
+	
+	for (i in cs) {
+		if (cs.hasOwnProperty(i)) {
+
+			// For those nested structures
+			if (Wkt.isArray(cs[i])) {
+				ring = [];
+
+				for (j in cs[i]) {
+					if (cs[i].hasOwnProperty(j)) {
+
+						if (cs[i].length > 1) {
+							ring.push([cs[i][j].x, cs[i][j].y]);
+						}
+					}
+				}
+				
+				json.coordinates.push(ring);
+				
+			} else {
+				if (cs.length > 1) { // For LINESTRING type
+					json.coordinates.push([cs[i].x, cs[i].y]);
+				} else { // For POINT type
+					json.coordinates = json.coordinates.concat([cs[i].x, cs[i].y]);
+				}
+			}
+
+		}
+	}
+	
     return json;
  };
 
