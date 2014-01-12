@@ -132,7 +132,7 @@ var Wkt = (function () { // Execute function immediately
                 'coord': /-*\d+\.*\d+ -*\d+\.*\d+/, // e.g. "24 -14"
                 'doubleParenComma': /\)\s*\)\s*,\s*\(\s*\(/,
                 'trimParens': /^\s*\(?(.*?)\)?\s*$/,
-                'ogcTypes': /^(multi)?(point|line|polygon)?(string)?$/i // Captures e.g. "Multi","Line","String"
+                'ogcTypes': /^(multi)?(point|line|polygon|box)?(string)?$/i // Captures e.g. "Multi","Line","String"
             };
 
             /**
@@ -258,13 +258,25 @@ Wkt.Wkt.prototype.toString = function (config) {
 	if (this.type.toLowerCase() === 'box') {
 		json.type = 'Polygon';
 		json.bbox = [];
+		
 		for (i in cs) {
 			if (cs.hasOwnProperty(i)) {
-				json.bbox.concat([cs[i].x, cs[i].y]);
+				json.bbox = json.bbox.concat([cs[i].x, cs[i].y]);
 			}
 		}
+		
+		json.coordinates = [[
+			[cs[0].x, cs[0].y],
+			[cs[0].x, cs[1].y],
+			[cs[1].x, cs[1].y],
+			[cs[1].x, cs[0].y],
+			[cs[0].x, cs[0].y]
+		]];
+
+		return json;
 	}
 	
+	// For the coordinates of most simple features
 	for (i in cs) {
 		if (cs.hasOwnProperty(i)) {
 

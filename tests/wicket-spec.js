@@ -1198,11 +1198,11 @@ describe('GeoJSON Construction Cases:', function () {
         box: {
             str: 'BOX(0 0,20 20)',
             json: {
-                'bbox': [0, 0, 20, 20],
                 'coordinates': [
                     [[0, 0], [0, 20], [20, 20], [20, 0], [0, 0]]
                 ],
-                'type': 'Polygon'
+                'type': 'Polygon',
+                'bbox': [0, 0, 20, 20]
             }
         }
 
