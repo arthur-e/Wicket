@@ -131,7 +131,8 @@ var Wkt = (function () { // Execute function immediately
                 'parenComma': /\)\s*,\s*\(/,
                 'coord': /-*\d+\.*\d+ -*\d+\.*\d+/, // e.g. "24 -14"
                 'doubleParenComma': /\)\s*\)\s*,\s*\(\s*\(/,
-                'trimParens': /^\s*\(?(.*?)\)?\s*$/
+                'trimParens': /^\s*\(?(.*?)\)?\s*$/,
+                'ogcTypes': /^(multi)?(point|line|polygon)?(string)?$/i // Captures e.g. "Multi","Line","String"
             };
 
             /**
@@ -221,6 +222,38 @@ Wkt.Wkt.prototype.toObject = function (config) {
 Wkt.Wkt.prototype.toString = function (config) {
     return this.write();
 };
+
+/**
+ * Creates a JSON representation, with the GeoJSON schema, of the geometry.
+ * @return    {Object}    The corresponding GeoJSON representation
+ * @memberof Wkt.Wkt
+ * @method
+ */
+ Wkt.Wkt.prototype.toJson = function () {
+	var json;
+
+    json = {
+		type: (function () {    
+			var t, type, s;
+		
+			type = this.regExes.ogcTypes.exec(this.type).slice(1);
+			s = [];
+			
+			for (t in type) {
+				if (type.hasOwnProperty(t)) {
+					if (type[t] !== undefined) {
+						s.push(type[t].toLowerCase().slice(0,1).toUpperCase()
+							+ type[t].toLowerCase().slice(1));
+					}
+				}
+			}
+			
+			return s;
+		}.call(this)).join('')
+	}
+
+    return json;
+ };
 
 /**
  * Absorbs the geometry of another Wkt.Wkt instance, merging it with its own,
@@ -351,7 +384,7 @@ Wkt.Wkt.prototype.extract = {
      * @instance
      */
     point: function (point) {
-     	return String(point.x) + this.delimiter + String(point.y);
+        return String(point.x) + this.delimiter + String(point.y);
     },
 
     /**
