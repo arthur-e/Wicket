@@ -284,12 +284,28 @@ Wkt.Wkt.prototype.toString = function (config) {
 			if (Wkt.isArray(cs[i])) {
 				rings = [];
 
+				//TODO Refactor
 				for (j in cs[i]) {
 					if (cs[i].hasOwnProperty(j)) {
 
-						if (cs[i].length > 1) {
-							rings.push([cs[i][j].x, cs[i][j].y]);
-						} else {
+						if (cs[i].length > 1) { // Has inner rings
+							
+							if (Wkt.isArray(cs[i][j])) { // MULTIPOLYGONS
+								ring = [];
+							
+								for (k in cs[i][j]) {
+									if (cs[i][j].hasOwnProperty(k)) {
+										ring.push([cs[i][j][k].x, cs[i][j][k].y]);
+									}
+								}
+								
+								rings.push(ring);
+
+							} else { // POLYGONS
+								rings.push([cs[i][j].x, cs[i][j].y]);
+							}
+							
+						} else { // Outer rings
 						
 							if (Wkt.isArray(cs[i][j])) { // MULTIPOLYGON							
 								ring = [];
@@ -299,7 +315,7 @@ Wkt.Wkt.prototype.toString = function (config) {
 										ring.push([cs[i][j][k].x, cs[i][j][k].y]);
 									}
 								}
-								
+																								
 								rings.push(ring);
 
 							} else { // MULTILINESTRING
