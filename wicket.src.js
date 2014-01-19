@@ -132,7 +132,8 @@ var Wkt = (function () { // Execute function immediately
                 'coord': /-*\d+\.*\d+ -*\d+\.*\d+/, // e.g. "24 -14"
                 'doubleParenComma': /\)\s*\)\s*,\s*\(\s*\(/,
                 'trimParens': /^\s*\(?(.*?)\)?\s*$/,
-                'ogcTypes': /^(multi)?(point|line|polygon|box)?(string)?$/i // Captures e.g. "Multi","Line","String"
+                'ogcTypes': /^(multi)?(point|line|polygon|box)?(string)?$/i, // Captures e.g. "Multi","Line","String"
+				'crudeJson': /^{.*"(type|coordinates|geometries|features)":.*}$/ // Attempts to recognize JSON strings
             };
 
             /**
@@ -195,7 +196,14 @@ Wkt.Wkt.prototype.sameCoords = function (a, b) {
  * @method
  */
 Wkt.Wkt.prototype.fromObject = function (obj) {
-    var result = this.deconstruct.call(this, obj);
+    var result;
+
+	if (obj.hasOwnProperty('type') && obj.hasOwnProperty('coordinates')) {
+		result = this.fromJson(obj);
+	} else {
+		result = this.deconstruct.call(this, obj);
+	}
+
     this.components = result.components;
     this.isRectangle = result.isRectangle || false;
     this.type = result.type;
@@ -224,12 +232,97 @@ Wkt.Wkt.prototype.toString = function (config) {
 };
 
 /**
+ * Parses a JSON representation as an Object.
+ * @param	obj	{Object}	An Object with the GeoJSON schema
+ * @return    	{Wkt.Wkt}	The object itself
+ * @memberof Wkt.Wkt
+ * @method
+ */
+Wkt.Wkt.prototype.fromJson = function (obj) {
+	var i, j, k, coords, iring, oring;
+
+	this.type = obj.type.toLowerCase();
+	this.components = [];
+
+	coords = obj.coordinates;
+
+	if (!Wkt.isArray(coords[0])) { // Point
+		this.components.push({
+			x: coords[0],
+			y: coords[1]
+		});
+
+	} else {
+
+		for (i in coords) {
+			if (coords.hasOwnProperty(i)) {
+
+				if (!Wkt.isArray(coords[i][0])) { // LineString
+
+					if (this.type === 'multipoint') { // MultiPoint
+						this.components.push([{
+							x: coords[i][0],
+							y: coords[i][1]
+						}]);
+
+					} else {
+						this.components.push({
+							x: coords[i][0],
+							y: coords[i][1]
+						});
+
+					}
+
+				} else {
+
+					oring = [];
+					for (j in coords[i]) {
+						if (coords[i].hasOwnProperty(j)) {
+
+							if (!Wkt.isArray(coords[i][j][0])) {
+								oring.push({
+									x: coords[i][j][0],
+									y: coords[i][j][1]
+								});
+
+							} else {
+
+								iring = [];
+								for (k in coords[i][j]) {
+									if (coords[i][j].hasOwnProperty(k)) {
+
+										iring.push({
+											x: coords[i][j][k][0],
+											y: coords[i][j][k][1]
+										});
+
+									}
+								}
+
+								oring.push(iring);
+
+							}
+
+						}
+					}
+
+					this.components.push(oring);
+				}
+			}
+		}
+
+	}
+
+	return this;
+};
+
+/**
  * Creates a JSON representation, with the GeoJSON schema, of the geometry.
  * @return    {Object}    The corresponding GeoJSON representation
  * @memberof Wkt.Wkt
  * @method
  */
- Wkt.Wkt.prototype.toJson = function () {
+Wkt.Wkt.prototype.toJson = function () {
 	var cs, json, i, j, k, ring, rings;
 
 	cs = this.components;
@@ -370,27 +463,43 @@ Wkt.Wkt.prototype.merge = function (wkt) {
 
 /**
  * Reads a WKT string, validating and incorporating it.
- * @param   wkt {String}    A WKT string
+ * @param   str {String}    A WKT or GeoJSON string
  * @return      {Array}     An Array of internal geometry objects
  * @memberof Wkt.Wkt
  * @method
  */
-Wkt.Wkt.prototype.read = function (wkt) {
+Wkt.Wkt.prototype.read = function (str) {
     var matches;
-    matches = this.regExes.typeStr.exec(wkt);
+    matches = this.regExes.typeStr.exec(str);
     if (matches) {
         this.type = matches[1].toLowerCase();
         this.base = matches[2];
         if (this.ingest[this.type]) {
             this.components = this.ingest[this.type].apply(this, [this.base]);
         }
+
     } else {
-        console.log("Invalid WKT string provided to read()");
-        throw {
-            name: "WKTError",
-            message: "Invalid WKT string provided to read()"
-        };
+		if (this.regExes.crudeJson.test(str)) {
+			if (typeof JSON === 'object' && typeof JSON.parse === 'function') {
+				this.fromJson(JSON.parse(str));
+
+			} else {
+				console.log('JSON.parse() is not available; cannot parse GeoJSON strings');
+				throw {
+					name: 'JSONError',
+					message: 'JSON.parse() is not available; cannot parse GeoJSON strings'
+				};
+			}
+
+		} else {
+			console.log('Invalid WKT string provided to read()');
+			throw {
+				name: 'WKTError',
+				message: 'Invalid WKT string provided to read()'
+			};
+		}
     }
+
     return this.components;
 }; // eo readWkt
 

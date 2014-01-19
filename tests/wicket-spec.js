@@ -1103,7 +1103,7 @@ describe('Merged WKT Test Cases: ', function () {
 
 });
 
-describe('GeoJSON Construction Cases:', function () {
+describe('GeoJSON Cases:', function () {
     var cases = { // See: http://en.wikipedia.org/wiki/GeoJSON#Geometries
 
         point: {
@@ -1209,49 +1209,97 @@ describe('GeoJSON Construction Cases:', function () {
 
     };
     
-    it('should create valid JSON for WKT Point type', function () {
-        var a = new Wkt.Wkt(cases.point.str);
-        expect(a.toJson()).toEqual(cases.point.json);
+    describe('GeoJSON Construction:', function () {
+
+        it('should create valid JSON for WKT Point type', function () {
+            var a = new Wkt.Wkt(cases.point.str);
+            expect(a.toJson()).toEqual(cases.point.json);
+        });
+
+        it('should create valid JSON for WKT LineString type', function () {
+            var a = new Wkt.Wkt(cases.linestring.str);
+            expect(a.toJson()).toEqual(cases.linestring.json);
+        });
+
+        it('should create valid JSON for WKT Polygon type', function () {
+            var a = new Wkt.Wkt(cases.polygon.str);
+            expect(a.toJson()).toEqual(cases.polygon.json);
+        });
+
+        it('should create valid JSON for WKT Polygon type with a hole', function () {
+            var a = new Wkt.Wkt(cases.polygon2.str);
+            expect(a.toJson()).toEqual(cases.polygon2.json);
+        });
+    
+        it('should create valid JSON for WKT MultiPolygon type', function () {
+            var a = new Wkt.Wkt(cases.multipolygon.str);
+            expect(a.toJson()).toEqual(cases.multipolygon.json);
+        });
+    
+        it('should create valid JSON for WKT MultiPolygon type with a hole', function () {
+            var a = new Wkt.Wkt(cases.multipolygon2.str);
+            expect(a.toJson()).toEqual(cases.multipolygon2.json);
+        });
+    
+        it('should create valid JSON for WKT MultiPoint type', function () {
+            var a = new Wkt.Wkt(cases.multipoint.str);
+            expect(a.toJson()).toEqual(cases.multipoint.json);
+        });
+    
+        it('should create valid JSON for WKT MultiLineString type', function () {
+            var a = new Wkt.Wkt(cases.multilinestring.str);
+            expect(a.toJson()).toEqual(cases.multilinestring.json);
+        });
+    
+        it('should create valid JSON for WKT Box type', function () {
+            var a = new Wkt.Wkt(cases.box.str);
+            expect(a.toJson()).toEqual(cases.box.json);
+        });
+
     });
 
-    it('should create valid JSON for WKT LineString type', function () {
-        var a = new Wkt.Wkt(cases.linestring.str);
-        expect(a.toJson()).toEqual(cases.linestring.json);
-    });
+    describe('GeoJSON Deconstruction:', function () {
 
-    it('should create valid JSON for WKT Polygon type', function () {
-        var a = new Wkt.Wkt(cases.polygon.str);
-        expect(a.toJson()).toEqual(cases.polygon.json);
-    });
+        it('should write the WKT string corresponding to a GeoJSON Point', function () {
+            var a = new Wkt.Wkt(cases.point.json);
+            expect(a.write()).toEqual(cases.point.str);
+        });
 
-    it('should create valid JSON for WKT Polygon type with a hole', function () {
-        var a = new Wkt.Wkt(cases.polygon2.str);
-        expect(a.toJson()).toEqual(cases.polygon2.json);
-    });
+        it('should write the WKT string corresponding to a GeoJSON LineString', function () {
+            var a = new Wkt.Wkt(cases.linestring.json);
+            expect(a.write()).toEqual(cases.linestring.str);
+        });
+
+        it('should write the WKT string corresponding to a GeoJSON Polygon', function () {
+            var a = new Wkt.Wkt(cases.polygon.json);
+            expect(a.write()).toEqual(cases.polygon.str);
+        });
+
+        it('should write the WKT string corresponding to a GeoJSON Polygon with a hole', function () {
+            var a = new Wkt.Wkt(cases.polygon2.json);
+            expect(a.write()).toEqual(cases.polygon2.str);
+        });
     
-    it('should create valid JSON for WKT MultiPolygon type', function () {
-        var a = new Wkt.Wkt(cases.multipolygon.str);
-        expect(a.toJson()).toEqual(cases.multipolygon.json);
-    });
+        it('should write the WKT string corresponding to a GeoJSON MultiPolygon', function () {
+            var a = new Wkt.Wkt(cases.multipolygon.json);
+            expect(a.write()).toEqual(cases.multipolygon.str);
+        });
     
-    it('should create valid JSON for WKT MultiPolygon type with a hole', function () {
-        var a = new Wkt.Wkt(cases.multipolygon2.str);
-        expect(a.toJson()).toEqual(cases.multipolygon2.json);
-    });
+        it('should write the WKT string corresponding to a GeoJSON MultiPolygon with a hole', function () {
+            var a = new Wkt.Wkt(cases.multipolygon2.json);
+            expect(a.write()).toEqual(cases.multipolygon2.str);
+        });
     
-    it('should create valid JSON for WKT MultiPoint type', function () {
-        var a = new Wkt.Wkt(cases.multipoint.str);
-        expect(a.toJson()).toEqual(cases.multipoint.json);
-    });
+        it('should write the WKT string corresponding to a GeoJSON MultiPoint', function () {
+            var a = new Wkt.Wkt(cases.multipoint.json);
+            expect(a.write()).toEqual(cases.multipoint.str);
+        });
     
-    it('should create valid JSON for WKT MultiLineString type', function () {
-        var a = new Wkt.Wkt(cases.multilinestring.str);
-        expect(a.toJson()).toEqual(cases.multilinestring.json);
-    });
-    
-    it('should create valid JSON for WKT Box type', function () {
-        var a = new Wkt.Wkt(cases.box.str);
-        expect(a.toJson()).toEqual(cases.box.json);
+        it('should write the WKT string corresponding to a GeoJSON MultiLineString', function () {
+            var a = new Wkt.Wkt(cases.multilinestring.json);
+            expect(a.write()).toEqual(cases.multilinestring.str);
+        });
+
     });
 
 });
