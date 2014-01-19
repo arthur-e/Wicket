@@ -1,11 +1,10 @@
 # Wicket #
 
-Updated **November 24, 2013**. Wicket now supports PostGIS 2DBOX strings and Google Maps API Rectangle instances. Wicket is a lightweight library for translating between [Well-Known Text (WKT)](http://en.wikipedia.org/wiki/Well-known_text) and various client-side mapping frameworks:
-* [Leaflet](http://arthur-e.github.com/Wicket/)
-* [Google Maps API](http://arthur-e.github.com/Wicket/sandbox-gmaps3.html)
-* [ESRI ArcGIS JavaScript API](http://arthur-e.github.com/Wicket/sandbox-arcgis.html)
-
-Check out a [live demo](http://arthur-e.github.com/Wicket/sandbox-gmaps3.html). 
+Wicket is a lightweight library for translating between [Well-Known Text (WKT)](http://en.wikipedia.org/wiki/Well-known_text) and various client-side mapping frameworks:
+* Leaflet [(demo)](http://arthur-e.github.com/Wicket/)
+* Google Maps API [(demo)](http://arthur-e.github.com/Wicket/sandbox-gmaps3.html)
+* ESRI ArcGIS JavaScript API [(demo)](http://arthur-e.github.com/Wicket/sandbox-arcgis.html)
+* Potentially any other web mapping framework through serialization and de-serialization of GeoJSON (with `JSON.parse`)
 
 ## License ##
 
@@ -26,6 +25,9 @@ The following examples work in any of the mapping environments, as Wicket has a 
     
     // Read in any kind of WKT string
     wkt.read("POLYGON ((30 10, 10 20, 20 40, 40 40, 30 10))");
+
+    // Or a GeoJSON string
+    wkt.read('{"coordinates": [[[30, 10], [10, 20], [20, 40], [40, 40], [30, 10]]], "type": "Polygon"}');
     
     // Access and modify the underlying geometry
     console.log(wkt.components);
@@ -43,7 +45,7 @@ Wicket will read from the geometry objects of any mapping client it understands.
 
     var wkt = new Wkt.Wkt();
     
-    // Deconstruct an existing point (or "marker") feature
+    // Deconstruct an existing point feature e.g. google.maps.Marker instance
     wkt.fromObject(somePointObject);
     
     console.log(wkt.components);
@@ -67,7 +69,11 @@ Or, with Node installed:
 
 Either way, make sure you invoke `jsdoc` from a directory in which you have write access; it will output documentation to your current working directory.
 
-## Build Information ##
+## Dependencies and Build Information ##
+
+Wicket is intended to have zero dependencies, however...
+* The ESRI ArcGIS JavaScript API and Google Maps API extensions require JavaScript 1.6 or higher (require `map`, `indexOf`, and `lastIndexOf` `Array` functions).
+* JSON parsing (from strings) is not provided. Wicket looks for the function `JSON.parse`, which is provided in most modern browsers (get it with [this library](https://github.com/douglascrockford/JSON-js/blob/master/json2.js), if you need to support older browsers).
 
 **Minified versions** of JavaScript files were generated using Google's [Closure compiler](https://developers.google.com/closure/compiler/docs/gettingstarted_app).
 Once installed, minification can be invoked at the command line, as in the following example:
@@ -78,7 +84,9 @@ There is now a script included that will do this automatically for all of Wicket
 
     . refactor.sh
 
-**Testing** Wicket is easy if you already have [Jasmine](https://github.com/pivotal/jasmine) installed. Here's a quick script to (describe how to) install it if you don't:
+### Testing ###
+
+Testing Wicket is easy with [Jasmine](https://github.com/pivotal/jasmine). Here's a quick script to (describe how to) install it if you don't:
 
     sudo mkdir -p /var/www/static/
     cd /var/www/static/

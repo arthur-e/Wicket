@@ -1111,7 +1111,8 @@ describe('GeoJSON Cases:', function () {
             json: {
                 'coordinates': [30, 10],
                 'type': 'Point'
-            }
+            },
+            jsonStr: '{"coordinates": [30, 10], "type": "Point"}'
         },
 
         linestring: {
@@ -1121,7 +1122,8 @@ describe('GeoJSON Cases:', function () {
                     [30, 10], [10, 30], [40, 40]
                 ],
                 'type': 'LineString'
-            }
+            },
+            jsonStr: '{"coordinates": [[30, 10], [10, 30], [40, 40]], "type": "LineString"}'
         },
 
         polygon: {
@@ -1131,7 +1133,8 @@ describe('GeoJSON Cases:', function () {
                     [[30, 10], [10, 20], [20, 40], [40, 40], [30, 10]]
                 ],
                 'type': 'Polygon'
-            }
+            },
+            jsonStr: '{"coordinates": [[[30, 10], [10, 20], [20, 40], [40, 40], [30, 10]]], "type": "Polygon"}'
         },
         
         polygon2: {
@@ -1142,7 +1145,8 @@ describe('GeoJSON Cases:', function () {
                     [[20, 30], [35, 35], [30, 20], [20, 30]]
                 ],
                 'type': 'Polygon'
-            }
+            },
+            jsonStr: '{"coordinates": [[[35, 10], [45, 45], [15, 40], [10, 20], [35, 10]], [[20, 30], [35, 35], [30, 20], [20, 30]]], "type": "Polygon"}'
         },
 
         multipolygon: {
@@ -1156,7 +1160,8 @@ describe('GeoJSON Cases:', function () {
                     ]
                 ],
                 'type': 'MultiPolygon'
-            }
+            },
+            jsonStr: '{"coordinates": [[[[30, 20], [10, 40], [45, 40], [30, 20]]], [[[15, 5], [40, 10], [10, 20], [5, 10], [15, 5]]]], "type": "MultiPolygon"}'
         },
 
         multipolygon2: {
@@ -1172,7 +1177,8 @@ describe('GeoJSON Cases:', function () {
                     ]
                 ],
                 'type': 'MultiPolygon'
-            }
+            },
+            jsonStr: '{"coordinates": [[[[40, 40], [20, 45], [45, 30], [40, 40]]], [[[20, 35], [10, 30], [10, 10], [30, 5], [45, 20], [20, 35]], [[30, 20], [20, 15], [20, 25], [30, 20]]]], "type": "MultiPolygon"}'
         },
 
         multipoint: {
@@ -1182,7 +1188,8 @@ describe('GeoJSON Cases:', function () {
                     [10, 40], [40, 30], [20, 20], [30, 10]
                 ],
                 'type': 'MultiPoint'
-            }
+            },
+            jsonStr: '{"coordinates": [[10, 40], [40, 30], [20, 20], [30, 10]], "type": "MultiPoint"}'
         },
 
         multilinestring: {
@@ -1193,7 +1200,8 @@ describe('GeoJSON Cases:', function () {
                     [[40, 40], [30, 30], [40, 20], [30, 10]]
                 ],
                 'type': 'MultiLineString'
-            }
+            },
+            jsonStr: '{"coordinates": [[[10, 10], [20, 20], [10, 40]], [[40, 40], [30, 30], [40, 20], [30, 10]]], "type": "MultiLineString"}'
         },
 
         box: {
@@ -1258,7 +1266,7 @@ describe('GeoJSON Cases:', function () {
 
     });
 
-    describe('GeoJSON Deconstruction:', function () {
+    describe('GeoJSON Deconstruction (from Objects):', function () {
 
         it('should write the WKT string corresponding to a GeoJSON Point', function () {
             var a = new Wkt.Wkt(cases.point.json);
@@ -1297,6 +1305,54 @@ describe('GeoJSON Cases:', function () {
     
         it('should write the WKT string corresponding to a GeoJSON MultiLineString', function () {
             var a = new Wkt.Wkt(cases.multilinestring.json);
+            expect(a.write()).toEqual(cases.multilinestring.str);
+        });
+
+    });
+
+    describe('GeoJSON Deconstruction (from Strings):', function () {
+        it('should provide support for JSON.parse() in the environment...', function () {
+            expect(typeof JSON).toEqual('object');
+            expect(typeof JSON.parse).toEqual('function');
+        });
+
+        it('should parse a GeoJSON Point string', function () {
+            var a = new Wkt.Wkt(cases.point.jsonStr);
+            expect(a.write()).toEqual(cases.point.str);
+        });
+
+        it('should parse a GeoJSON LineString string', function () {
+            var a = new Wkt.Wkt(cases.linestring.jsonStr);
+            expect(a.write()).toEqual(cases.linestring.str);
+        });
+
+        it('should parse a GeoJSON Polygon string', function () {
+            var a = new Wkt.Wkt(cases.polygon.jsonStr);
+            expect(a.write()).toEqual(cases.polygon.str);
+        });
+
+        it('should parse a GeoJSON Polygon string with a hole', function () {
+            var a = new Wkt.Wkt(cases.polygon2.jsonStr);
+            expect(a.write()).toEqual(cases.polygon2.str);
+        });
+
+        it('should parse a GeoJSON MultiPolygon string', function () {
+            var a = new Wkt.Wkt(cases.multipolygon.jsonStr);
+            expect(a.write()).toEqual(cases.multipolygon.str);
+        });
+
+        it('should parse a GeoJSON MultiPolygon string with a hole', function () {
+            var a = new Wkt.Wkt(cases.multipolygon2.jsonStr);
+            expect(a.write()).toEqual(cases.multipolygon2.str);
+        });
+
+        it('should parse a GeoJSON MultiPoint string', function () {
+            var a = new Wkt.Wkt(cases.multipoint.jsonStr);
+            expect(a.write()).toEqual(cases.multipoint.str);
+        });
+
+        it('should parse a GeoJSON MultiLineString string', function () {
+            var a = new Wkt.Wkt(cases.multilinestring.jsonStr);
             expect(a.write()).toEqual(cases.multilinestring.str);
         });
 
