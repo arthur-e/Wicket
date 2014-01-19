@@ -1,26 +1,26 @@
 /*
 
 
- Copyright (C) 2012 K. Arthur Endsley (kaendsle@mtu.edu)
- Michigan Tech Research Institute (MTRI)
- 3600 Green Court, Suite 100, Ann Arbor, MI, 48105
+  Copyright (C) 2012 K. Arthur Endsley (kaendsle@mtu.edu)
+  Michigan Tech Research Institute (MTRI)
+  3600 Green Court, Suite 100, Ann Arbor, MI, 48105
 
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
  NOTE: The Google Maps API extension requirest JavaScript 1.6 or higher, due
- its dependence on the Array functions map, indexOf, and lastIndexOf
+  its dependence on the Array functions map, indexOf, and lastIndexOf
 */
 Wkt.Wkt.prototype.isRectangle=false;
 Wkt.Wkt.prototype.construct={point:function(config,component){var c=component||this.components;config=config||{};config.position=new google.maps.LatLng(c[0].y,c[0].x);return new google.maps.Marker(config)},multipoint:function(config){var i,c,arr;c=this.components;config=config||{};arr=[];for(i=0;i<c.length;i+=1)arr.push(this.construct.point(config,c[i]));return arr},linestring:function(config,component){var i,c;c=component||this.components;config=config||{editable:false};config.path=[];for(i=0;i<
