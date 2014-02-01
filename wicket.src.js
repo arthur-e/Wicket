@@ -425,6 +425,8 @@ Wkt.Wkt.prototype.toJson = function () {
  * creating a collection (MULTI-geometry) based on their types, which must agree.
  * For example, creates a MULTIPOLYGON from a POLYGON type merged with another
  * POLYGON type, or adds a POLYGON instance to a MULTIPOLYGON instance.
+ * @param   wkt {Wkt.Wkt}   Another Wkt.Wkt instance of the same geometry type; to be merged
+ * @return  {Wkt.Wkt}
  * @memberof Wkt.Wkt
  * @method
  */
@@ -459,6 +461,8 @@ Wkt.Wkt.prototype.merge = function (wkt) {
     if (prefix !== 'multi') {
         this.type = 'multi' + this.type;
     }
+
+    return this;
 };
 
 /**

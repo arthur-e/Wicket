@@ -18,9 +18,6 @@
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
- NOTE: The Google Maps API extension requirest JavaScript 1.6 or higher, due
-  its dependence on the Array functions map, indexOf, and lastIndexOf
 */
 Wkt.Wkt.prototype.isRectangle=false;
 Wkt.Wkt.prototype.construct={point:function(config,component){var c=component||this.components;config=config||{};config.position=new google.maps.LatLng(c[0].y,c[0].x);return new google.maps.Marker(config)},multipoint:function(config){var i,c,arr;c=this.components;config=config||{};arr=[];for(i=0;i<c.length;i+=1)arr.push(this.construct.point(config,c[i]));return arr},linestring:function(config,component){var i,c;c=component||this.components;config=config||{editable:false};config.path=[];for(i=0;i<

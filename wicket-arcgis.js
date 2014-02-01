@@ -18,11 +18,8 @@
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
- NOTE: The ESRI ArcGIS API extension requirest JavaScript 1.6 or higher, due
-  its dependence on the Array functions map, indexOf, and lastIndexOf
 */
-Wkt.Wkt.prototype.isRectangle=false;
+if(!Array.prototype.map)Array.prototype.map=function(fun){var t,len,res,thisArg;if(this===void 0||this===null)throw new TypeError;t=Object(this);len=t.length>>>0;if(typeof fun!=="function")throw new TypeError;res=new Array(len);thisArg=arguments.length>=2?arguments[1]:void 0;for(var i=0;i<len;i++)if(i in t)res[i]=fun.call(thisArg,t[i],i,t);return res};Wkt.Wkt.prototype.isRectangle=false;
 Wkt.Wkt.prototype.construct={point:function(config,component){var coord=component||this.components;if(coord instanceof Array)coord=coord[0];if(config)coord.spatialReference=config.spatialReference||config.srs;return new esri.geometry.Point(coord)},multipoint:function(config){config=config||{};if(!config.spatialReference&&config.srs)config.spatialReference=config.srs;return new esri.geometry.Multipoint({points:this.components.map(function(i){if(Wkt.isArray(i))i=i[0];return[i.x,i.y]}),spatialReference:config.spatialReference})},
 linestring:function(config){config=config||{};if(!config.spatialReference&&config.srs)config.spatialReference=config.srs;return new esri.geometry.Polyline({paths:[this.components.map(function(i){return[i.x,i.y]})],spatialReference:config.spatialReference})},multilinestring:function(config){config=config||{};if(!config.spatialReference&&config.srs)config.spatialReference=config.srs;return new esri.geometry.Polyline({paths:this.components.map(function(i){return i.map(function(j){return[j.x,j.y]})}),
 spatialReference:config.spatialReference})},polygon:function(config){config=config||{};if(!config.spatialReference&&config.srs)config.spatialReference=config.srs;return new esri.geometry.Polygon({rings:this.components.map(function(i){return i.map(function(j){return[j.x,j.y]})}),spatialReference:config.spatialReference})},multipolygon:function(config){var that=this;config=config||{};if(!config.spatialReference&&config.srs)config.spatialReference=config.srs;return new esri.geometry.Polygon({rings:function(){var i,
