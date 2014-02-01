@@ -20,10 +20,39 @@
  *
  */
 
-/** @preserve
- * NOTE: The ESRI ArcGIS API extension requirest JavaScript 1.6 or higher, due
- *  its dependence on the Array functions map, indexOf, and lastIndexOf
- */
+if (!Array.prototype.map) {
+    Array.prototype.map = function (fun /* thisArg? */) {
+        'use strict';
+        var t, len, res, thisArg;
+
+        if (this === void 0 || this === null) {
+            throw new TypeError();
+        }
+
+        t = Object(this);
+        len = t.length >>> 0;
+
+        if (typeof fun !== 'function') {
+            throw new TypeError();
+        }
+
+        res = new Array(len);
+        thisArg = arguments.length >= 2 ? arguments[1] : void 0;
+
+        for (var i = 0; i < len; i++) {
+            // NOTE: Absolute correctness would demand Object.defineProperty
+            //       be used.  But this method is fairly new, and failure is
+            //       possible only if Object.prototype or Array.prototype
+            //       has a property |i| (very unlikely), so use a less-correct
+            //       but more portable alternative.
+            if (i in t) {
+                res[i] = fun.call(thisArg, t[i], i, t);
+            }
+        }
+
+        return res;
+    };
+}
 
 /**
  * @augments Wkt.Wkt

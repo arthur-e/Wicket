@@ -20,11 +20,6 @@
  *
  */
 
-/** @preserve
- * NOTE: The Google Maps API extension requirest JavaScript 1.6 or higher, due
- *  its dependence on the Array functions map, indexOf, and lastIndexOf
- */
-
 /**
  * @augments Wkt.Wkt
  * A framework-dependent flag, set for each Wkt.Wkt() instance, that indicates
