@@ -1,6 +1,6 @@
 {
     "name": "wicket",
-    "version": "0.1.0",
+    "version": "1.1.0",
     "description": "A modest library for moving between Well-Known Text (WKT) and various framework geometries",
     "homepage": "https://github.com/arthur-e/Wicket",
     "keywords": [
@@ -38,6 +38,14 @@
         {
             "name": "James Seppi",
             "web": "https://github.com/jseppi" 
+        },
+        {
+            "name": "tchannel",
+            "web": "https://github.com/tchannel"
+        },
+        {
+            "name": "Felipe Figueroa",
+            "web": "https://github.com/amenadiel"
         }
     ],
     "bugs": {

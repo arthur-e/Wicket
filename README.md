@@ -121,8 +121,6 @@ Wicket borrows heavily from the experiences of others who came before us:
 * Chris Pietshmann's [article on converting Bing Maps shapes (VEShape) to WKT](http://pietschsoft.com/post/2009/04/04/Virtual-Earth-Shapes-%28VEShape%29-to-WKT-%28Well-Known-Text%29-and-Back-using-JavaScript.aspx)
 * Charles R. Schmidt's and the Python Spatial Analysis Laboratory's (PySAL) WKT writer
 
-Contributors: [cuyahoga](https://github.com/cuyahoga), [Tom Nightingale (thegreat)](https://github.com/thegreat), [Aaron Ogle](https://github.com/atogle), [James Seppi](https://github.com/jseppi)
-
 ### Conventions ###
 
 The base library, wicket.js, contains the Wkt.Wkt base object.

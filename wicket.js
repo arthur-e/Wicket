@@ -340,7 +340,7 @@ this.Wkt.Wkt.prototype.fromJson = function (obj) {
  * @memberof this.Wkt.Wkt
  * @method
  */
-this.Wkt.Wkt.prototype.toJson = function () {
+Wkt.Wkt.prototype.toJson = function () {
 	var cs, json, i, j, k, ring, rings;
 
 	cs = this.components;
@@ -446,7 +446,7 @@ this.Wkt.Wkt.prototype.toJson = function () {
  * @memberof this.Wkt.Wkt
  * @method
  */
-this.Wkt.Wkt.prototype.merge = function (wkt) {
+Wkt.Wkt.prototype.merge = function (wkt) {
     var prefix = this.type.slice(0, 5);
 
     if (this.type !== wkt.type) {
@@ -486,7 +486,7 @@ this.Wkt.Wkt.prototype.merge = function (wkt) {
  * @memberof this.Wkt.Wkt
  * @method
  */
-this.Wkt.Wkt.prototype.read = function (str) {
+Wkt.Wkt.prototype.read = function (str) {
     var matches;
     matches = this.regExes.typeStr.exec(str);
     if (matches) {
@@ -528,7 +528,7 @@ this.Wkt.Wkt.prototype.read = function (str) {
  * @memberof this.Wkt.Wkt
  * @method
  */
-this.Wkt.Wkt.prototype.write = function (components) {
+Wkt.Wkt.prototype.write = function (components) {
     var i, pieces, data;
 
     components = components || this.components;
@@ -574,7 +574,7 @@ this.Wkt.Wkt.prototype.write = function (components) {
  * @namespace this.Wkt.Wkt.extract
  * @instance
  */
-this.Wkt.Wkt.prototype.extract = {
+Wkt.Wkt.prototype.extract = {
     /**
      * Return a WKT string representing atomic (point) geometry
      * @param   point   {Object}    An object with x and y properties
@@ -688,7 +688,7 @@ this.Wkt.Wkt.prototype.extract = {
  * @namespace this.Wkt.Wkt.ingest
  * @instance
  */
-this.Wkt.Wkt.prototype.ingest = {
+Wkt.Wkt.prototype.ingest = {
 
     /**
      * Return point feature given a point WKT fragment.
