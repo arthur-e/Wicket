@@ -2,64 +2,64 @@
     "name": "wicket",
     "version": "0.1.0",
     "description": "A modest library for moving between Well-Known Text (WKT) and various framework geometries",
+    "homepage": "https://github.com/arthur-e/Wicket",
     "keywords": [
         "wkt",
         "map",
         "mapping",
         "geometry",
         "leaflet"
-   ],
-   "maintainers": [
-       {
-           "name": "K. Arthur Endsley",
-           "email": "kaendsle@mtu.edu",
-           "web": "https://github.com/arthur-e" 
-       } 
-   ],
-   "contributors": [
-       {
-           "name": "K. Arthur Endsley",
-           "email": "kaendsle@mtu.edu",
-           "web": "https://github.com/arthur-e" 
-       },
-       {
-           "name": "cuyahoga",
-           "web": "https://github.com/cuyahoga" 
-       },
-       {
-           "name": "Tom Nightingale",
-           "web": "https://github.com/thegreat" 
-       },
-       {
-           "name": "Aaron Ogle",
-           "web": "https://github.com/atogle" 
-       },
-       {
-           "name": "James Seppi",
-           "web": "https://github.com/jseppi" 
-       }
-   ],
-   "bugs": {
-       "mail": "kaendsle@mtu.edu",
-       "web": "https://github.com/arthur-e/Wicket/issues" 
-   },
-   "licenses": [
-       {
-           "type": "GPLv3",
-           "url": "https://raw.github.com/arthur-e/Wicket/master/LICENSE" 
-       } 
-   ],
-   "repositories": [
-       {
-           "type": "git",
-           "url": "https://github.com/arthur-e/Wicket" 
-       } 
-   ],
-   "os": ["linux", "macos", "win"],
-   "cpu": ["x86", "ppc", "x86_64"],
-   "engines": ["v8", "ejs", "node", "rhino"],
-   "scripts": {
-       "build": "refactor.sh",
-       "test": "wicket-test.js" 
-   }
+    ],
+    "maintainers": [
+        {
+            "name": "K. Arthur Endsley",
+            "email": "kaendsle@mtu.edu",
+            "web": "https://github.com/arthur-e" 
+        } 
+    ],
+    "contributors": [
+        {
+            "name": "K. Arthur Endsley",
+            "email": "kaendsle@mtu.edu",
+            "web": "https://github.com/arthur-e" 
+        },
+        {
+            "name": "cuyahoga",
+            "web": "https://github.com/cuyahoga" 
+        },
+        {
+            "name": "Tom Nightingale",
+            "web": "https://github.com/thegreat" 
+        },
+        {
+            "name": "Aaron Ogle",
+            "web": "https://github.com/atogle" 
+        },
+        {
+            "name": "James Seppi",
+            "web": "https://github.com/jseppi" 
+        }
+    ],
+    "bugs": {
+        "mail": "kaendsle@mtu.edu",
+        "url": "https://github.com/arthur-e/Wicket/issues" 
+    },
+    "licenses": [
+        {
+            "type": "GPLv3",
+            "url": "https://raw.github.com/arthur-e/Wicket/master/LICENSE" 
+        } 
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/arthur-e/Wicket"
+    },
+    "scripts": {
+        "postinstall": "export PATH=$PATH:/usr/local/lib/node_modules/uglify-js/bin/",
+        "build": "uglifyjs wicket.src.js -o wicket.js",
+        "test": "wicket-test.js" 
+    },
+    "devDependencies": {
+        "uglify-js": "2.4.x"
+    }
 }

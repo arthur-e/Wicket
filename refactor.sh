@@ -1,4 +1,4 @@
-java -jar /usr/local/closure/compiler.jar --compilation_level WHITESPACE_ONLY --js wicket-gmap3.src.js --js_output_file wicket-gmap3.js
-java -jar /usr/local/closure/compiler.jar --compilation_level WHITESPACE_ONLY --js wicket-leaflet.src.js --js_output_file wicket-leaflet.js
-java -jar /usr/local/closure/compiler.jar --compilation_level WHITESPACE_ONLY --js wicket-arcgis.src.js --js_output_file wicket-arcgis.js
-java -jar /usr/local/closure/compiler.jar --compilation_level WHITESPACE_ONLY --js wicket.src.js --js_output_file wicket.js
+node_modules/uglify-js/bin/uglifyjs wicket.js -o wicket.min.js
+node_modules/uglify-js/bin/uglifyjs wicket-leaflet.js -o wicket-leaflet.min.js
+node_modules/uglify-js/bin/uglifyjs wicket-arcgis.js -o wicket-arcgis.min.js
+node_modules/uglify-js/bin/uglifyjs wicket-gmap3.js -o wicket-gmap3.min.js
