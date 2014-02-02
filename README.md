@@ -71,14 +71,12 @@ Either way, make sure you invoke `jsdoc` from a directory in which you have writ
 
 ## Dependencies and Build Information ##
 
-Wicket is intended to have zero dependencies, however...
-* The ESRI ArcGIS JavaScript API and Google Maps API extensions require JavaScript 1.6 or higher (require `map`, `indexOf`, and `lastIndexOf` `Array` functions).
-* JSON parsing (from strings) is not provided. Wicket looks for the function `JSON.parse`, which is provided in most modern browsers (get it with [this library](https://github.com/douglascrockford/JSON-js/blob/master/json2.js), if you need to support older browsers).
+**Wicket has zero dependencies**, however, JSON parsing (from strings) is not provided.
+Wicket looks for the function `JSON.parse`, which is provided in most modern browsers (get it with [this library](https://github.com/douglascrockford/JSON-js/blob/master/json2.js), if you need to support older browsers).
 
-**Minified versions** of JavaScript files were generated using Google's [Closure compiler](https://developers.google.com/closure/compiler/docs/gettingstarted_app).
-Once installed, minification can be invoked at the command line, as in the following example:
+**Minified versions** can be generated with `uglify-js` (`sudo npm install uglify-js -g`):
 
-    java -jar /usr/local/closure/compiler.jar --compilation_level WHITESPACE_ONLY --js wicket-leaflet.src.js --js_output_file wicket-leaflet.js 
+    ./node_modules/uglify-js/bin/uglifyjs wicket.js -o wicket.min.js
 
 There is now a script included that will do this automatically for all of Wicket's source code:
 
@@ -122,8 +120,6 @@ Wicket borrows heavily from the experiences of others who came before us:
 * The OpenLayers 2.7 WKT module (OpenLayers.Format.WKT)
 * Chris Pietshmann's [article on converting Bing Maps shapes (VEShape) to WKT](http://pietschsoft.com/post/2009/04/04/Virtual-Earth-Shapes-%28VEShape%29-to-WKT-%28Well-Known-Text%29-and-Back-using-JavaScript.aspx)
 * Charles R. Schmidt's and the Python Spatial Analysis Laboratory's (PySAL) WKT writer
-
-Contributors: [cuyahoga](https://github.com/cuyahoga), [Tom Nightingale (thegreat)](https://github.com/thegreat), [Aaron Ogle](https://github.com/atogle), [James Seppi](https://github.com/jseppi)
 
 ### Conventions ###
 
