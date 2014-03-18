@@ -227,114 +227,248 @@ Wkt.Wkt.prototype.construct = {
  * uses object detection to attempt to classify members of framework geometry
  * classes into the standard WKT types.
  * @param   obj {Object}    An instance of one of the framework's geometry classes
- * @return      {Object}    A hash of the 'type' and 'components' thus derived
+ * @param   pathonly {Boolean}  When true, the return object's WKT string doesn't include the type. This is used to build multigeometries.
+ * @return      {Object}    A hash of the 'type' and 'components' thus derived, plus the WKT string of the feature.
  */
-Wkt.Wkt.prototype.deconstruct = function (obj) {
-    var features, i, j, multiFlag, verts, rings, tmp;
+Wkt.Wkt.prototype.deconstruct = function(obj, pathonly) {
+    var features, i, j, multiFlag, verts, wktverts, rings, wktrings, sign, tmp, response, lat, lng;
+
+    // Shortcut to signed area function (determines clockwise vs counter-clock)
+    sign = google.maps.geometry.spherical.computeSignedArea;
+
+    // google.maps.LatLng //////////////////////////////////////////////////////
+    if (obj.constructor === google.maps.LatLng) {
+
+        response = {
+            type: 'point',
+            components: [{
+                x: obj.lng(),
+                y: obj.lat()
+            }]
+        };
+        response.WKT = pathonly ? '' : response.type.toUpperCase();
+        response.WKT += '(' + obj.lng() + ' ' + obj.lat() + ')';
+        return response;
+    }
+
 
     // google.maps.Marker //////////////////////////////////////////////////////
-    if (obj.constructor === google.maps.Marker) {
-
-        return {
+    if (obj.constructor === google.maps.Marker || obj.constructor === google.maps.Point) {
+        response = {
             type: 'point',
             components: [{
                 x: obj.getPosition().lng(),
                 y: obj.getPosition().lat()
             }]
         };
-
+        response.WKT = pathonly ? '' : response.type.toUpperCase();
+        response.WKT += '(' + response.components.x + ' ' + response.components.y + ')';
+        return response;
     }
 
     // google.maps.Polyline ////////////////////////////////////////////////////
     if (obj.constructor === google.maps.Polyline) {
 
         verts = [];
+        wktverts = [];
         for (i = 0; i < obj.getPath().length; i += 1) {
             tmp = obj.getPath().getAt(i);
             verts.push({
                 x: tmp.lng(),
                 y: tmp.lat()
             });
+            wktverts.push(tpm.lng() + ' ' + tmp.lat());
         }
-
-        return {
+        response = {
             type: 'linestring',
-            components: verts
+            components: verts,
         };
+        response.WKT = pathonly ? '' : response.type.toUpperCase();
+        response.WKT += '((' + wktverts.join(',') + '))';
+        return response;
 
     }
 
     // google.maps.Polygon /////////////////////////////////////////////////////
     if (obj.constructor === google.maps.Polygon) {
+
         rings = [];
+        wktrings = [];
+        multiFlag = (function() {
+            var areas, i, l;
+
+            l = obj.getPaths().length;
+            if (l <= 1) { // Trivial; this is a single polygon
+                return false;
+            }
+
+            if (l === 2) {
+                // If clockwise*clockwise or counter*counter, i.e.
+                //  (-1)*(-1) or (1)*(1), then result would be positive
+                if (sign(obj.getPaths().getAt(0)) * sign(obj.getPaths().getAt(0)) < 0) {
+                    return false; // Most likely single polygon with 1 hole
+                }
+
+                return true;
+            }
+
+            // Must be longer than 3 polygons at this point...
+            areas = obj.getPaths().getArray().map(function(k) {
+                return sign(k) / Math.abs(sign(k)); // Unit normalization (outputs 1 or -1)
+            });
+
+            // If two clockwise or two counter-clockwise rings are found
+            //  (at different indices)...
+            if (areas.indexOf(areas[0]) !== areas.lastIndexOf(areas[0])) {
+                multiFlag = true; // Flag for holes in one or more polygons
+                return true;
+            }
+
+            return false;
+
+        }());
 
         for (i = 0; i < obj.getPaths().length; i += 1) { // For each polygon (ring)...
             tmp = obj.getPaths().getAt(i);
-
+            wktverts = [];
             verts = [];
             for (j = 0; j < obj.getPaths().getAt(i).length; j += 1) { // For each vertex...
                 verts.push({
                     x: tmp.getAt(j).lng(),
                     y: tmp.getAt(j).lat()
                 });
+                wktverts.push(tmp.getAt(j).lng() + ' ' + tmp.getAt(j).lat());
+
             }
 
-            if (i !== 0) { // Reverse the order of coordinates in inner rings
-                verts.reverse();
-                verts.push({ // Add the first coordinate (now at the end, in inner rings) again for closure
-                    x: tmp.getAt(tmp.length - 1).lng(),
-                    y: tmp.getAt(tmp.length - 1).lat()
-                });
-
-            } else {
+            if (!tmp.getAt(tmp.length - 1).equals(tmp.getAt(0))) {
                 verts.push({ // Add the first coordinate again for closure
                     x: tmp.getAt(0).lng(),
                     y: tmp.getAt(0).lat()
                 });
+                wktverts.push(tmp.getAt(0).lng() + ' ' + tmp.getAt(0).lat());
             }
 
-            rings.push(verts);
+            if (obj.getPaths().length > 1 && i > 0) {
+                // If this and the last ring have the same signs...
+                if (sign(obj.getPaths().getAt(i)) > 0 && sign(obj.getPaths().getAt(i - 1)) > 0 || sign(obj.getPaths().getAt(i)) < 0 && sign(obj.getPaths().getAt(i - 1)) < 0) {
+                    // ...They must both be inner rings (or both be outer rings, in a multipolygon)
+                    verts = [verts]; // Wrap multipolygons once more (collection)
+                    wktverts = [wktverts];
+                }
+
+            }
+
+            //TODO This makes mistakes when a second polygon has holes; it sees them all as individual polygons
+            if (multiFlag) {
+                rings.push([verts]); // Wrap up each polygon with its holes
+                wktrings.push([wktverts]);
+            } else {
+                rings.push(verts);
+                wktrings.push(wktverts);
+            }
         }
 
-        return {
-            type: 'polygon',
+        response = {
+            type: (multiFlag) ? 'multipolygon' : 'polygon',
             components: rings
         };
+        response.WKT = pathonly ? '' : response.type.toUpperCase();
+        response.WKT += '((' + wktrings.join(',') + '))';
+        return response;
+
 
     }
+
+    if (obj.constructor === google.maps.Circle) {
+        var point = obj.getCenter();
+        var radius = obj.getRadius();
+        verts = [];
+        wktverts = [];
+        var d2r = Math.PI / 180; // degrees to radians 
+        var r2d = 180 / Math.PI; // radians to degrees 
+        radius = radius / 1609; //meters to miles
+        var earthsradius = 3963; // 3963 is the radius of the earth in miles
+        var num_seg = 32; // number of segments used to approximate a circle
+        var rlat = (radius / earthsradius) * r2d;
+        var rlng = rlat / Math.cos(point.lat() * d2r);
+
+        for (var n = 0; n <= num_seg; n++) {
+            var theta = Math.PI * (n / (num_seg / 2));
+            lng = point.lng() + (rlng * Math.cos(theta)); // center a + radius x * cos(theta) 
+            lat = point.lat() + (rlat * Math.sin(theta)); // center b + radius y * sin(theta) 
+            verts.push({
+                x: lng,
+                y: lat
+            });
+            wktverts.push(lng + ' ' + lat);
+        }
+
+
+        response = {
+            type: 'polygon',
+            components: [verts]
+        };
+
+        response.WKT = pathonly ? '' : response.type.toUpperCase();
+        response.WKT += '((' + wktverts.join(',') + '))';
+        return response;
+
+    }
+
 
     // google.maps.Rectangle ///////////////////////////////////////////////////
     if (obj.constructor === google.maps.Rectangle) {
 
         tmp = obj.getBounds();
-        return {
+
+        verts = [];
+        wktverts = [];
+        verts.push({ // NW corner
+            x: tmp.getSouthWest().lng(),
+            y: tmp.getNorthEast().lat()
+        });
+        wktverts.push(verts[0].x + ' ' +
+            verts[0].y);
+
+        verts.push({ // NE corner
+            x: tmp.getNorthEast().lng(),
+            y: tmp.getNorthEast().lat()
+        });
+        wktverts.push(verts[1].x + ' ' +
+            verts[1].y);
+
+        verts.push({ // SE corner
+            x: tmp.getNorthEast().lng(),
+            y: tmp.getSouthWest().lat()
+        });
+        wktverts.push(verts[2].x + ' ' +
+            verts[2].y);
+
+        verts.push({ // SW corner
+            x: tmp.getSouthWest().lng(),
+            y: tmp.getSouthWest().lat()
+        });
+        wktverts.push(verts[3].x + ' ' +
+            verts[3].y);
+
+        verts.push({ // NW corner (again, for closure)
+            x: tmp.getSouthWest().lng(),
+            y: tmp.getNorthEast().lat()
+        });
+        wktverts.push(verts[4].x + ' ' +
+            verts[4].y);
+
+
+        response = {
             type: 'polygon',
             isRectangle: true,
-            components: [
-                [
-                    { // NE corner
-                        x: tmp.getNorthEast().lng(),
-                        y: tmp.getNorthEast().lat()
-                    },
-                    { // SE corner
-                        x: tmp.getNorthEast().lng(),
-                        y: tmp.getSouthWest().lat()
-                    },
-                    { // SW corner
-                        x: tmp.getSouthWest().lng(),
-                        y: tmp.getSouthWest().lat()
-                    },
-                    { // NW corner
-                        x: tmp.getSouthWest().lng(),
-                        y: tmp.getNorthEast().lat()
-                    },
-                    { // NE corner (again, for closure)
-                        x: tmp.getNorthEast().lng(),
-                        y: tmp.getNorthEast().lat()
-                    }
-                ]
-            ]
+            components: [verts]
         };
+
+        response.WKT = pathonly ? '' : response.type.toUpperCase();
+        response.WKT += '((' + wktverts.join(',') + '))';
+        return response;
 
     }
 
@@ -342,12 +476,12 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
         features = [];
 
         for (i = 0; i < obj.length; i += 1) {
-            features.push(this.deconstruct.call(this, obj[i]));
+            features.push(this.deconstruct.call(this, obj[i], true));
         }
 
-        return {
+        response = {
 
-            type: (function () {
+            type: (function() {
                 var k, type = obj[0].constructor;
 
                 for (k = 0; k < obj.length; k += 1) {
@@ -359,32 +493,44 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
                 }
 
                 switch (type) {
-                case google.maps.Marker:
-                    return 'multipoint';
-                case google.maps.Polyline:
-                    return 'multilinestring';
-                case google.maps.Polygon:
-                    return 'multipolygon';
-                default:
-                    return 'geometrycollection';
+                    case google.maps.Marker:
+                        return 'multipoint';
+                    case google.maps.Polyline:
+                        return 'multilinestring';
+                    case google.maps.Polygon:
+                        return 'multipolygon';
+                    default:
+                        return 'geometrycollection';
                 }
 
             }()),
-            components: (function () {
+            components: (function() {
                 // Pluck the components from each Wkt
                 var i, comps;
 
                 comps = [];
+                wktcomps = [];
                 for (i = 0; i < features.length; i += 1) {
                     if (features[i].components) {
                         comps.push(features[i].components);
+                        wktcomps.push(features[i].WKT);
                     }
                 }
 
-                return comps;
+                return {
+                    comps: comps,
+                    wktcomps: wktcomps
+                };
             }())
 
         };
+        console.log(response.components);
+        response.WKT = response.type.toUpperCase() + '(';
+        response.WKT += response.components.wktcomps.join(',');
+        response.components = response.components.comps;
+        response.WKT += ')';
+        return response;
+
 
     }
 
