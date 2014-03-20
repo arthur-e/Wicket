@@ -236,7 +236,9 @@ this.Wkt.Wkt.prototype.fromObject = function (obj) {
  * @method
  */
 this.Wkt.Wkt.prototype.toObject = function (config) {
-    return this.construct[this.type].call(this, config);
+    var theobject = this.construct[this.type].call(this, config);
+	theobject.properties = this.properties;
+	return theobject;
 };
 
 /**
@@ -260,7 +262,11 @@ this.Wkt.Wkt.prototype.fromJson = function (obj) {
 
 	this.type = obj.type.toLowerCase();
 	this.components = [];
-
+	if (obj.hasOwnProperty('geometry')) { //Feature
+		this.fromJson(obj.geometry);
+		this.properties = obj.properties;
+		return this;
+	}
 	coords = obj.coordinates;
 
 	if (!Wkt.isArray(coords[0])) { // Point
