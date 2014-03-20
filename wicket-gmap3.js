@@ -252,8 +252,22 @@ Wkt.Wkt.prototype.deconstruct = function(obj, pathonly) {
     }
 
 
+    // google.maps.Point //////////////////////////////////////////////////////
+    if (obj.constructor === google.maps.Point) {
+        response = {
+            type: 'point',
+            components: [{
+                x: obj.x,
+                y: obj.y
+            }]
+        };
+        response.WKT = pathonly ? '' : response.type.toUpperCase();
+        response.WKT += '(' + response.components.x + ' ' + response.components.y + ')';
+        return response;
+    }
+
     // google.maps.Marker //////////////////////////////////////////////////////
-    if (obj.constructor === google.maps.Marker || obj.constructor === google.maps.Point) {
+    if (obj.constructor === google.maps.Marker) {
         response = {
             type: 'point',
             components: [{
@@ -277,7 +291,7 @@ Wkt.Wkt.prototype.deconstruct = function(obj, pathonly) {
                 x: tmp.lng(),
                 y: tmp.lat()
             });
-            wktverts.push(tpm.lng() + ' ' + tmp.lat());
+            wktverts.push(tmp.lng() + ' ' + tmp.lat());
         }
         response = {
             type: 'linestring',
