@@ -10,6 +10,14 @@ describe('Standard WKT Test Cases: ', function () {
             cmp: [
                 {x: 30, y: 10}
             ],
+            obj: new google.maps.Point(30, 10)
+        },
+
+        marker: {
+            str: 'POINT(30 10)',
+            cmp: [
+                {x: 30, y: 10}
+            ],
             obj: new google.maps.Marker({
                 position: new google.maps.LatLng(10, 30)
             })
@@ -239,13 +247,13 @@ describe('Standard WKT Test Cases: ', function () {
         },
 
         rectangle: {
-            str: 'POLYGON((0 20,0 0,-50 0,-50 20,0 20))',
+            str: 'POLYGON((-50 20,0 20,0 0,-50 0,-50 20))',
             cmp: [[
+                {x: -50, y: 20},
                 {x: 0, y: 20},
                 {x: 0, y: 0},
                 {x: -50, y: 0},
-                {x: -50, y: 20},
-                {x: 0, y: 20}
+                {x: -50, y: 20}
             ]],
             obj: new google.maps.Rectangle({
                 bounds: new google.maps.LatLngBounds(new google.maps.LatLng(0, -50),
@@ -355,11 +363,11 @@ describe('Standard WKT Test Cases: ', function () {
         });
 
         it('should convert a basic POINT string to a Marker instance', function () {
-            wkt.read(cases.point.str);
+            wkt.read(cases.marker.str);
             expect(wkt.type).toBe('point');
             expect(wkt.isCollection()).toBe(false);
-            expect(wkt.components).toEqual(cases.point.cmp);
-            expect(wkt.toObject()).toEqual(cases.point.obj);
+            expect(wkt.components).toEqual(cases.marker.cmp);
+            expect(wkt.toObject().getPosition()).toEqual(cases.marker.obj.getPosition());
         });
 
         it('should convert a basic LINESTRING string to a Polyline instance', function () {
@@ -367,7 +375,7 @@ describe('Standard WKT Test Cases: ', function () {
             expect(wkt.type).toBe('linestring');
             expect(wkt.isCollection()).toBe(false);
             expect(wkt.components).toEqual(cases.linestring.cmp);
-            expect(wkt.toObject()).toEqual(cases.linestring.obj);
+            expect(wkt.toObject().getPath()).toEqual(cases.linestring.obj.getPath());
         });
 
         it('should convert a basic POLYGON string to a Polygon instance', function () {
@@ -375,7 +383,7 @@ describe('Standard WKT Test Cases: ', function () {
             expect(wkt.type).toBe('polygon');
             expect(wkt.isCollection()).toBe(true);
             expect(wkt.components).toEqual(cases.polygon.cmp);
-            expect(wkt.toObject()).toEqual(cases.polygon.obj);
+            expect(wkt.toObject().getPaths()).toEqual(cases.polygon.obj.getPaths());
         });
 
         it('should convert a POLYGON string with a hole to a Polygon instance with the same hole', function () {
@@ -383,7 +391,7 @@ describe('Standard WKT Test Cases: ', function () {
             expect(wkt.type).toBe('polygon');
             expect(wkt.isCollection()).toBe(true);
             expect(wkt.components).toEqual(cases.polygon2.cmp);
-            expect(wkt.toObject()).toEqual(cases.polygon2.obj);
+            expect(wkt.toObject().getPaths()).toEqual(cases.polygon2.obj.getPaths());
         });
 
         it('should convert a POLYGON string, with isRectangle=true, into a Rectangle instance', function () {
@@ -392,16 +400,22 @@ describe('Standard WKT Test Cases: ', function () {
             expect(wkt.type).toBe('polygon');
             expect(wkt.isCollection()).toBe(true);
             expect(wkt.components).toEqual(cases.rectangle.cmp);
-            expect(wkt.toObject()).toEqual(cases.rectangle.obj);
+            expect(wkt.toObject().getBounds()).toEqual(cases.rectangle.obj.getBounds());
             expect(wkt.toObject().constructor).toEqual(google.maps.Rectangle);
         });
 
         it('should convert a MULTIPOINT string into an Array of Marker instances', function () {
+            var m;
+
             wkt.read(cases.multipoint.str);
             expect(wkt.type).toBe('multipoint');
             expect(wkt.isCollection()).toBe(true);
             expect(wkt.components).toEqual(cases.multipoint.cmp);
-            expect(wkt.toObject()).toEqual(cases.multipoint.obj);
+
+            markers = wkt.toObject();
+            for (m = 0; m < markers.length; m += 1) {
+                expect(markers[m].getPosition()).toEqual(cases.multipoint.obj[m].getPosition());
+            }
         });
 
         it('should convert a MULTILINESTRING string into an Array of Polyline instances', function () {
@@ -433,7 +447,7 @@ describe('Standard WKT Test Cases: ', function () {
             expect(wkt.type).toBe('box');
             expect(wkt.isCollection()).toBe(false);
             expect(wkt.components).toEqual(cases.box.cmp);
-            expect(wkt.toObject()).toEqual(cases.box.obj);
+            expect(wkt.toObject().getBounds()).toEqual(cases.box.obj.getBounds());
         });
 
     });

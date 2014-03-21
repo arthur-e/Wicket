@@ -226,11 +226,11 @@ Wkt.Wkt.prototype.construct = {
  * geometric representations from instances of framework geometry. This method
  * uses object detection to attempt to classify members of framework geometry
  * classes into the standard WKT types.
- * @param   obj {Object}    An instance of one of the framework's geometry classes
- * @param   pathonly {Boolean}  When true, the return object's WKT string doesn't include the type. This is used to build multigeometries.
- * @return      {Object}    A hash of the 'type' and 'components' thus derived, plus the WKT string of the feature.
+ * @param   obj         {Object}    An instance of one of the framework's geometry classes
+ * @param   pathonly    {Boolean}   When true, the return object's WKT string doesn't include the type. This is used to build multigeometries.
+ * @return              {Object}    A hash of the 'type' and 'components' thus derived, plus the WKT string of the feature.
  */
-Wkt.Wkt.prototype.deconstruct = function(obj, pathonly) {
+Wkt.Wkt.prototype.deconstruct = function (obj, pathonly) {
     var features, i, j, multiFlag, verts, wktverts, rings, wktrings, sign, tmp, response, lat, lng;
 
     // Shortcut to signed area function (determines clockwise vs counter-clock)
@@ -250,7 +250,6 @@ Wkt.Wkt.prototype.deconstruct = function(obj, pathonly) {
         response.WKT += '(' + obj.lng() + ' ' + obj.lat() + ')';
         return response;
     }
-
 
     // google.maps.Point //////////////////////////////////////////////////////
     if (obj.constructor === google.maps.Point) {
@@ -319,7 +318,7 @@ Wkt.Wkt.prototype.deconstruct = function(obj, pathonly) {
             if (l === 2) {
                 // If clockwise*clockwise or counter*counter, i.e.
                 //  (-1)*(-1) or (1)*(1), then result would be positive
-                if (sign(obj.getPaths().getAt(0)) * sign(obj.getPaths().getAt(0)) < 0) {
+                if (sign(obj.getPaths().getAt(0)) * sign(obj.getPaths().getAt(1)) < 0) {
                     return false; // Most likely single polygon with 1 hole
                 }
 
@@ -356,10 +355,20 @@ Wkt.Wkt.prototype.deconstruct = function(obj, pathonly) {
             }
 
             if (!tmp.getAt(tmp.length - 1).equals(tmp.getAt(0))) {
-                verts.push({ // Add the first coordinate again for closure
-                    x: tmp.getAt(0).lng(),
-                    y: tmp.getAt(0).lat()
-                });
+                if (!multiFlag && i % 2 !== 0) { // In inner rings, coordinates are reversed...
+                    verts.unshift({ // Add the first coordinate again for closure
+                        x: tmp.getAt(tmp.length - 1).lng(),
+                        y: tmp.getAt(tmp.length - 1).lat()
+                    });
+
+                } else {
+                    verts.push({ // Add the first coordinate again for closure
+                        x: tmp.getAt(0).lng(),
+                        y: tmp.getAt(0).lat()
+                    });
+
+                }
+
                 wktverts.push(tmp.getAt(0).lng() + ' ' + tmp.getAt(0).lat());
             }
 
@@ -378,6 +387,10 @@ Wkt.Wkt.prototype.deconstruct = function(obj, pathonly) {
                 rings.push([verts]); // Wrap up each polygon with its holes
                 wktrings.push([wktverts]);
             } else {
+                if (i % 2 !== 0) { // In inner rings, coordinates are reversed...
+                    verts.reverse();
+                    wktverts.reverse();
+                }
                 rings.push(verts);
                 wktrings.push(wktverts);
             }
@@ -391,9 +404,9 @@ Wkt.Wkt.prototype.deconstruct = function(obj, pathonly) {
         response.WKT += '((' + wktrings.join(',') + '))';
         return response;
 
-
     }
 
+    // google.maps.Circle //////////////////////////////////////////////////////
     if (obj.constructor === google.maps.Circle) {
         var point = obj.getCenter();
         var radius = obj.getRadius();
@@ -401,7 +414,7 @@ Wkt.Wkt.prototype.deconstruct = function(obj, pathonly) {
         wktverts = [];
         var d2r = Math.PI / 180; // degrees to radians 
         var r2d = 180 / Math.PI; // radians to degrees 
-        radius = radius / 1609; //meters to miles
+        radius = radius / 1609; // meters to miles
         var earthsradius = 3963; // 3963 is the radius of the earth in miles
         var num_seg = 32; // number of segments used to approximate a circle
         var rlat = (radius / earthsradius) * r2d;
@@ -418,7 +431,6 @@ Wkt.Wkt.prototype.deconstruct = function(obj, pathonly) {
             wktverts.push(lng + ' ' + lat);
         }
 
-
         response = {
             type: 'polygon',
             components: [verts]
@@ -429,7 +441,6 @@ Wkt.Wkt.prototype.deconstruct = function(obj, pathonly) {
         return response;
 
     }
-
 
     // google.maps.Rectangle ///////////////////////////////////////////////////
     if (obj.constructor === google.maps.Rectangle) {
@@ -473,7 +484,6 @@ Wkt.Wkt.prototype.deconstruct = function(obj, pathonly) {
         wktverts.push(verts[4].x + ' ' +
             verts[4].y);
 
-
         response = {
             type: 'polygon',
             isRectangle: true,
@@ -486,6 +496,7 @@ Wkt.Wkt.prototype.deconstruct = function(obj, pathonly) {
 
     }
 
+    // Array ///////////////////////////////////////////////////////////////////
     if (Wkt.isArray(obj)) {
         features = [];
 
@@ -538,24 +549,14 @@ Wkt.Wkt.prototype.deconstruct = function(obj, pathonly) {
             }())
 
         };
-        console.log(response.components);
         response.WKT = response.type.toUpperCase() + '(';
         response.WKT += response.components.wktcomps.join(',');
         response.components = response.components.comps;
         response.WKT += ')';
         return response;
 
-
     }
 
-    // google.maps.Circle //////////////////////////////////////////////////////
-    if (obj.getBounds && obj.getRadius) {
-        // Circle is the only overlay class with both the getBounds and getRadius properties
-
-        console.log('Deconstruction of google.maps.Circle objects is not yet supported');
-
-    } else {
-        console.log('The passed object does not have any recognizable properties.');
-    }
+    console.log('The passed object does not have any recognizable properties.');
 
 };
