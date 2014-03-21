@@ -42,6 +42,8 @@ The following examples work in any of the mapping environments, as Wicket has a 
     wkt.toObject();
     
 Wicket will read from the geometry objects of any mapping client it understands.
+**Note:** Don't use the `deconstruct()` method! This is used internally by `Wkt.Wkt()` instances.
+Use `fromObject()` instead, as in the following example.
 
     var wkt = new Wkt.Wkt();
     
