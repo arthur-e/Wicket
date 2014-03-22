@@ -236,9 +236,12 @@ this.Wkt.Wkt.prototype.fromObject = function (obj) {
  * @method
  */
 this.Wkt.Wkt.prototype.toObject = function (config) {
-    var theobject = this.construct[this.type].call(this, config);
-	theobject.properties = this.properties;
-	return theobject;
+    var obj = this.construct[this.type].call(this, config);
+	// Don't assign the "properties" property to an Array
+	if (typeof obj === 'object' && !Wkt.isArray(obj)) {
+		obj.properties = this.properties;
+	}
+	return obj;
 };
 
 /**
