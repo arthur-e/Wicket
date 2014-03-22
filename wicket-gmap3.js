@@ -230,7 +230,7 @@ Wkt.Wkt.prototype.construct = {
  * @param   pathonly    {Boolean}   When true, the return object's WKT string doesn't include the type. This is used to build multigeometries.
  * @return              {Object}    A hash of the 'type' and 'components' thus derived, plus the WKT string of the feature.
  */
-Wkt.Wkt.prototype.deconstruct = function (obj, pathonly) {
+Wkt.Wkt.prototype.deconstruct = function (obj, pathonly, multiFlag) {
     var features, i, j, multiFlag, verts, wktverts, rings, wktrings, sign, tmp, response, lat, lng;
 
     // Shortcut to signed area function (determines clockwise vs counter-clock)
@@ -307,39 +307,42 @@ Wkt.Wkt.prototype.deconstruct = function (obj, pathonly) {
 
         rings = [];
         wktrings = [];
-        multiFlag = (function() {
-            var areas, i, l;
 
-            l = obj.getPaths().length;
-            if (l <= 1) { // Trivial; this is a single polygon
-                return false;
-            }
+        if (multiFlag === undefined) {
+            multiFlag = (function() {
+                var areas, i, l;
 
-            if (l === 2) {
-                // If clockwise*clockwise or counter*counter, i.e.
-                //  (-1)*(-1) or (1)*(1), then result would be positive
-                if (sign(obj.getPaths().getAt(0)) * sign(obj.getPaths().getAt(1)) < 0) {
-                    return false; // Most likely single polygon with 1 hole
+                l = obj.getPaths().length;
+                if (l <= 1) { // Trivial; this is a single polygon
+                    return false;
                 }
 
-                return true;
-            }
+                if (l === 2) {
+                    // If clockwise*clockwise or counter*counter, i.e.
+                    //  (-1)*(-1) or (1)*(1), then result would be positive
+                    if (sign(obj.getPaths().getAt(0)) * sign(obj.getPaths().getAt(1)) < 0) {
+                        return false; // Most likely single polygon with 1 hole
+                    }
 
-            // Must be longer than 3 polygons at this point...
-            areas = obj.getPaths().getArray().map(function(k) {
-                return sign(k) / Math.abs(sign(k)); // Unit normalization (outputs 1 or -1)
-            });
+                    return true;
+                }
 
-            // If two clockwise or two counter-clockwise rings are found
-            //  (at different indices)...
-            if (areas.indexOf(areas[0]) !== areas.lastIndexOf(areas[0])) {
-                multiFlag = true; // Flag for holes in one or more polygons
-                return true;
-            }
+                // Must be longer than 3 polygons at this point...
+                areas = obj.getPaths().getArray().map(function(k) {
+                    return sign(k) / Math.abs(sign(k)); // Unit normalization (outputs 1 or -1)
+                });
 
-            return false;
+                // If two clockwise or two counter-clockwise rings are found
+                //  (at different indices)...
+                if (areas.indexOf(areas[0]) !== areas.lastIndexOf(areas[0])) {
+                    multiFlag = true; // Flag for holes in one or more polygons
+                    return true;
+                }
 
-        }());
+                return false;
+
+            }());
+        }
 
         for (i = 0; i < obj.getPaths().length; i += 1) { // For each polygon (ring)...
             tmp = obj.getPaths().getAt(i);
@@ -355,7 +358,7 @@ Wkt.Wkt.prototype.deconstruct = function (obj, pathonly) {
             }
 
             if (!tmp.getAt(tmp.length - 1).equals(tmp.getAt(0))) {
-                if (!multiFlag && i % 2 !== 0) { // In inner rings, coordinates are reversed...
+                if (i % 2 !== 0) { // In inner rings, coordinates are reversed...
                     verts.unshift({ // Add the first coordinate again for closure
                         x: tmp.getAt(tmp.length - 1).lng(),
                         y: tmp.getAt(tmp.length - 1).lat()
@@ -374,7 +377,8 @@ Wkt.Wkt.prototype.deconstruct = function (obj, pathonly) {
 
             if (obj.getPaths().length > 1 && i > 0) {
                 // If this and the last ring have the same signs...
-                if (sign(obj.getPaths().getAt(i)) > 0 && sign(obj.getPaths().getAt(i - 1)) > 0 || sign(obj.getPaths().getAt(i)) < 0 && sign(obj.getPaths().getAt(i - 1)) < 0) {
+                if (sign(obj.getPaths().getAt(i)) > 0 && sign(obj.getPaths().getAt(i - 1)) > 0 ||
+                    sign(obj.getPaths().getAt(i)) < 0 && sign(obj.getPaths().getAt(i - 1)) < 0 && !multiFlag) {
                     // ...They must both be inner rings (or both be outer rings, in a multipolygon)
                     verts = [verts]; // Wrap multipolygons once more (collection)
                     wktverts = [wktverts];
@@ -383,17 +387,12 @@ Wkt.Wkt.prototype.deconstruct = function (obj, pathonly) {
             }
 
             //TODO This makes mistakes when a second polygon has holes; it sees them all as individual polygons
-            if (multiFlag) {
-                rings.push([verts]); // Wrap up each polygon with its holes
-                wktrings.push([wktverts]);
-            } else {
-                if (i % 2 !== 0) { // In inner rings, coordinates are reversed...
-                    verts.reverse();
-                    wktverts.reverse();
-                }
-                rings.push(verts);
-                wktrings.push(wktverts);
+            if (i % 2 !== 0) { // In inner rings, coordinates are reversed...
+                verts.reverse();
+                wktverts.reverse();
             }
+            rings.push(verts);
+            wktrings.push(wktverts);
         }
 
         response = {
@@ -501,7 +500,7 @@ Wkt.Wkt.prototype.deconstruct = function (obj, pathonly) {
         features = [];
 
         for (i = 0; i < obj.length; i += 1) {
-            features.push(this.deconstruct.call(this, obj[i], true));
+            features.push(this.deconstruct.call(this, obj[i], true, true));
         }
 
         response = {
