@@ -452,6 +452,8 @@ Wkt.Wkt.prototype.toJson = function () {
  * creating a collection (MULTI-geometry) based on their types, which must agree.
  * For example, creates a MULTIPOLYGON from a POLYGON type merged with another
  * POLYGON type, or adds a POLYGON instance to a MULTIPOLYGON instance.
+ * @param   wkt {String}    A Wkt.Wkt object
+ * @return	{this.Wkt.Wkt}	The object itself
  * @memberof this.Wkt.Wkt
  * @method
  */
@@ -492,7 +494,7 @@ Wkt.Wkt.prototype.merge = function (wkt) {
 /**
  * Reads a WKT string, validating and incorporating it.
  * @param   str {String}    A WKT or GeoJSON string
- * @return      {Array}     An Array of internal geometry objects
+ * @return	{this.Wkt.Wkt}	The object itself
  * @memberof this.Wkt.Wkt
  * @method
  */
