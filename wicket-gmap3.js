@@ -38,7 +38,7 @@ Wkt.Wkt.prototype.construct = {
      * @param   component   {Object}    An optional component to build from
      * @return              {google.maps.Marker}
      */
-    point: function(config, component) {
+    point: function (config, component) {
         var c = component || this.components;
 
         config = config || {};
@@ -53,7 +53,7 @@ Wkt.Wkt.prototype.construct = {
      * @param   config  {Object}    An optional properties hash the object should use
      * @return          {Array}     Array containing multiple google.maps.Marker
      */
-    multipoint: function(config) {
+    multipoint: function (config) {
         var i, c, arr;
 
         c = this.components;
@@ -75,7 +75,7 @@ Wkt.Wkt.prototype.construct = {
      * @param   component   {Object}    An optional component to build from
      * @return              {google.maps.Polyline}
      */
-    linestring: function(config, component) {
+    linestring: function (config, component) {
         var i, c;
 
         c = component || this.components;
@@ -98,7 +98,7 @@ Wkt.Wkt.prototype.construct = {
      * @param   config  {Object}    An optional properties hash the object should use
      * @return          {Array}     Array containing multiple google.maps.Polyline instances
      */
-    multilinestring: function(config) {
+    multilinestring: function (config) {
         var i, c, arr;
 
         c = this.components;
@@ -124,7 +124,7 @@ Wkt.Wkt.prototype.construct = {
      * @param   component   {Object}    An optional component to build from
      * @return              {google.maps.Rectangle}
      */
-    box: function(config, component) {
+    box: function (config, component) {
         var c = component || this.components;
 
         config = config || {};
@@ -142,7 +142,7 @@ Wkt.Wkt.prototype.construct = {
      * @param   component   {Object}    An optional component to build from
      * @return              {google.maps.Polygon}
      */
-    polygon: function(config, component) {
+    polygon: function (config, component) {
         var j, k, c, rings, verts;
 
         c = component || this.components;
@@ -175,7 +175,7 @@ Wkt.Wkt.prototype.construct = {
         config.paths = config.paths.concat(rings);
 
         if (this.isRectangle) {
-            return (function() {
+            return (function () {
                 var bounds, v;
 
                 bounds = new google.maps.LatLngBounds();
@@ -200,7 +200,7 @@ Wkt.Wkt.prototype.construct = {
      * @param   config  {Object}    An optional properties hash the object should use
      * @return          {Array}     Array containing multiple google.maps.Polygon
      */
-    multipolygon: function(config) {
+    multipolygon: function (config) {
         var i, c, arr;
 
         c = this.components;
@@ -228,11 +228,11 @@ Wkt.Wkt.prototype.construct = {
  * geometric representations from instances of framework geometry. This method
  * uses object detection to attempt to classify members of framework geometry
  * classes into the standard WKT types.
- * @param obj   {Object}    An instance of one of the framework's geometry classes
- * @param multiFlag {Bool} If true, then the deconstructor will be forced to return a MultiGeometry (multipoint, multilinestring or multipolygon)
- * @return  {Object}    A hash of the 'type' and 'components' thus derived, plus the WKT string of the feature.
+ * @param obj       {Object}    An instance of one of the framework's geometry classes
+ * @param multiFlag {Boolean} If true, then the deconstructor will be forced to return a MultiGeometry (multipoint, multilinestring or multipolygon)
+ * @return          {Object}    A hash of the 'type' and 'components' thus derived, plus the WKT string of the feature.
  */
-Wkt.Wkt.prototype.deconstruct = function(obj, multiFlag) {
+Wkt.Wkt.prototype.deconstruct = function (obj, multiFlag) {
     var features, i, j, multiFlag, verts, rings, sign, tmp, response, lat, lng;
 
     // Shortcut to signed area function (determines clockwise vs counter-clock)
@@ -248,7 +248,6 @@ Wkt.Wkt.prototype.deconstruct = function(obj, multiFlag) {
                 y: obj.lat()
             }]
         };
-
         return response;
     }
 
@@ -261,7 +260,6 @@ Wkt.Wkt.prototype.deconstruct = function(obj, multiFlag) {
                 y: obj.y
             }]
         };
-
         return response;
     }
 
@@ -274,7 +272,6 @@ Wkt.Wkt.prototype.deconstruct = function(obj, multiFlag) {
                 y: obj.getPosition().lat()
             }]
         };
-
         return response;
     }
 
@@ -293,7 +290,6 @@ Wkt.Wkt.prototype.deconstruct = function(obj, multiFlag) {
             type: 'linestring',
             components: verts,
         };
-
         return response;
 
     }
@@ -304,7 +300,7 @@ Wkt.Wkt.prototype.deconstruct = function(obj, multiFlag) {
         rings = [];
 
         if (multiFlag === undefined) {
-            multiFlag = (function() {
+            multiFlag = (function () {
                 var areas, i, l;
 
                 l = obj.getPaths().length;
@@ -323,7 +319,7 @@ Wkt.Wkt.prototype.deconstruct = function(obj, multiFlag) {
                 }
 
                 // Must be longer than 3 polygons at this point...
-                areas = obj.getPaths().getArray().map(function(k) {
+                areas = obj.getPaths().getArray().map(function (k) {
                     return sign(k) / Math.abs(sign(k)); // Unit normalization (outputs 1 or -1)
                 });
 
@@ -388,7 +384,6 @@ Wkt.Wkt.prototype.deconstruct = function(obj, multiFlag) {
             type: (multiFlag) ? 'multipolygon' : 'polygon',
             components: rings
         };
-
         return response;
 
     }
@@ -435,24 +430,20 @@ Wkt.Wkt.prototype.deconstruct = function(obj, multiFlag) {
             y: tmp.getNorthEast().lat()
         });
 
-
         verts.push({ // NE corner
             x: tmp.getNorthEast().lng(),
             y: tmp.getNorthEast().lat()
         });
-
 
         verts.push({ // SE corner
             x: tmp.getNorthEast().lng(),
             y: tmp.getSouthWest().lat()
         });
 
-
         verts.push({ // SW corner
             x: tmp.getSouthWest().lng(),
             y: tmp.getSouthWest().lat()
         });
-
 
         verts.push({ // NW corner (again, for closure)
             x: tmp.getSouthWest().lng(),
@@ -471,8 +462,6 @@ Wkt.Wkt.prototype.deconstruct = function(obj, multiFlag) {
     }
 
 
-
-
     // Array ///////////////////////////////////////////////////////////////////
     if (Wkt.isArray(obj)) {
         features = [];
@@ -483,7 +472,7 @@ Wkt.Wkt.prototype.deconstruct = function(obj, multiFlag) {
 
         response = {
 
-            type: (function() {
+            type: (function () {
                 var k, type = obj[0].constructor;
 
                 for (k = 0; k < obj.length; k += 1) {
@@ -495,18 +484,18 @@ Wkt.Wkt.prototype.deconstruct = function(obj, multiFlag) {
                 }
 
                 switch (type) {
-                    case google.maps.Marker:
-                        return 'multipoint';
-                    case google.maps.Polyline:
-                        return 'multilinestring';
-                    case google.maps.Polygon:
-                        return 'multipolygon';
-                    default:
-                        return 'geometrycollection';
+                case google.maps.Marker:
+                    return 'multipoint';
+                case google.maps.Polyline:
+                    return 'multilinestring';
+                case google.maps.Polygon:
+                    return 'multipolygon';
+                default:
+                    return 'geometrycollection';
                 }
 
             }()),
-            components: (function() {
+            components: (function () {
                 // Pluck the components from each Wkt
                 var i, comps;
 
