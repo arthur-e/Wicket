@@ -487,21 +487,21 @@ describe('Arbitrary WKT Test Cases: ', function () {
         var c;
 
         it('should read and write arbitrary POINT string', function () {
-            c, wkt.components = randomCoords(1);
+            c = wkt.components = randomCoords(1);
             wkt.type = 'point';
 
             expect(wkt.read(wkt.write()).components).toEqual(c);
         });
 
         it('should read and write long, arbitrary LINESTRING string', function () {
-            c, wkt.components = randomCoords(10000);
+            c = wkt.components = randomCoords(10000);
             wkt.type = 'linestring';
 
             expect(wkt.read(wkt.write()).components).toEqual(c);
         });
 
         it('should read and write long, arbitrary POLYGON string', function () {
-            c, wkt.components = randomCoords(10000);
+            c = wkt.components = [randomCoords(10000)];
             wkt.type = 'polygon';
 
             expect(wkt.read(wkt.write()).components).toEqual(c);
@@ -1136,12 +1136,12 @@ describe('GeoJSON Cases:', function () {
             },
             jsonStr: '{"coordinates": [[[30, 10], [10, 20], [20, 40], [40, 40], [30, 10]]], "type": "Polygon"}'
         },
-        
+
         polygon2: {
             str: 'POLYGON((35 10,45 45,15 40,10 20,35 10),(20 30,35 35,30 20,20 30))',
             json: {
                 'coordinates': [
-                    [[35, 10], [45, 45], [15, 40], [10, 20], [35, 10]], 
+                    [[35, 10], [45, 45], [15, 40], [10, 20], [35, 10]],
                     [[20, 30], [35, 35], [30, 20], [20, 30]]
                 ],
                 'type': 'Polygon'
@@ -1170,9 +1170,9 @@ describe('GeoJSON Cases:', function () {
                 'coordinates': [
                     [
                         [[40, 40], [20, 45], [45, 30], [40, 40]]
-                    ], 
+                    ],
                     [
-                        [[20, 35], [10, 30], [10, 10], [30, 5], [45, 20], [20, 35]], 
+                        [[20, 35], [10, 30], [10, 10], [30, 5], [45, 20], [20, 35]],
                         [[30, 20], [20, 15], [20, 25], [30, 20]]
                     ]
                 ],
@@ -1196,7 +1196,7 @@ describe('GeoJSON Cases:', function () {
             str: 'MULTILINESTRING((10 10,20 20,10 40),(40 40,30 30,40 20,30 10))',
             json: {
                 'coordinates': [
-                    [[10, 10], [20, 20], [10, 40]], 
+                    [[10, 10], [20, 20], [10, 40]],
                     [[40, 40], [30, 30], [40, 20], [30, 10]]
                 ],
                 'type': 'MultiLineString'
@@ -1216,7 +1216,7 @@ describe('GeoJSON Cases:', function () {
         }
 
     };
-    
+
     describe('GeoJSON Construction:', function () {
 
         it('should create valid JSON for WKT Point type', function () {
@@ -1238,27 +1238,27 @@ describe('GeoJSON Cases:', function () {
             var a = new Wkt.Wkt(cases.polygon2.str);
             expect(a.toJson()).toEqual(cases.polygon2.json);
         });
-    
+
         it('should create valid JSON for WKT MultiPolygon type', function () {
             var a = new Wkt.Wkt(cases.multipolygon.str);
             expect(a.toJson()).toEqual(cases.multipolygon.json);
         });
-    
+
         it('should create valid JSON for WKT MultiPolygon type with a hole', function () {
             var a = new Wkt.Wkt(cases.multipolygon2.str);
             expect(a.toJson()).toEqual(cases.multipolygon2.json);
         });
-    
+
         it('should create valid JSON for WKT MultiPoint type', function () {
             var a = new Wkt.Wkt(cases.multipoint.str);
             expect(a.toJson()).toEqual(cases.multipoint.json);
         });
-    
+
         it('should create valid JSON for WKT MultiLineString type', function () {
             var a = new Wkt.Wkt(cases.multilinestring.str);
             expect(a.toJson()).toEqual(cases.multilinestring.json);
         });
-    
+
         it('should create valid JSON for WKT Box type', function () {
             var a = new Wkt.Wkt(cases.box.str);
             expect(a.toJson()).toEqual(cases.box.json);
@@ -1287,22 +1287,22 @@ describe('GeoJSON Cases:', function () {
             var a = new Wkt.Wkt(cases.polygon2.json);
             expect(a.write()).toEqual(cases.polygon2.str);
         });
-    
+
         it('should write the WKT string corresponding to a GeoJSON MultiPolygon', function () {
             var a = new Wkt.Wkt(cases.multipolygon.json);
             expect(a.write()).toEqual(cases.multipolygon.str);
         });
-    
+
         it('should write the WKT string corresponding to a GeoJSON MultiPolygon with a hole', function () {
             var a = new Wkt.Wkt(cases.multipolygon2.json);
             expect(a.write()).toEqual(cases.multipolygon2.str);
         });
-    
+
         it('should write the WKT string corresponding to a GeoJSON MultiPoint', function () {
             var a = new Wkt.Wkt(cases.multipoint.json);
             expect(a.write()).toEqual(cases.multipoint.str);
         });
-    
+
         it('should write the WKT string corresponding to a GeoJSON MultiLineString', function () {
             var a = new Wkt.Wkt(cases.multilinestring.json);
             expect(a.write()).toEqual(cases.multilinestring.str);
@@ -1359,4 +1359,3 @@ describe('GeoJSON Cases:', function () {
     });
 
 });
-
