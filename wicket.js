@@ -178,7 +178,7 @@
  * @memberof this.Wkt.Wkt
  * @method
  */
-this.Wkt.Wkt.prototype.isCollection = function () {
+Wkt.Wkt.prototype.isCollection = function () {
 	switch (this.type.slice(0, 5)) {
 	case 'multi':
 		// Trivial; any multi-geometry is a collection
@@ -200,7 +200,7 @@ this.Wkt.Wkt.prototype.isCollection = function () {
  * @memberof this.Wkt.Wkt
  * @method
  */
-this.Wkt.Wkt.prototype.sameCoords = function (a, b) {
+Wkt.Wkt.prototype.sameCoords = function (a, b) {
 	return (a.x === b.x && a.y === b.y);
 };
 
@@ -212,7 +212,7 @@ this.Wkt.Wkt.prototype.sameCoords = function (a, b) {
  * @memberof this.Wkt.Wkt
  * @method
  */
-this.Wkt.Wkt.prototype.fromObject = function (obj) {
+Wkt.Wkt.prototype.fromObject = function (obj) {
 	var result;
 
 	if (obj.hasOwnProperty('type') && obj.hasOwnProperty('coordinates')) {
@@ -235,7 +235,7 @@ this.Wkt.Wkt.prototype.fromObject = function (obj) {
  * @memberof this.Wkt.Wkt
  * @method
  */
-this.Wkt.Wkt.prototype.toObject = function (config) {
+Wkt.Wkt.prototype.toObject = function (config) {
 	var obj = this.construct[this.type].call(this, config);
 	// Don't assign the "properties" property to an Array
 	if (typeof obj === 'object' && !Wkt.isArray(obj)) {
@@ -249,7 +249,7 @@ this.Wkt.Wkt.prototype.toObject = function (config) {
  * @memberof this.Wkt.Wkt
  * @method
  */
-this.Wkt.Wkt.prototype.toString = function (config) {
+Wkt.Wkt.prototype.toString = function (config) {
 	return this.write();
 };
 
@@ -260,7 +260,7 @@ this.Wkt.Wkt.prototype.toString = function (config) {
  * @memberof this.Wkt.Wkt
  * @method
  */
-this.Wkt.Wkt.prototype.fromJson = function (obj) {
+Wkt.Wkt.prototype.fromJson = function (obj) {
 	var i, j, k, coords, iring, oring;
 
 	this.type = obj.type.toLowerCase();
