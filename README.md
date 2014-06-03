@@ -6,6 +6,8 @@ Wicket is a lightweight library for translating between [Well-Known Text (WKT)](
 * ESRI ArcGIS JavaScript API [(demo)](http://arthur-e.github.com/Wicket/sandbox-arcgis.html)
 * Potentially any other web mapping framework through serialization and de-serialization of GeoJSON (with `JSON.parse`)
 
+If you are looking for [Apache Wicket](http://wicket.apache.org/), the web-app development framework for Java, [you'll find it here](http://wicket.apache.org/).
+
 ## License ##
 
 Wicket is released under the [GNU General Public License version 3 (GPLv3)](http://www.gnu.org/licenses/gpl.html).
@@ -56,6 +58,11 @@ Use `fromObject()` instead, as in the following example.
     // Serialize a WKT string from that geometry
     wkt.write();
     // "POINT(10 30)"
+    
+## See Also ##
+
+* [wellknown](https://github.com/mapbox/wellknown)
+* [OpenLayers WKT](https://github.com/openlayers/openlayers/blob/master/lib/OpenLayers/Format/WKT.js)
 
 ## Documentation ##
 
