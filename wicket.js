@@ -169,7 +169,6 @@
 	};
 
 	global.Wkt = Wkt;
-	return this;
 
 	/**
 	 * Returns true if the internal geometry is a collection of geometries.
@@ -852,5 +851,7 @@
 		}
 	
 	}; // eo ingest
+	
+	return this;
 }(this));
 
