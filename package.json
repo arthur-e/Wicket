@@ -10,54 +10,42 @@
         "geometry",
         "leaflet"
     ],
-    "maintainers": [
-        {
-            "name": "K. Arthur Endsley",
-            "email": "kaendsle@mtu.edu",
-            "web": "https://github.com/arthur-e" 
-        } 
-    ],
-    "contributors": [
-        {
-            "name": "K. Arthur Endsley",
-            "email": "kaendsle@mtu.edu",
-            "web": "https://github.com/arthur-e" 
-        },
-        {
-            "name": "cuyahoga",
-            "web": "https://github.com/cuyahoga" 
-        },
-        {
-            "name": "Tom Nightingale",
-            "web": "https://github.com/thegreat" 
-        },
-        {
-            "name": "Aaron Ogle",
-            "web": "https://github.com/atogle" 
-        },
-        {
-            "name": "James Seppi",
-            "web": "https://github.com/jseppi" 
-        },
-        {
-            "name": "tchannel",
-            "web": "https://github.com/tchannel"
-        },
-        {
-            "name": "Felipe Figueroa",
-            "web": "https://github.com/amenadiel"
-        }
-    ],
+    "maintainers": [{
+        "name": "K. Arthur Endsley",
+        "email": "kaendsle@mtu.edu",
+        "web": "https://github.com/arthur-e"
+    }],
+    "contributors": [{
+        "name": "K. Arthur Endsley",
+        "email": "kaendsle@mtu.edu",
+        "web": "https://github.com/arthur-e"
+    }, {
+        "name": "cuyahoga",
+        "web": "https://github.com/cuyahoga"
+    }, {
+        "name": "Tom Nightingale",
+        "web": "https://github.com/thegreat"
+    }, {
+        "name": "Aaron Ogle",
+        "web": "https://github.com/atogle"
+    }, {
+        "name": "James Seppi",
+        "web": "https://github.com/jseppi"
+    }, {
+        "name": "tchannel",
+        "web": "https://github.com/tchannel"
+    }, {
+        "name": "Felipe Figueroa",
+        "web": "https://github.com/amenadiel"
+    }],
     "bugs": {
         "mail": "kaendsle@mtu.edu",
-        "url": "https://github.com/arthur-e/Wicket/issues" 
+        "url": "https://github.com/arthur-e/Wicket/issues"
     },
-    "licenses": [
-        {
-            "type": "GPLv3",
-            "url": "https://raw.github.com/arthur-e/Wicket/master/LICENSE" 
-        } 
-    ],
+    "licenses": [{
+        "type": "GPLv3",
+        "url": "https://raw.github.com/arthur-e/Wicket/master/LICENSE"
+    }],
     "repository": {
         "type": "git",
         "url": "https://github.com/arthur-e/Wicket"
@@ -65,9 +53,11 @@
     "scripts": {
         "postinstall": "export PATH=$PATH:/usr/local/lib/node_modules/uglify-js/bin/",
         "build": "uglifyjs wicket.src.js -o wicket.js",
-        "test": "wicket-test.js" 
+        "test": "./node_modules/mocha/bin/mocha -R tap  node-test/wicket.js"
     },
     "devDependencies": {
+        "chai": "^1.9.1",
+        "mocha": "^1.20.1",
         "uglify-js": "2.4.x"
     }
 }
