@@ -37,6 +37,9 @@
     }, {
         "name": "Felipe Figueroa",
         "web": "https://github.com/amenadiel"
+    }, {
+        "name": "Matthijs van Henten",
+        "web": "https://github.com/mvhenten"
     }],
     "bugs": {
         "mail": "kaendsle@mtu.edu",
@@ -51,13 +54,15 @@
         "url": "https://github.com/arthur-e/Wicket"
     },
     "scripts": {
-        "postinstall": "export PATH=$PATH:/usr/local/lib/node_modules/uglify-js/bin/",
-        "build": "uglifyjs wicket.src.js -o wicket.js",
-        "test": "./node_modules/mocha/bin/mocha -R tap  node-test/wicket.js"
+        "postinstall": "export PATH=$PATH:/usr/local/lib/node_modules/uglify-js/bin/;unzip ./node_modules/jasmine-core/dist/jasmine-standalone-2.0.0.zip -d ./node_modules/jasmine-core/dist/",
+        "build": "uglifyjs wicket.js -o wicket.min.js;uglifyjs wicket-gmap3.js -o wicket-gmap3.min.js;uglifyjs wicket-arcgis.js -o wicket-arcgis.min.js;uglifyjs wicket-leaflet.js -o wicket-leaflet.min.js;",
+        "test": "./node_modules/mocha/bin/mocha -R tap tests/wicket-spec.js"
     },
     "devDependencies": {
         "chai": "^1.9.1",
+        "googlemaps": "0.1.9",
         "mocha": "^1.20.1",
-        "uglify-js": "2.4.x"
+        "uglify-js": "2.4.x",
+        "jasmine": "git://github.com/pivotal/jasmine#master"
     }
 }

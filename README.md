@@ -6,6 +6,8 @@ Wicket is a lightweight library for translating between [Well-Known Text (WKT)](
 * ESRI ArcGIS JavaScript API [(demo)](http://arthur-e.github.com/Wicket/sandbox-arcgis.html)
 * Potentially any other web mapping framework through serialization and de-serialization of GeoJSON (with `JSON.parse`)
 
+The core Wicket library and the Leaflet extension are both compatible with Node.js; the Google Maps and ArcGIS API extensions will not work in Node.js because they require a browser.
+
 If you are looking for [Apache Wicket](http://wicket.apache.org/), the web-app development framework for Java, [you'll find it here](http://wicket.apache.org/).
 
 ## License ##
@@ -64,6 +66,21 @@ Use `fromObject()` instead, as in the following example.
 * [wellknown](https://github.com/mapbox/wellknown)
 * [OpenLayers WKT](https://github.com/openlayers/openlayers/blob/master/lib/OpenLayers/Format/WKT.js)
 
+## Dependencies and Build Information ##
+
+**Wicket has zero dependencies**, however, JSON parsing (from strings) is not provided.
+Wicket looks for the function `JSON.parse`, which is provided in most modern browsers (get it with [this library](https://github.com/douglascrockford/JSON-js/blob/master/json2.js), if you need to support older browsers).
+
+Minified versions can be generated via:
+
+    npm run build
+
+### Testing ###
+
+    npm test
+
+The Google Maps API extension cannot be tested by Node.js at the command line; it requires a browser. The Google Maps API tests are run by Jasmine; navigate to the file `tests/wicket-gmap3.html` in a web browser.
+
 ## Documentation ##
 
 Read the documentation [here](http://arthur-e.github.io/Wicket/doc/out/). Documentation can be generated with [JSDoc 3](https://github.com/jsdoc3/jsdoc).
@@ -77,33 +94,6 @@ Or, with Node installed:
     jsdoc /var/www/static/wicket/wicket.src.js
 
 Either way, make sure you invoke `jsdoc` from a directory in which you have write access; it will output documentation to your current working directory.
-
-## Dependencies and Build Information ##
-
-**Wicket has zero dependencies**, however, JSON parsing (from strings) is not provided.
-Wicket looks for the function `JSON.parse`, which is provided in most modern browsers (get it with [this library](https://github.com/douglascrockford/JSON-js/blob/master/json2.js), if you need to support older browsers).
-
-**Minified versions** can be generated with `uglify-js` (`sudo npm install uglify-js -g`):
-
-    ./node_modules/uglify-js/bin/uglifyjs wicket.js -o wicket.min.js
-
-There is now a script included that will do this automatically for all of Wicket's source code:
-
-    . refactor.sh
-
-### Testing ###
-
-Testing Wicket is easy with [Jasmine](https://github.com/pivotal/jasmine). Here's a quick script to (describe how to) install it if you don't:
-
-    sudo mkdir -p /var/www/static/
-    cd /var/www/static/
-    sudo git clone git://github.com/pivotal/jasmine.git
-    cd jasmine/dist
-    sudo unzip ./*.zip
-    # If using a distribution other than 2.0.0...
-    ln -s jasmine-X.X.X jasmine-2.0.0
-
-Once you have Jasmine installed and the paths match those expected in `tests/SpecRunner.html` (or you changed them to match your Jasmine installation) then just point your browser to `localhost/static/wicket/tests/SpecRunner.html`.
 
 ## Colophon ##
 

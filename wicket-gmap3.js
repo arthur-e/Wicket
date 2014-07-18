@@ -19,6 +19,8 @@
  *
  */
 
+var Wkt = Wkt || require('./wicket');
+
 /**
  * @augments Wkt.Wkt
  * A framework-dependent flag, set for each Wkt.Wkt() instance, that indicates
