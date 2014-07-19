@@ -59,9 +59,8 @@
         "test": "./node_modules/mocha/bin/mocha -R tap tests/wicket-spec.js"
     },
     "devDependencies": {
-        "chai": "^1.9.1",
-        "googlemaps": "0.1.9",
-        "mocha": "^1.20.1",
+        "chai": "*",
+        "mocha": "*",
         "uglify-js": "2.4.x",
         "jasmine": "git://github.com/pivotal/jasmine#master"
     }
