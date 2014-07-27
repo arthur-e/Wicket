@@ -422,6 +422,47 @@ Wkt.Wkt.prototype.deconstruct = function (obj, multiFlag) {
 
     }
 
+    // google.maps.LatLngBounds ///////////////////////////////////////////////////
+    if (obj.constructor === google.maps.LatLngBounds) {
+
+        tmp = obj;
+        verts = [];
+        verts.push({ // NW corner
+            x: tmp.getSouthWest().lng(),
+            y: tmp.getNorthEast().lat()
+        });
+
+        verts.push({ // NE corner
+            x: tmp.getNorthEast().lng(),
+            y: tmp.getNorthEast().lat()
+        });
+
+        verts.push({ // SE corner
+            x: tmp.getNorthEast().lng(),
+            y: tmp.getSouthWest().lat()
+        });
+
+        verts.push({ // SW corner
+            x: tmp.getSouthWest().lng(),
+            y: tmp.getSouthWest().lat()
+        });
+
+        verts.push({ // NW corner (again, for closure)
+            x: tmp.getSouthWest().lng(),
+            y: tmp.getNorthEast().lat()
+        });
+
+
+        response = {
+            type: 'polygon',
+            isRectangle: true,
+            components: [verts]
+        };
+
+        return response;
+
+    }
+
     // google.maps.Rectangle ///////////////////////////////////////////////////
     if (obj.constructor === google.maps.Rectangle) {
 
