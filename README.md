@@ -1,5 +1,7 @@
 # Wicket #
 
+![Build Stats](https://travis-ci.org/arthur-e/Wicket.svg?branch=master)
+
 Wicket is a lightweight library for translating between [Well-Known Text (WKT)](http://en.wikipedia.org/wiki/Well-known_text) and various client-side mapping frameworks:
 * Leaflet [(demo)](http://arthur-e.github.com/Wicket/)
 * Google Maps API [(demo)](http://arthur-e.github.com/Wicket/sandbox-gmaps3.html)
@@ -65,6 +67,7 @@ Use `fromObject()` instead, as in the following example.
 
 * [wellknown](https://github.com/mapbox/wellknown)
 * [OpenLayers WKT](https://github.com/openlayers/openlayers/blob/master/lib/OpenLayers/Format/WKT.js)
+* [wkt-parser](http://terraformer.io/wkt-parser/)
 
 ## Dependencies and Build Information ##
 
