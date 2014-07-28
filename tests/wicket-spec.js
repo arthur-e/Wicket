@@ -616,14 +616,14 @@ describe('Arbitrary WKT Test Cases: ', function() {
         });
 
         it('should read and write long, arbitrary LINESTRING string', function() {
-            c = wkt.components = randomCoords(10000);
+            c = wkt.components = randomCoords(100);
             wkt.type = 'linestring';
 
             expect(wkt.read(wkt.write()).components).deep.equal(c);
         });
 
         it('should read and write long, arbitrary POLYGON string', function() {
-            c = wkt.components = [randomCoords(10000)];
+            c = wkt.components = [randomCoords(100)];
             wkt.type = 'polygon';
 
             expect(wkt.read(wkt.write()).components).deep.equal(c);
