@@ -512,6 +512,8 @@ describe('Standard WKT Test Cases: ', function () {
             })
         },
 
+
+
         box: {
             str: 'BOX(0 0,20 20)',
             cmp: [{
@@ -537,6 +539,38 @@ describe('Standard WKT Test Cases: ', function () {
                 ],
                 'type': 'Polygon',
                 'bbox': [0, 0, 20, 20]
+            }
+        },
+
+        geometrycollection: {
+            str: 'GEOMETRYCOLLECTION(POINT(30 10),LINESTRING(30 10,10 30,40 40),POLYGON((30 10,10 20,20 40,40 40,30 10)))',
+            json: {
+                "type": "GeometryCollection",
+                "geometries": [{
+                        "type": "Point",
+                        "coordinates": [30, 10]
+                    }, {
+                        'type': 'LineString',
+                        'coordinates': [
+                            [30, 10],
+                            [10, 30],
+                            [40, 40]
+                        ]
+                    },
+
+                    {
+                        "type": "Polygon",
+                        "coordinates": [
+                            [
+                                [30, 10],
+                                [10, 20],
+                                [20, 40],
+                                [40, 40],
+                                [30, 10]
+                            ]
+                        ]
+                    }
+                ]
             }
         }
 
@@ -732,7 +766,20 @@ describe('Standard WKT Test Cases: ', function () {
             expect(wkt.write()).toBe(cases.multipolygon2.str);
         });
 
+        it('should convert a google.maps.Data.GeometryCollection into a GEOMETRYCOLLECTION string', function () {
+            var dataGeometryCollection = dataObjects.addGeoJson({
+                "type": "Feature",
+                geometry: cases.geometrycollection.json
+            })[0];
+
+            wkt.fromObject(dataGeometryCollection.getGeometry());
+            expect(wkt.type).toBe('geometrycollection');
+            //expect(wkt.isCollection()).toBe(true);
+
+        });
+
     });
+
 
     describe('Coverting WKT strings into objects: ', function () {
 

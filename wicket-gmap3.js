@@ -513,6 +513,7 @@ Wkt.Wkt.prototype.deconstruct = function (obj, multiFlag) {
 
     // google.maps.Data.Point /////////////////////////////////////////////////////
     if (obj.constructor === google.maps.Data.Point) {
+        //console.log('It is a google.maps.Data.Point');
         response = {
             type: 'point',
             components: [{
@@ -526,7 +527,8 @@ Wkt.Wkt.prototype.deconstruct = function (obj, multiFlag) {
     // google.maps.Data.LineString /////////////////////////////////////////////////////
     if (obj.constructor === google.maps.Data.LineString) {
         verts = [];
-        for (i = 0; i < obj.getArray().length; i += 1) {
+        //console.log('It is a google.maps.Data.LineString');
+        for (i = 0; i < obj.getLength(); i += 1) {
             vertex = obj.getAt(i);
             verts.push({
                 x: vertex.lng(),
@@ -546,6 +548,7 @@ Wkt.Wkt.prototype.deconstruct = function (obj, multiFlag) {
     // google.maps.Data.Polygon /////////////////////////////////////////////////////
     if (obj.constructor === google.maps.Data.Polygon) {
         var rings = [];
+        //console.log('It is a google.maps.Data.Polygon');
         for (i = 0; i < obj.getLength(); i += 1) { // For each ring...
             ring = obj.getAt(i);
             var verts = [];
@@ -643,6 +646,22 @@ Wkt.Wkt.prototype.deconstruct = function (obj, multiFlag) {
         response = {
             type: 'multipolygon',
             components: polygons
+        };
+        return response;
+    }
+
+    // google.maps.Data.GeometryCollection /////////////////////////////////////////////////////
+    if (obj.constructor === google.maps.Data.GeometryCollection) {
+
+        var objects = [];
+        for (k = 0; k < obj.getLength(); k += 1) { // For each multipolygon 
+            var object = obj.getAt(k);
+            objects.push(this.deconstruct.call(this, object));
+        }
+        //console.log('It is a google.maps.Data.GeometryCollection', objects);
+        response = {
+            type: 'geometrycollection',
+            components: objects
         };
         return response;
     }
