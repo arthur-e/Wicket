@@ -422,6 +422,47 @@ Wkt.Wkt.prototype.deconstruct = function (obj, multiFlag) {
 
     }
 
+    // google.maps.LatLngBounds ///////////////////////////////////////////////////
+    if (obj.constructor === google.maps.LatLngBounds) {
+
+        tmp = obj;
+        verts = [];
+        verts.push({ // NW corner
+            x: tmp.getSouthWest().lng(),
+            y: tmp.getNorthEast().lat()
+        });
+
+        verts.push({ // NE corner
+            x: tmp.getNorthEast().lng(),
+            y: tmp.getNorthEast().lat()
+        });
+
+        verts.push({ // SE corner
+            x: tmp.getNorthEast().lng(),
+            y: tmp.getSouthWest().lat()
+        });
+
+        verts.push({ // SW corner
+            x: tmp.getSouthWest().lng(),
+            y: tmp.getSouthWest().lat()
+        });
+
+        verts.push({ // NW corner (again, for closure)
+            x: tmp.getSouthWest().lng(),
+            y: tmp.getNorthEast().lat()
+        });
+
+
+        response = {
+            type: 'polygon',
+            isRectangle: true,
+            components: [verts]
+        };
+
+        return response;
+
+    }
+
     // google.maps.Rectangle ///////////////////////////////////////////////////
     if (obj.constructor === google.maps.Rectangle) {
 
@@ -461,6 +502,168 @@ Wkt.Wkt.prototype.deconstruct = function (obj, multiFlag) {
 
         return response;
 
+    }
+
+    // google.maps.Data Geometry Types /////////////////////////////////////////////////////
+
+    // google.maps.Data.Feature /////////////////////////////////////////////////////
+    if (obj.constructor === google.maps.Data.Feature) {
+        return this.deconstruct.call(this, obj.getGeometry());
+    }
+
+    // google.maps.Data.Point /////////////////////////////////////////////////////
+    if (obj.constructor === google.maps.Data.Point) {
+        //console.log('It is a google.maps.Data.Point');
+        response = {
+            type: 'point',
+            components: [{
+                x: obj.get().lng(),
+                y: obj.get().lat()
+            }]
+        };
+        return response;
+    }
+
+    // google.maps.Data.LineString /////////////////////////////////////////////////////
+    if (obj.constructor === google.maps.Data.LineString) {
+        verts = [];
+        //console.log('It is a google.maps.Data.LineString');
+        for (i = 0; i < obj.getLength(); i += 1) {
+            vertex = obj.getAt(i);
+            verts.push({
+                x: vertex.lng(),
+                y: vertex.lat()
+            });
+        }
+        response = {
+            type: 'linestring',
+            components: verts,
+        };
+        return response;
+    }
+
+
+
+
+    // google.maps.Data.Polygon /////////////////////////////////////////////////////
+    if (obj.constructor === google.maps.Data.Polygon) {
+        var rings = [];
+        //console.log('It is a google.maps.Data.Polygon');
+        for (i = 0; i < obj.getLength(); i += 1) { // For each ring...
+            ring = obj.getAt(i);
+            var verts = [];
+            for (j = 0; j < ring.getLength(); j += 1) { // For each vertex...
+                vertex = ring.getAt(j);
+                verts.push({
+                    x: vertex.lng(),
+                    y: vertex.lat()
+                });
+            }
+            verts.push({
+                x: ring.getAt(0).lng(),
+                y: ring.getAt(0).lat()
+            });
+
+            rings.push(verts);
+        }
+        response = {
+            type: 'polygon',
+            components: rings
+        };
+
+        return response;
+    }
+
+
+    // google.maps.Data.MultiPoint /////////////////////////////////////////////////////
+    if (obj.constructor === google.maps.Data.MultiPoint) {
+        verts = [];
+        for (i = 0; i < obj.getLength(); i += 1) {
+            vertex = obj.getAt(i);
+            verts.push([{
+                x: vertex.lng(),
+                y: vertex.lat()
+            }]);
+        }
+        response = {
+            type: 'multipoint',
+            components: verts,
+        };
+        return response;
+    }
+
+    // google.maps.Data.MultiLineString /////////////////////////////////////////////////////
+    if (obj.constructor === google.maps.Data.MultiLineString) {
+        linestrings = []
+        for (i = 0; i < obj.getLength(); i += 1) {
+            verts = [];
+            var linestring = obj.getAt(i);
+            for (j = 0; j < linestring.getLength(); j += 1) {
+                vertex = linestring.getAt(j);
+                verts.push({
+                    x: vertex.lng(),
+                    y: vertex.lat()
+                });
+            }
+            linestrings.push(verts);
+        }
+        response = {
+            type: 'multilinestring',
+            components: linestrings,
+        };
+        return response;
+    }
+
+    // google.maps.Data.MultiPolygon /////////////////////////////////////////////////////
+    if (obj.constructor === google.maps.Data.MultiPolygon) {
+
+        var polygons = [];
+
+        //console.log('It is a google.maps.Data.MultiPolygon');
+        for (k = 0; k < obj.getLength(); k += 1) { // For each multipolygon 
+            var polygon = obj.getAt(k);
+            var rings = [];
+            for (i = 0; i < polygon.getLength(); i += 1) { // For each ring...
+                ring = polygon.getAt(i);
+                var verts = [];
+                for (j = 0; j < ring.getLength(); j += 1) { // For each vertex...
+                    vertex = ring.getAt(j);
+                    verts.push({
+                        x: vertex.lng(),
+                        y: vertex.lat()
+                    });
+                }
+                verts.push({
+                    x: ring.getAt(0).lng(),
+                    y: ring.getAt(0).lat()
+                });
+
+                rings.push(verts);
+            }
+            polygons.push(rings);
+        }
+
+        response = {
+            type: 'multipolygon',
+            components: polygons
+        };
+        return response;
+    }
+
+    // google.maps.Data.GeometryCollection /////////////////////////////////////////////////////
+    if (obj.constructor === google.maps.Data.GeometryCollection) {
+
+        var objects = [];
+        for (k = 0; k < obj.getLength(); k += 1) { // For each multipolygon 
+            var object = obj.getAt(k);
+            objects.push(this.deconstruct.call(this, object));
+        }
+        //console.log('It is a google.maps.Data.GeometryCollection', objects);
+        response = {
+            type: 'geometrycollection',
+            components: objects
+        };
+        return response;
     }
 
 

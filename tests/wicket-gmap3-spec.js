@@ -7,17 +7,23 @@ describe('Standard WKT Test Cases: ', function () {
 
         point: {
             str: 'POINT(30 10)',
-            cmp: [
-                {x: 30, y: 10}
-            ],
-            obj: new google.maps.Point(30, 10)
+            cmp: [{
+                x: 30,
+                y: 10
+            }],
+            obj: new google.maps.Point(30, 10),
+            json: {
+                'coordinates': [30, 10],
+                'type': 'Point'
+            },
         },
 
         marker: {
             str: 'POINT(30 10)',
-            cmp: [
-                {x: 30, y: 10}
-            ],
+            cmp: [{
+                x: 30,
+                y: 10
+            }],
             obj: new google.maps.Marker({
                 position: new google.maps.LatLng(10, 30)
             })
@@ -25,11 +31,16 @@ describe('Standard WKT Test Cases: ', function () {
 
         linestring: {
             str: 'LINESTRING(30 10,10 30,40 40)',
-            cmp: [
-                {x: 30, y: 10},
-                {x: 10, y: 30},
-                {x: 40, y: 40}
-            ],
+            cmp: [{
+                x: 30,
+                y: 10
+            }, {
+                x: 10,
+                y: 30
+            }, {
+                x: 40,
+                y: 40
+            }],
             obj: new google.maps.Polyline({
                 editable: false,
                 path: [
@@ -37,69 +48,153 @@ describe('Standard WKT Test Cases: ', function () {
                     new google.maps.LatLng(30, 10),
                     new google.maps.LatLng(40, 40)
                 ]
-            })
+            }),
+            json: {
+                'coordinates': [
+                    [30, 10],
+                    [10, 30],
+                    [40, 40]
+                ],
+                'type': 'LineString'
+            },
         },
+
 
         polygon: {
             str: 'POLYGON((30 10,10 20,20 40,40 40,30 10))',
             cmp: [
-                [
-                    {x: 30, y: 10},
-                    {x: 10, y: 20},
-                    {x: 20, y: 40},
-                    {x: 40, y: 40},
-                    {x: 30, y: 10}
-                ]
+                [{
+                    x: 30,
+                    y: 10
+                }, {
+                    x: 10,
+                    y: 20
+                }, {
+                    x: 20,
+                    y: 40
+                }, {
+                    x: 40,
+                    y: 40
+                }, {
+                    x: 30,
+                    y: 10
+                }]
             ],
             obj: new google.maps.Polygon({
                 editable: false,
-                paths: [[
-                    new google.maps.LatLng(10, 30),
-                    new google.maps.LatLng(20, 10),
-                    new google.maps.LatLng(40, 20),
-                    new google.maps.LatLng(40, 40)
-                ]]
-            })
+                paths: [
+                    [
+                        new google.maps.LatLng(10, 30),
+                        new google.maps.LatLng(20, 10),
+                        new google.maps.LatLng(40, 20),
+                        new google.maps.LatLng(40, 40)
+                    ]
+                ]
+            }),
+            json: {
+                'coordinates': [
+                    [
+                        [30, 10],
+                        [10, 20],
+                        [20, 40],
+                        [40, 40],
+                        [30, 10]
+                    ]
+                ],
+                'type': 'Polygon'
+            },
+
         },
 
         polygon2: {
             str: 'POLYGON((35 10,10 20,15 40,45 45,35 10),(25 30,35 35,30 20,25 30))',
             cmp: [
-                [
-                    {x: 35, y: 10},
-                    {x: 10, y: 20},
-                    {x: 15, y: 40},
-                    {x: 45, y: 45},
-                    {x: 35, y: 10}
-                ], [
-                    {x: 25, y: 30},
-                    {x: 35, y: 35},
-                    {x: 30, y: 20},
-                    {x: 25, y: 30}
-                ]
+                [{
+                    x: 35,
+                    y: 10
+                }, {
+                    x: 10,
+                    y: 20
+                }, {
+                    x: 15,
+                    y: 40
+                }, {
+                    x: 45,
+                    y: 45
+                }, {
+                    x: 35,
+                    y: 10
+                }],
+                [{
+                    x: 25,
+                    y: 30
+                }, {
+                    x: 35,
+                    y: 35
+                }, {
+                    x: 30,
+                    y: 20
+                }, {
+                    x: 25,
+                    y: 30
+                }]
             ],
             obj: new google.maps.Polygon({
                 editable: false,
-                paths: [[
-                    new google.maps.LatLng(10, 35),
-                    new google.maps.LatLng(20, 10),
-                    new google.maps.LatLng(40, 15),
-                    new google.maps.LatLng(45, 45)
-                ], [ // Order in inner rings is reversed
-                    new google.maps.LatLng(20, 30),
-                    new google.maps.LatLng(35, 35),
-                    new google.maps.LatLng(30, 25)
-                ]]
-            })
+                paths: [
+                    [
+                        new google.maps.LatLng(10, 35),
+                        new google.maps.LatLng(20, 10),
+                        new google.maps.LatLng(40, 15),
+                        new google.maps.LatLng(45, 45)
+                    ],
+                    [ // Order in inner rings is reversed
+                        new google.maps.LatLng(20, 30),
+                        new google.maps.LatLng(35, 35),
+                        new google.maps.LatLng(30, 25)
+                    ]
+                ]
+            }),
+            json: {
+                'coordinates': [
+                    [
+                        [35, 10],
+                        [10, 20],
+                        [15, 40],
+                        [45, 45],
+                        [35, 10]
+                    ],
+                    [
+                        [25, 30],
+                        [35, 35],
+                        [30, 20],
+                        [25, 30]
+                    ]
+                ],
+                'type': 'Polygon'
+            },
+            jsonStr: '{"coordinates": [[[35, 10], [45, 45], [15, 40], [10, 20], [35, 10]], [[20, 30], [35, 35], [30, 20], [20, 30]]], "type": "Polygon"}'
         },
 
         multipoint: {
             str: 'MULTIPOINT((10 40),(40 30),(20 20),(30 10))',
             cmp: [
-                [{x: 10, y: 40}],
-                [{x: 40, y: 30}],
-                [{x: 20, y: 20}],
-                [{x: 30, y: 10}]
+                [{
+                    x: 10,
+                    y: 40
+                }],
+                [{
+                    x: 40,
+                    y: 30
+                }],
+                [{
+                    x: 20,
+                    y: 20
+                }],
+                [{
+                    x: 30,
+                    y: 10
+                }]
             ],
             obj: [
                 new google.maps.Marker({
@@ -114,22 +209,45 @@ describe('Standard WKT Test Cases: ', function () {
                 new google.maps.Marker({
                     position: new google.maps.LatLng(10, 30)
                 }),
-            ]
+            ],
+            json: {
+                'coordinates': [
+                    [10, 40],
+                    [40, 30],
+                    [20, 20],
+                    [30, 10]
+                ],
+                'type': 'MultiPoint'
+            },
+            jsonStr: '{"coordinates": [[10, 40], [40, 30], [20, 20], [30, 10]], "type": "MultiPoint"}'
         },
 
         multilinestring: {
             str: 'MULTILINESTRING((10 10,20 20,10 40),(40 40,30 30,40 20,30 10))',
             cmp: [
-                [
-                    {x: 10, y: 10},
-                    {x: 20, y: 20},
-                    {x: 10, y: 40}
-                ], [
-                    {x: 40, y: 40},
-                    {x: 30, y: 30},
-                    {x: 40, y: 20},
-                    {x: 30, y: 10}
-                ]
+                [{
+                    x: 10,
+                    y: 10
+                }, {
+                    x: 20,
+                    y: 20
+                }, {
+                    x: 10,
+                    y: 40
+                }],
+                [{
+                    x: 40,
+                    y: 40
+                }, {
+                    x: 30,
+                    y: 30
+                }, {
+                    x: 40,
+                    y: 20
+                }, {
+                    x: 30,
+                    y: 10
+                }]
             ],
             obj: [
                 new google.maps.Polyline({
@@ -149,131 +267,320 @@ describe('Standard WKT Test Cases: ', function () {
                         new google.maps.LatLng(10, 30)
                     ]
                 })
-            ]
+            ],
+            json: {
+                'coordinates': [
+                    [
+                        [10, 10],
+                        [20, 20],
+                        [10, 40]
+                    ],
+                    [
+                        [40, 40],
+                        [30, 30],
+                        [40, 20],
+                        [30, 10]
+                    ]
+                ],
+                'type': 'MultiLineString'
+            },
+            jsonStr: '{"coordinates": [[[10, 10], [20, 20], [10, 40]], [[40, 40], [30, 30], [40, 20], [30, 10]]], "type": "MultiLineString"}'
         },
 
         multipolygon: {
             str: 'MULTIPOLYGON(((30 20,10 40,45 40,30 20)),((15 5,40 10,10 20,5 10,15 5)))',
             cmp: [
                 [
-                    [
-                        {x: 30, y: 20},
-                        {x: 10, y: 40},
-                        {x: 45, y: 40},
-                        {x: 30, y: 20},
-                    ]
-                ], [
-                    [
-                        {x: 15, y: 5},
-                        {x: 40, y: 10},
-                        {x: 10, y: 20},
-                        {x: 5, y: 10},
-                        {x: 15, y: 5}
-                    ]
+                    [{
+                        x: 30,
+                        y: 20
+                    }, {
+                        x: 10,
+                        y: 40
+                    }, {
+                        x: 45,
+                        y: 40
+                    }, {
+                        x: 30,
+                        y: 20
+                    }, ]
+                ],
+                [
+                    [{
+                        x: 15,
+                        y: 5
+                    }, {
+                        x: 40,
+                        y: 10
+                    }, {
+                        x: 10,
+                        y: 20
+                    }, {
+                        x: 5,
+                        y: 10
+                    }, {
+                        x: 15,
+                        y: 5
+                    }]
                 ]
             ],
             obj: [
                 new google.maps.Polygon({
                     editable: false,
-                    paths: [[
-                        new google.maps.LatLng(20, 30),
-                        new google.maps.LatLng(40, 10),
-                        new google.maps.LatLng(40, 45)
-                    ]]
+                    paths: [
+                        [
+                            new google.maps.LatLng(20, 30),
+                            new google.maps.LatLng(40, 10),
+                            new google.maps.LatLng(40, 45)
+                        ]
+                    ]
                 }),
                 new google.maps.Polygon({
                     editable: false,
-                    paths: [[
-                        new google.maps.LatLng(5, 15),
-                        new google.maps.LatLng(10, 40),
-                        new google.maps.LatLng(20, 10),
-                        new google.maps.LatLng(10, 5)
-                    ]]
+                    paths: [
+                        [
+                            new google.maps.LatLng(5, 15),
+                            new google.maps.LatLng(10, 40),
+                            new google.maps.LatLng(20, 10),
+                            new google.maps.LatLng(10, 5)
+                        ]
+                    ]
                 })
-            ]
+            ],
+            json: {
+                'coordinates': [
+                    [
+                        [
+                            [30, 20],
+                            [10, 40],
+                            [45, 40],
+                            [30, 20]
+                        ]
+                    ],
+                    [
+                        [
+                            [15, 5],
+                            [40, 10],
+                            [10, 20],
+                            [5, 10],
+                            [15, 5]
+                        ]
+                    ]
+                ],
+                'type': 'MultiPolygon'
+            },
+            jsonStr: '{"coordinates": [[[[30, 20], [10, 40], [45, 40], [30, 20]]], [[[15, 5], [40, 10], [10, 20], [5, 10], [15, 5]]]], "type": "MultiPolygon"}'
         },
 
         multipolygon2: {
             str: 'MULTIPOLYGON(((40 40,20 45,45 30,40 40)),((20 35,45 20,30 5,10 10,10 30,20 35),(30 20,20 25,20 15,30 20)))',
             cmp: [
                 [
-                    [
-                        {x: 40, y: 40},
-                        {x: 20, y: 45},
-                        {x: 45, y: 30},
-                        {x: 40, y: 40},
-                    ]
-                ], [
-                    [
-                        {x: 20, y: 35},
-                        {x: 45, y: 20},
-                        {x: 30, y: 5},
-                        {x: 10, y: 10},
-                        {x: 10, y: 30},
-                        {x: 20, y: 35},
-                    ],
-                    [
-                        {x: 30, y: 20},
-                        {x: 20, y: 25},
-                        {x: 20, y: 15},
-                        {x: 30, y: 20}
-                    ]
+                    [{
+                        x: 40,
+                        y: 40
+                    }, {
+                        x: 20,
+                        y: 45
+                    }, {
+                        x: 45,
+                        y: 30
+                    }, {
+                        x: 40,
+                        y: 40
+                    }, ]
+                ],
+                [
+                    [{
+                        x: 20,
+                        y: 35
+                    }, {
+                        x: 45,
+                        y: 20
+                    }, {
+                        x: 30,
+                        y: 5
+                    }, {
+                        x: 10,
+                        y: 10
+                    }, {
+                        x: 10,
+                        y: 30
+                    }, {
+                        x: 20,
+                        y: 35
+                    }, ],
+                    [{
+                        x: 30,
+                        y: 20
+                    }, {
+                        x: 20,
+                        y: 25
+                    }, {
+                        x: 20,
+                        y: 15
+                    }, {
+                        x: 30,
+                        y: 20
+                    }]
                 ]
             ],
             obj: [
                 new google.maps.Polygon({
                     editable: false,
-                    paths: [[
-                        new google.maps.LatLng(40, 40),
-                        new google.maps.LatLng(45, 20),
-                        new google.maps.LatLng(30, 45)
-                    ]]
+                    paths: [
+                        [
+                            new google.maps.LatLng(40, 40),
+                            new google.maps.LatLng(45, 20),
+                            new google.maps.LatLng(30, 45)
+                        ]
+                    ]
                 }),
                 new google.maps.Polygon({
                     editable: false,
-                    paths: [[
-                        new google.maps.LatLng(35, 20),
-                        new google.maps.LatLng(20, 45),
-                        new google.maps.LatLng(5, 30),
-                        new google.maps.LatLng(10, 10),
-                        new google.maps.LatLng(30, 10)
-                    ], [
-                        new google.maps.LatLng(15, 20),
-                        new google.maps.LatLng(25, 20),
-                        new google.maps.LatLng(20, 30)
-                    ]]
+                    paths: [
+                        [
+                            new google.maps.LatLng(35, 20),
+                            new google.maps.LatLng(20, 45),
+                            new google.maps.LatLng(5, 30),
+                            new google.maps.LatLng(10, 10),
+                            new google.maps.LatLng(30, 10)
+                        ],
+                        [
+                            new google.maps.LatLng(15, 20),
+                            new google.maps.LatLng(25, 20),
+                            new google.maps.LatLng(20, 30)
+                        ]
+                    ]
                 })
-            ]
+            ],
+            json: {
+                'coordinates': [
+                    [
+                        [
+                            [40, 40],
+                            [20, 45],
+                            [45, 30],
+                            [40, 40]
+                        ]
+                    ],
+                    [
+                        [
+                            [20, 35],
+                            [45, 20],
+                            [30, 5],
+                            [10, 10],
+                            [10, 30],
+                            [20, 35]
+                        ],
+                        [
+                            [30, 20],
+                            [20, 25],
+                            [20, 15],
+                            [30, 20]
+                        ]
+                    ]
+                ],
+                'type': 'MultiPolygon'
+            },
+            jsonStr: '{"coordinates": [[[[40, 40], [20, 45], [45, 30], [40, 40]]], [[[20, 35], [10, 30], [10, 10], [30, 5], [45, 20], [20, 35]], [[30, 20], [20, 15], [20, 25], [30, 20]]]], "type": "MultiPolygon"}'
         },
 
         rectangle: {
             str: 'POLYGON((-50 20,0 20,0 0,-50 0,-50 20))',
-            cmp: [[
-                {x: -50, y: 20},
-                {x: 0, y: 20},
-                {x: 0, y: 0},
-                {x: -50, y: 0},
-                {x: -50, y: 20}
-            ]],
+            cmp: [
+                [{
+                    x: -50,
+                    y: 20
+                }, {
+                    x: 0,
+                    y: 20
+                }, {
+                    x: 0,
+                    y: 0
+                }, {
+                    x: -50,
+                    y: 0
+                }, {
+                    x: -50,
+                    y: 20
+                }]
+            ],
             obj: new google.maps.Rectangle({
                 bounds: new google.maps.LatLngBounds(new google.maps.LatLng(0, -50),
                     new google.maps.LatLng(20, 0))
             })
         },
 
+
+
         box: {
             str: 'BOX(0 0,20 20)',
-            cmp: [
-                {x: 0, y: 0},
-                {x: 20, y: 20}
-            ],
+            cmp: [{
+                x: 0,
+                y: 0
+            }, {
+                x: 20,
+                y: 20
+            }],
             obj: new google.maps.Rectangle({
                 bounds: new google.maps.LatLngBounds(new google.maps.LatLng(0, 0),
                     new google.maps.LatLng(20, 20))
-            })
+            }),
+            json: {
+                'coordinates': [
+                    [
+                        [0, 0],
+                        [0, 20],
+                        [20, 20],
+                        [20, 0],
+                        [0, 0]
+                    ]
+                ],
+                'type': 'Polygon',
+                'bbox': [0, 0, 20, 20]
+            }
+        },
+
+        geometrycollection: {
+            str: 'GEOMETRYCOLLECTION(POINT(30 10),LINESTRING(30 10,10 30,40 40),POLYGON((30 10,10 20,20 40,40 40,30 10)))',
+            json: {
+                "type": "GeometryCollection",
+                "geometries": [{
+                        "type": "Point",
+                        "coordinates": [30, 10]
+                    }, {
+                        'type': 'LineString',
+                        'coordinates': [
+                            [30, 10],
+                            [10, 30],
+                            [40, 40]
+                        ]
+                    },
+
+                    {
+                        "type": "Polygon",
+                        "coordinates": [
+                            [
+                                [30, 10],
+                                [10, 20],
+                                [20, 40],
+                                [40, 40],
+                                [30, 10]
+                            ]
+                        ]
+                    }
+                ]
+            }
         }
 
     };
+
+    dataObjects = new google.maps.Data;
+
+
+
+
 
     describe('Converting objects into WKT strings: ', function () {
 
@@ -346,7 +653,7 @@ describe('Standard WKT Test Cases: ', function () {
             expect(wkt.write()).toBe(cases.multipolygon.str);
         });
 
-        it('should convert an Array of Polygon instances, some with holes, into a MULTIPOLYGON string with the same', function () {
+        it('should convert an Array of Polygon instances, some with holes, into a MULTIPOLYGON string with the same hole', function () {
             wkt.fromObject(cases.multipolygon2.obj);
             expect(wkt.type).toBe('multipolygon');
             expect(wkt.isCollection()).toBe(true);
@@ -355,6 +662,124 @@ describe('Standard WKT Test Cases: ', function () {
         });
 
     });
+
+    describe('Converting google.maps.Data objects into WKT strings: ', function () {
+
+        afterEach(function () {
+            wkt.delimiter = ' ';
+        });
+
+        it('should convert a google.maps.Data.Point instance into a basic POINT string', function () {
+            var dataPoint = dataObjects.addGeoJson({
+                "type": "Feature",
+                geometry: cases.point.json
+            })[0];
+            wkt.fromObject(dataPoint.getGeometry());
+            expect(wkt.type).toBe('point');
+            expect(wkt.isCollection()).toBe(false);
+            expect(wkt.components).toEqual(cases.point.cmp);
+            expect(wkt.write()).toBe(cases.point.str);
+        });
+
+        it('should convert a google.maps.Data.LineString instance into a basic LINESTRING string', function () {
+            var dataLineString = dataObjects.addGeoJson({
+                "type": "Feature",
+                geometry: cases.linestring.json
+            })[0];
+            wkt.fromObject(dataLineString.getGeometry());
+            expect(wkt.type).toBe('linestring');
+            expect(wkt.isCollection()).toBe(false);
+            expect(wkt.components).toEqual(cases.linestring.cmp);
+            expect(wkt.write()).toBe(cases.linestring.str);
+        });
+
+        it('should convert a google.maps.Data.Polygon instance into a basic POLYGON string', function () {
+            var dataPolygon = dataObjects.addGeoJson({
+                "type": "Feature",
+                geometry: cases.polygon.json
+            })[0];
+            wkt.fromObject(dataPolygon.getGeometry());
+            expect(wkt.type).toBe('polygon');
+            expect(wkt.isCollection()).toBe(true);
+            expect(wkt.components).toEqual(cases.polygon.cmp);
+            expect(wkt.write()).toBe(cases.polygon.str);
+        });
+
+        it('should convert a google.maps.Data.Polygon instance with a hole into a POLYGON string with the same hole', function () {
+            var dataPolygon2 = dataObjects.addGeoJson({
+                "type": "Feature",
+                geometry: cases.polygon2.json
+            })[0];
+            wkt.fromObject(dataPolygon2.getGeometry());
+            expect(wkt.type).toBe('polygon');
+            expect(wkt.isCollection()).toBe(true);
+            expect(wkt.components).toEqual(cases.polygon2.cmp);
+            expect(wkt.write()).toBe(cases.polygon2.str);
+        });
+
+
+        it('should convert a google.maps.Data.MultiPoint instance  into a MULTIPOINT string', function () {
+            var dataMultiPoint = dataObjects.addGeoJson({
+                "type": "Feature",
+                geometry: cases.multipoint.json
+            })[0];
+            wkt.fromObject(dataMultiPoint.getGeometry());
+            expect(wkt.type).toBe('multipoint');
+            expect(wkt.isCollection()).toBe(true);
+            expect(wkt.components).toEqual(cases.multipoint.cmp);
+            expect(wkt.write()).toBe(cases.multipoint.str);
+        });
+
+        it('should convert a google.maps.Data.MultiLineString instance into a MULTILINESTRING string', function () {
+            var dataMultiLineString = dataObjects.addGeoJson({
+                "type": "Feature",
+                geometry: cases.multilinestring.json
+            })[0];
+            wkt.fromObject(dataMultiLineString.getGeometry());
+            expect(wkt.type).toBe('multilinestring');
+            expect(wkt.isCollection()).toBe(true);
+            expect(wkt.components).toEqual(cases.multilinestring.cmp);
+            expect(wkt.write()).toBe(cases.multilinestring.str);
+        });
+
+        it('should convert a google.maps.Data.MultiPolygon instance into a MULTIPOLYGON string', function () {
+            var dataMultiPolygon = dataObjects.addGeoJson({
+                "type": "Feature",
+                geometry: cases.multipolygon.json
+            })[0];
+            wkt.fromObject(dataMultiPolygon.getGeometry());
+            expect(wkt.type).toBe('multipolygon');
+            expect(wkt.isCollection()).toBe(true);
+            expect(wkt.components).toEqual(cases.multipolygon.cmp);
+            expect(wkt.write()).toBe(cases.multipolygon.str);
+        });
+
+        it('should convert a google.maps.Data.MultiPolygon with holes, into a MULTIPOLYGON string with the same holes', function () {
+            var dataMultiPolygon2 = dataObjects.addGeoJson({
+                "type": "Feature",
+                geometry: cases.multipolygon2.json
+            })[0];
+            wkt.fromObject(dataMultiPolygon2.getGeometry());
+            expect(wkt.type).toBe('multipolygon');
+            expect(wkt.isCollection()).toBe(true);
+            expect(wkt.components).toEqual(cases.multipolygon2.cmp);
+            expect(wkt.write()).toBe(cases.multipolygon2.str);
+        });
+
+        it('should convert a google.maps.Data.GeometryCollection into a GEOMETRYCOLLECTION string', function () {
+            var dataGeometryCollection = dataObjects.addGeoJson({
+                "type": "Feature",
+                geometry: cases.geometrycollection.json
+            })[0];
+
+            wkt.fromObject(dataGeometryCollection.getGeometry());
+            expect(wkt.type).toBe('geometrycollection');
+            //expect(wkt.isCollection()).toBe(true);
+
+        });
+
+    });
+
 
     describe('Coverting WKT strings into objects: ', function () {
 
@@ -434,7 +859,7 @@ describe('Standard WKT Test Cases: ', function () {
             expect(wkt.toObject()).toEqual(cases.multipolygon.obj);
         });
 
-        it('should convert a MULTIPOLYGON string with holes into an Array of Polygon instances with the same', function () {
+        it('should convert a MULTIPOLYGON string with holes into an Array of Polygon instances with the same holes', function () {
             wkt.read(cases.multipolygon2.str);
             expect(wkt.type).toBe('multipolygon');
             expect(wkt.isCollection()).toBe(true);
