@@ -237,7 +237,9 @@
         var features, i, j, multiFlag, verts, rings, sign, tmp, response, lat, lng;
 
         // Shortcut to signed area function (determines clockwise vs counter-clock)
-        sign = google.maps.geometry.spherical.computeSignedArea;
+        if (google.maps.geometry) {
+          sign = google.maps.geometry.spherical.computeSignedArea;
+        };
 
         // google.maps.LatLng //////////////////////////////////////////////////////
         if (obj.constructor === google.maps.LatLng) {
