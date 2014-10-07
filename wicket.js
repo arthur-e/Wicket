@@ -791,10 +791,21 @@
 				subcomponents = []; // Holds the outer ring and any inner rings (holes)
 				for (j = 0; j < ring.length; j += 1) {
 					// Split on the empty space or '+' character (between coordinates)
-					subcomponents.push({
-						x: parseFloat(ring[j].split(this.regExes.spaces)[0]),
-						y: parseFloat(ring[j].split(this.regExes.spaces)[1])
-					});
+					var split=ring[j].split(this.regExes.spaces);
+					if(split.length>2){
+						//remove the elements which are blanks
+						split = split.filter(function(n){ return n != "" });
+					}
+					if(split.length===2){
+						var x_cord=split[0];
+						var y_cord=split[1];
+						
+						//now push
+						subcomponents.push({
+							x: parseFloat(x_cord),
+							y: parseFloat(y_cord)
+						});
+					}
 				}
 				components.push(subcomponents);
 			}
