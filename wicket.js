@@ -802,8 +802,8 @@
 						
 						//now push
 						subcomponents.push({
-							x: x_cord,
-							y: y_cord
+							x: parseFloat(x_cord),
+							y: parseFloat(y_cord)
 						});
 					}
 				}
