@@ -1,0 +1,14 @@
+{
+  "name": "Wicket",
+  "version": "1.2",
+  "main": [
+    "wicket.js",
+    "wicket-arcgis.js",
+    "wicket-gmap3.js",
+    "wicket-leaflet.js"
+  ],
+  "ignore": [
+    "doc/*",
+    "tests/*"
+  ]
+}
