@@ -291,7 +291,7 @@
             }
             response = {
                 type: 'linestring',
-                components: verts,
+                components: verts
             };
             return response;
 
@@ -538,7 +538,7 @@
             }
             response = {
                 type: 'linestring',
-                components: verts,
+                components: verts
             };
             return response;
         }
@@ -588,7 +588,7 @@
             }
             response = {
                 type: 'multipoint',
-                components: verts,
+                components: verts
             };
             return response;
         }
@@ -610,7 +610,7 @@
             }
             response = {
                 type: 'multilinestring',
-                components: linestrings,
+                components: linestrings
             };
             return response;
         }
