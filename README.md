@@ -26,42 +26,46 @@ Accordingly:
 
 The following examples work in any of the mapping environments, as Wicket has a uniform API regardless of the client-side mapping library you're using.
 
-    // Create a new Wicket instance
-    var wkt = new Wkt.Wkt();
-    
-    // Read in any kind of WKT string
-    wkt.read("POLYGON ((30 10, 10 20, 20 40, 40 40, 30 10))");
+```javascript
+// Create a new Wicket instance
+var wkt = new Wkt.Wkt();
 
-    // Or a GeoJSON string
-    wkt.read('{"coordinates": [[[30, 10], [10, 20], [20, 40], [40, 40], [30, 10]]], "type": "Polygon"}');
-    
-    // Access and modify the underlying geometry
-    console.log(wkt.components);
-    // "[ [ {x: 30, y: 10}, {x: 10, y: 30}, ...] ]"
-    wkt.components[0][1].x = 15;
+// Read in any kind of WKT string
+wkt.read("POLYGON ((30 10, 10 20, 20 40, 40 40, 30 10))");
 
-    wkt.merge(new Wkt.Wkt('POLYGON((35 15,15 25,25 45,45 45,35 15))'));
-    wkt.write();
-    // MULTIPOLYGON(((30 10,10 20,20 40,40 40,30 10)),((35 15,15 25,25 45,45 45,35 15)))
-    
-    // Create a geometry object, ready to be mapped!
-    wkt.toObject();
+// Or a GeoJSON string
+wkt.read('{"coordinates": [[[30, 10], [10, 20], [20, 40], [40, 40], [30, 10]]], "type": "Polygon"}');
+
+// Access and modify the underlying geometry
+console.log(wkt.components);
+// "[ [ {x: 30, y: 10}, {x: 10, y: 30}, ...] ]"
+wkt.components[0][1].x = 15;
+
+wkt.merge(new Wkt.Wkt('POLYGON((35 15,15 25,25 45,45 45,35 15))'));
+wkt.write();
+// MULTIPOLYGON(((30 10,10 20,20 40,40 40,30 10)),((35 15,15 25,25 45,45 45,35 15)))
+
+// Create a geometry object, ready to be mapped!
+wkt.toObject();
+```
     
 Wicket will read from the geometry objects of any mapping client it understands.
 **Note:** Don't use the `deconstruct()` method! This is used internally by `Wkt.Wkt()` instances.
 Use `fromObject()` instead, as in the following example.
 
-    var wkt = new Wkt.Wkt();
-    
-    // Deconstruct an existing point feature e.g. google.maps.Marker instance
-    wkt.fromObject(somePointObject);
-    
-    console.log(wkt.components);
-    // "[ {x: 10, y: 30} ]"
-    
-    // Serialize a WKT string from that geometry
-    wkt.write();
-    // "POINT(10 30)"
+```javascript
+var wkt = new Wkt.Wkt();
+
+// Deconstruct an existing point feature e.g. google.maps.Marker instance
+wkt.fromObject(somePointObject);
+
+console.log(wkt.components);
+// "[ {x: 10, y: 30} ]"
+
+// Serialize a WKT string from that geometry
+wkt.write();
+// "POINT(10 30)"
+```
     
 ## See Also ##
 
@@ -136,30 +140,55 @@ The intent is to add support for new frameworks as additional Javascript files t
 
 WKT geometries are stored internally using the following convention. The atomic unit of geometry is the coordinate pair (e.g. latitude and longitude) which is represented by an Object with x and y properties. An Array with a single coordinate pair represents a a single point (i.e. POINT feature):
 
-    [ {x: -83.123, y: 42.123} ]
-    
-    // POINT(-83.123 42.123)
+```javascript
+[ {x: -83.123, y: 42.123} ]
+
+// POINT(-83.123 42.123)
+```
 
 An Array of multiple points (an Array of Arrays) specifies a "collection" of points (i.e. a MULTIPOINT feature):
 
-    [
-        [ {x: -83.123, y: 42.123} ],
-        [ {x: -83.234, y: 42.234} ]
-    ]
-    // MULTIPOINT(-83.123 42.123,-83.234 42.234)
+```javascript
+[
+    [ {x: -83.123, y: 42.123} ],
+    [ {x: -83.234, y: 42.234} ]
+]
+// MULTIPOINT(-83.123 42.123,-83.234 42.234)
+```
 
 An Array of multiple coordinates specifies a collection of connected points in an ordered sequence (i.e. LINESTRING feature):
 
-    [
-        {x: -83.12, y: 42.12},
-        {x: -83.23, y: 42.23},
-        {x: -83.34, y: 42.34}
-    ]
-    // LINESTRING(-83.12 42.12,-83.23 42.23,-83.34 42.34)
+```javascript
+[
+    {x: -83.12, y: 42.12},
+    {x: -83.23, y: 42.23},
+    {x: -83.34, y: 42.34}
+]
+// LINESTRING(-83.12 42.12,-83.23 42.23,-83.34 42.34)
+```
 
 An Array can also contain other Arrays. In these cases, the contained Array(s) can each represent one of two geometry types.
 The contained Array might reprsent a single polygon (i.e. POLYGON feature):
 
+```javascript
+[
+    [
+        {x: -83, y: 42},
+        {x: -83, y: 43},
+        {x: -82, y: 43},
+        {x: -82, y: 42},
+        {x: -83, y: 42}
+    ]
+]
+// POLYGON(-83 42,-83 43,-82 43,-82 42,-83 42)
+```
+
+The above example cannot represent a LINESTRING feature (one of the few type-based constraints on the internal representations), however it may represent a MULTILINESTRING feature. Both POLYGON and MULTILINESTRING features are internally represented the same way. The difference between the two is specified elsewhere (in the Wkt instance's type) and must be retained. In this particular example (above), we can see that the first coordinate in the Array is repeated at the end, meaning that the geometry is closed. We can therefore infer it represents a POLYGON and not a MULTILINESTRING even before we plot it. Wicket retains the *type* of the feature and will always remember which it is.
+
+Similarly, multiple nested Arrays might reprsent a MULTIPOLYGON feature:
+
+```javascript
+[ 
     [
         [
             {x: -83, y: 42},
@@ -168,52 +197,39 @@ The contained Array might reprsent a single polygon (i.e. POLYGON feature):
             {x: -82, y: 42},
             {x: -83, y: 42}
         ]
-    ]
-    // POLYGON(-83 42,-83 43,-82 43,-82 42,-83 42)
-
-The above example cannot represent a LINESTRING feature (one of the few type-based constraints on the internal representations), however it may represent a MULTILINESTRING feature. Both POLYGON and MULTILINESTRING features are internally represented the same way. The difference between the two is specified elsewhere (in the Wkt instance's type) and must be retained. In this particular example (above), we can see that the first coordinate in the Array is repeated at the end, meaning that the geometry is closed. We can therefore infer it represents a POLYGON and not a MULTILINESTRING even before we plot it. Wicket retains the *type* of the feature and will always remember which it is.
-
-Similarly, multiple nested Arrays might reprsent a MULTIPOLYGON feature:
-
+    ],
     [ 
         [
-            [
-                {x: -83, y: 42},
-                {x: -83, y: 43},
-                {x: -82, y: 43},
-                {x: -82, y: 42},
-                {x: -83, y: 42}
-            ]
-        ],
-        [ 
-            [
-                {x: -70, y: 40},
-                {x: -70, y: 41},
-                {x: -69, y: 41},
-                {x: -69, y: 40},
-                {x: -70, y: 40}
-            ]
+            {x: -70, y: 40},
+            {x: -70, y: 41},
+            {x: -69, y: 41},
+            {x: -69, y: 40},
+            {x: -70, y: 40}
         ]
     ]
-    // MULTIPOLYGON(((-83 42,-83 43,-82 43,-82 42,-83 42),(-70 40,-70 41,-69 41,-69 40,-70 40)))
+]
+// MULTIPOLYGON(((-83 42,-83 43,-82 43,-82 42,-83 42),(-70 40,-70 41,-69 41,-69 40,-70 40)))
+```
 
 Or a POLYGON with inner rings (holes) in it where the outer ring is the polygon envelope and comes first; subsequent Arrays are inner rings (holes):
 
-    [ 
-        [
-            {x: 35, y: 10},
-            {x: 10, y: 20},
-            {x: 15, y: 40},
-            {x: 45, y: 45},
-            {x: 35, y: 10}
-        ],
-        [
-            {x: 20, y: 30},
-            {x: 35, y: 35},
-            {x: 30, y: 20},
-            {x: 20, y: 30}
-        ]
+```javascript
+[ 
+    [
+        {x: 35, y: 10},
+        {x: 10, y: 20},
+        {x: 15, y: 40},
+        {x: 45, y: 45},
+        {x: 35, y: 10}
+    ],
+    [
+        {x: 20, y: 30},
+        {x: 35, y: 35},
+        {x: 30, y: 20},
+        {x: 20, y: 30}
     ]
-    // POLYGON((35 10,10 20,15 40,45 45,35 10),(20 30,35 35,30 20,20 30))
+]
+// POLYGON((35 10,10 20,15 40,45 45,35 10),(20 30,35 35,30 20,20 30))
+```
 
 Or they might represent a MULTILINESTRING where each nested Array is a different LINESTRING in the collection. Again, Wicket remembers the correct *type* of feature even though the internal representation is ambiguous.
