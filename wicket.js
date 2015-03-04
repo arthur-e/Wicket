@@ -499,12 +499,12 @@
 	Wkt.Wkt.prototype.read = function (str) {
 		var matches;
 		matches = this.regExes.typeStr.exec(str);
-		if (matches) {
+
+		//If we found a valid WKT type
+		if (this.ingest[matches[1].toLowerCase()]) {
 			this.type = matches[1].toLowerCase();
 			this.base = matches[2];
-			if (this.ingest[this.type]) {
-				this.components = this.ingest[this.type].apply(this, [this.base]);
-			}
+			this.components = this.ingest[this.type].apply(this, [this.base]);
 	
 		} else {
 			if (this.regExes.crudeJson.test(str)) {
