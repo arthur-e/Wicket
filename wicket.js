@@ -143,7 +143,7 @@
 		this.regExes = {
 			'typeStr': /^\s*(\w+)\s*\(\s*(.*)\s*\)\s*$/,
 			'spaces': /\s+|\+/, // Matches the '+' or the empty space
-			'numeric': /-*\d+(\.*\d+)?/,
+			'numeric': /[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?/,  // Includes scientific notation
 			'comma': /\s*,\s*/,
 			'parenComma': /\)\s*,\s*\(/,
 			'coord': /-*\d+\.*\d+ -*\d+\.*\d+/, // e.g. "24 -14"
