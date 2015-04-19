@@ -1,3 +1,3 @@
 [submodule "lib/leaflet-providers"]
 	path = lib/leaflet-providers
-	url = git@github.com:leaflet-extras/leaflet-providers.git
+	url = https://github.com/leaflet-extras/leaflet-providers.git
