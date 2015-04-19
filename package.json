@@ -61,6 +61,7 @@
         "chai": "*",
         "mocha": "*",
         "uglify-js": "2.4.x",
-        "jasmine": "git://github.com/pivotal/jasmine#master"
+        "jasmine": "git://github.com/pivotal/jasmine#master",
+        "leaflet-providers": "git://github.com/leaflet-extras/leaflet-providers#master"
     }
 }

@@ -10,5 +10,8 @@
   "ignore": [
     "doc/*",
     "tests/*"
-  ]
+  ],
+  "devDependencies": {
+    "uglify-js": "2.4.x"
+  }
 }
