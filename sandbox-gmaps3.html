@@ -15,6 +15,7 @@
 <script src="wicket.js" type="text/javascript"></script>
 <script src="wicket-gmap3.js" type="text/javascript"></script>
 <script type="text/javascript">
+
 var app = (function () {
     return {
         features: [],
@@ -90,25 +91,18 @@ var app = (function () {
                 if (obj.setEditable) {obj.setEditable(false);}
             }
 
+			var bounds = new google.maps.LatLngBounds();
+
             if (Wkt.isArray(obj)) { // Distinguish multigeometries (Arrays) from objects
                 for (i in obj) {
                     if (obj.hasOwnProperty(i) && !Wkt.isArray(obj[i])) {
                         obj[i].setMap(this.gmap);
-                    }
+                        this.features.push(obj[i]);
 
-                    if (wkt.type !== 'point') {
-                        // New vertex is inserted
-                        google.maps.event.addListener(obj[i].getPath(), 'insert_at', function (n) {
-                            app.updateTextPart();
-                        });
-                        // Existing vertex is removed (insertion is undone)
-                        google.maps.event.addListener(obj[i].getPath(), 'remove_at', function (n) {
-                            app.updateTextPart();
-                        });
-                        // Existing vertex is moved (set elsewhere)
-                        google.maps.event.addListener(obj[i].getPath(), 'set_at', function (n) {
-                            app.updateTextPart();
-                        });
+                        if(wkt.type === 'point' || wkt.type === 'multipoint')
+                        	bounds.extend(obj[i].getPosition());
+                        else
+                        	obj[i].getPath().forEach(function(element,index){bounds.extend(element)});
                     }
                 }
 
@@ -116,22 +110,15 @@ var app = (function () {
             } else {
                 obj.setMap(this.gmap); // Add it to the map
                 this.features.push(obj);
+
+                if(wkt.type === 'point' || wkt.type === 'multipoint')
+                	bounds.extend(obj.getPosition());
+                else
+                	obj.getPath().forEach(function(element,index){bounds.extend(element)});
             }
 
             // Pan the map to the feature
-            if (obj.getBounds !== undefined && typeof obj.getBounds === 'function') {
-                // For objects that have defined bounds or a way to get them
-                this.gmap.fitBounds(obj.getBounds());
-            } else {
-                if (obj.getPath !== undefined && typeof obj.getPath === 'function') {
-                // For Polygons and Polylines
-                this.gmap.panTo(obj.getPath().getAt(0));
-                } else { // But points (Markers) are different
-                    if (obj.getPosition !== undefined && typeof obj.getPosition === 'function') {
-                        this.gmap.panTo(obj.getPosition());
-                    }
-                }
-            }
+            this.gmap.fitBounds(bounds);
 
             return obj;
         },
