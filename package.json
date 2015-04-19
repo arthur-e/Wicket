@@ -54,7 +54,6 @@
         "url": "https://github.com/arthur-e/Wicket"
     },
     "scripts": {
-        "postinstall": "export PATH=$PATH:/usr/local/lib/node_modules/uglify-js/bin/;unzip ./node_modules/jasmine-core/dist/jasmine-standalone-2.0.0.zip -d ./node_modules/jasmine-core/dist/",
         "build": "uglifyjs wicket.js -o wicket.min.js;uglifyjs wicket-gmap3.js -o wicket-gmap3.min.js;uglifyjs wicket-arcgis.js -o wicket-arcgis.min.js;uglifyjs wicket-leaflet.js -o wicket-leaflet.min.js;",
         "test": "./node_modules/mocha/bin/mocha -R tap tests/wicket-spec.js"
     },
