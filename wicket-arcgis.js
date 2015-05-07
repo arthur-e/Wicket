@@ -351,7 +351,7 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
     }
 
     // esri.geometry.Polygon ///////////////////////////////////////////////////
-    if (obj.constructor === esri.geometry.Polygon) {
+    if (obj.constructor === esri.geometry.Polygon || obj.constructor === esri.geometry.Circle) {
 
         rings = [];
         for (i = 0; i < obj.rings.length; i += 1) {
