@@ -365,7 +365,7 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
             }
 
             if (i > 0) {
-                if (Wkt.isInnerRingOf(verts, rings[i - 1], obj.spatialReference)) {
+                if (Wkt.isInnerRingOf(verts, rings[rings.length - 1], obj.spatialReference)) {
                     rings[rings.length - 1].push(verts);
                 } else {
                     rings.push([verts]);
