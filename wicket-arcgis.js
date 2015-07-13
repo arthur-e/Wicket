@@ -296,8 +296,8 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
         return {
             type: 'point',
             components: [{
-                x: obj.getLongitude(),
-                y: obj.getLatitude()
+                x: obj.x,
+                y: obj.y
             }]
         };
 
