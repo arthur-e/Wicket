@@ -19,6 +19,8 @@
  *
  */
 
+require(['esri/map', 'https://arthur-e.github.io/Wicket/wicket.js'], function(Map) {
+
 if (!Array.prototype.map) {
     Array.prototype.map = function (fun /* thisArg? */) {
         'use strict';
@@ -296,8 +298,8 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
         return {
             type: 'point',
             components: [{
-                x: obj.getLongitude(),
-                y: obj.getLatitude()
+                x: obj.x,
+                y: obj.y
             }]
         };
 
@@ -351,7 +353,7 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
     }
 
     // esri.geometry.Polygon ///////////////////////////////////////////////////
-    if (obj.constructor === esri.geometry.Polygon) {
+    if (obj.constructor === esri.geometry.Polygon || obj.constructor === esri.geometry.Circle) {
 
         rings = [];
         for (i = 0; i < obj.rings.length; i += 1) {
@@ -365,7 +367,7 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
             }
 
             if (i > 0) {
-                if (Wkt.isInnerRingOf(verts, rings[i - 1], obj.spatialReference)) {
+                if (Wkt.isInnerRingOf(verts, rings[rings.length - 1], obj.spatialReference)) {
                     rings[rings.length - 1].push(verts);
                 } else {
                     rings.push([verts]);
@@ -390,3 +392,4 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
 
     }
 };
+});
