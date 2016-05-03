@@ -52,7 +52,7 @@
     }],
     "repository": {
         "type": "git",
-        "url": "https://github.com/arthur-e/Wicket"
+        "url": "https://github.com/arthur-e/Wicket.git"
     },
     "scripts": {
         "build": "uglifyjs wicket.js -o wicket.min.js;uglifyjs wicket-gmap3.js -o wicket-gmap3.min.js;uglifyjs wicket-arcgis.js -o wicket-arcgis.min.js;uglifyjs wicket-leaflet.js -o wicket-leaflet.min.js;",
