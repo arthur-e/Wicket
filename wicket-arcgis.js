@@ -19,7 +19,7 @@
  *
  */
 
-require(['esri/map', 'https://arthur-e.github.io/Wicket/wicket.js'], function(Map) {
+require(['esri/map', 'wicket.js'], function(Map) {
 
 if (!Array.prototype.map) {
     Array.prototype.map = function (fun /* thisArg? */) {
