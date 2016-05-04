@@ -165,7 +165,7 @@
                 } // eo for each vertex
 
                 if (j !== 0) { // Reverse the order of coordinates in inner rings
-                    if (config.reverseInnerPolygons == null || config.reverseInnerPolygons) {
+                    if ((config.reverseInnerPolygons == null || config.reverseInnerPolygons) && this.type == 'polygon') {
                         verts.reverse();
                     }
                 }
