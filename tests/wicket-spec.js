@@ -54,20 +54,20 @@ describe('Standard WKT Test Cases: ', function () {
         },
 
         polygon: {
-            str: 'POLYGON((30 10,10 20,20 40,40 40,30 10))',
+            str: 'POLYGON((30 10,40 40,20 40,10 20,30 10))',
             cmp: [
                 [{
                     x: 30,
                     y: 10
                 }, {
-                    x: 10,
-                    y: 20
+                    x: 40,
+                    y: 40
                 }, {
                     x: 20,
                     y: 40
                 }, {
-                    x: 40,
-                    y: 40
+                    x: 10,
+                    y: 20
                 }, {
                     x: 30,
                     y: 10
@@ -76,20 +76,20 @@ describe('Standard WKT Test Cases: ', function () {
         },
 
         polygon2: {
-            str: 'POLYGON((35 10,10 20,15 40,45 45,35 10),(20 30,35 35,30 20,20 30))',
+            str: 'POLYGON((35 10,45 45,15 40,10 20,35 10),(20 30,35 35,30 20,20 30))',
             cmp: [
                 [{
                     x: 35,
                     y: 10
                 }, {
-                    x: 10,
-                    y: 20
+                    x: 45,
+                    y: 45
                 }, {
                     x: 15,
                     y: 40
                 }, {
-                    x: 45,
-                    y: 45
+                    x: 10,
+                    y: 20
                 }, {
                     x: 35,
                     y: 10
@@ -184,17 +184,17 @@ describe('Standard WKT Test Cases: ', function () {
         },
 
         multipolygon: {
-            str: 'MULTIPOLYGON(((30 20,10 40,45 40,30 20)),((15 5,40 10,10 20,5 10,15 5)))',
+            str: 'MULTIPOLYGON(((30 20,45 40,10 40,30 20)),((15 5,40 10,10 20,5 10,15 5)))',
             cmp: [
                 [
                     [{
                         x: 30,
                         y: 20
                     }, {
-                        x: 10,
+                        x: 45,
                         y: 40
                     }, {
-                        x: 45,
+                        x: 10,
                         y: 40
                     }, {
                         x: 30,
@@ -223,7 +223,7 @@ describe('Standard WKT Test Cases: ', function () {
         },
 
         multipolygon2: {
-            str: 'MULTIPOLYGON(((40 40,20 45,45 30,40 40)),((20 35,45 20,30 5,10 10,10 30,20 35),(30 20,20 25,20 15,30 20)))',
+            str: 'MULTIPOLYGON(((40 40,20 45,45 30,40 40)),((20 35,10 30,10 10,30 5,45 20,20 35),(30 20,20 15,20 25,30 20)))',
             cmp: [
                 [
                     [{
@@ -245,17 +245,17 @@ describe('Standard WKT Test Cases: ', function () {
                         x: 20,
                         y: 35
                     }, {
-                        x: 45,
-                        y: 20
-                    }, {
-                        x: 30,
-                        y: 5
+                        x: 10,
+                        y: 30
                     }, {
                         x: 10,
                         y: 10
                     }, {
-                        x: 10,
-                        y: 30
+                        x: 30,
+                        y: 5
+                    }, {
+                        x: 45,
+                        y: 20
                     }, {
                         x: 20,
                         y: 35
@@ -265,10 +265,10 @@ describe('Standard WKT Test Cases: ', function () {
                         y: 20
                     }, {
                         x: 20,
-                        y: 25
+                        y: 15
                     }, {
                         x: 20,
-                        y: 15
+                        y: 25
                     }, {
                         x: 30,
                         y: 20
