@@ -1,9 +1,9 @@
 var Wkt = require('../wicket');
 var expect = require('chai').expect;
 
-describe('Consistent Design Patterns', function() {
+describe('Consistent Design Patterns', function () {
 
-    it('should read WKT string when instantiated', function() {
+    it('should read WKT string when instantiated', function () {
         var wkt = new Wkt.Wkt('POINT(30 10)');
 
         expect(wkt.components).deep.equal([{
@@ -12,7 +12,7 @@ describe('Consistent Design Patterns', function() {
         }]);
     });
 
-    it('should correctly identify an Array', function() {
+    it('should correctly identify an Array', function () {
         expect(Wkt.isArray([0, 1])).equal(true);
         expect(Wkt.isArray({
             x: 0,
@@ -24,7 +24,7 @@ describe('Consistent Design Patterns', function() {
 
 });
 
-describe('Standard WKT Test Cases: ', function() {
+describe('Standard WKT Test Cases: ', function () {
     var cases, wkt;
 
     wkt = new Wkt.Wkt();
@@ -290,13 +290,13 @@ describe('Standard WKT Test Cases: ', function() {
 
     };
 
-    describe('Reading WKT Strings: ', function() {
+    describe('Reading WKT Strings: ', function () {
 
-        afterEach(function() {
+        afterEach(function () {
             wkt.delimiter = ' ';
         });
 
-        it('should read basic POINT string', function() {
+        it('should read basic POINT string', function () {
             wkt.read(cases.point.str);
 
             expect(wkt.type).equal('point');
@@ -309,7 +309,7 @@ describe('Standard WKT Test Cases: ', function() {
             expect(wkt.components).deep.equal(cases.point.cmp);
         });
 
-        it('should read basic LINESTRING string', function() {
+        it('should read basic LINESTRING string', function () {
             wkt.read(cases.linestring.str);
 
             expect(wkt.type).equal('linestring');
@@ -322,7 +322,7 @@ describe('Standard WKT Test Cases: ', function() {
             expect(wkt.components).deep.equal(cases.linestring.cmp);
         });
 
-        it('should read basic POLYGON string', function() {
+        it('should read basic POLYGON string', function () {
             wkt.read(cases.polygon.str);
 
             expect(wkt.type).equal('polygon');
@@ -335,7 +335,7 @@ describe('Standard WKT Test Cases: ', function() {
             expect(wkt.components).deep.equal(cases.polygon.cmp);
         });
 
-        it('should read basic POLYGON string with one (1) hole', function() {
+        it('should read basic POLYGON string with one (1) hole', function () {
             wkt.read(cases.polygon2.str);
 
             expect(wkt.type).equal('polygon');
@@ -348,7 +348,7 @@ describe('Standard WKT Test Cases: ', function() {
             expect(wkt.components).deep.equal(cases.polygon2.cmp);
         });
 
-        it('should read basic MULTIPOINT string with wrapped vertices', function() {
+        it('should read basic MULTIPOINT string with wrapped vertices', function () {
             wkt.read(cases.multipoint.str);
 
             expect(wkt.type).equal('multipoint');
@@ -361,7 +361,7 @@ describe('Standard WKT Test Cases: ', function() {
             expect(wkt.components).deep.equal(cases.multipoint.cmp);
         });
 
-        it('should read basic MULTIPOINT string without wrapped vertices', function() {
+        it('should read basic MULTIPOINT string without wrapped vertices', function () {
             wkt.read(cases.multipoint2.str);
 
             expect(wkt.type).equal('multipoint');
@@ -374,7 +374,7 @@ describe('Standard WKT Test Cases: ', function() {
             expect(wkt.components).deep.equal(cases.multipoint2.cmp);
         });
 
-        it('should read basic MULTILINESTRING string', function() {
+        it('should read basic MULTILINESTRING string', function () {
             wkt.read(cases.multilinestring.str);
 
             expect(wkt.type).equal('multilinestring');
@@ -387,7 +387,7 @@ describe('Standard WKT Test Cases: ', function() {
             expect(wkt.components).deep.equal(cases.multilinestring.cmp);
         });
 
-        it('should read basic MULTIPOLYGON string', function() {
+        it('should read basic MULTIPOLYGON string', function () {
             wkt.read(cases.multipolygon.str);
 
             expect(wkt.type).equal('multipolygon');
@@ -400,7 +400,7 @@ describe('Standard WKT Test Cases: ', function() {
             expect(wkt.components).deep.equal(cases.multipolygon.cmp);
         });
 
-        it('should read basic MULTIPOLYGON string with two (2) polygons, one with one (1) hole', function() {
+        it('should read basic MULTIPOLYGON string with two (2) polygons, one with one (1) hole', function () {
             wkt.read(cases.multipolygon2.str);
 
             expect(wkt.type).equal('multipolygon');
@@ -413,7 +413,7 @@ describe('Standard WKT Test Cases: ', function() {
             expect(wkt.components).deep.equal(cases.multipolygon2.cmp);
         });
 
-        it('should read basic PostGIS 2DBOX string', function() {
+        it('should read basic PostGIS 2DBOX string', function () {
             wkt.read(cases.box.str);
 
             expect(wkt.type).equal('box');
@@ -428,14 +428,14 @@ describe('Standard WKT Test Cases: ', function() {
 
     }); // eo describe()
 
-    describe('Writing Well-Formed WKT Strings: ', function() {
+    describe('Writing Well-Formed WKT Strings: ', function () {
 
-        afterEach(function() {
+        afterEach(function () {
             wkt.wrapVertices = false;
             wkt.delimiter = ' ';
         });
 
-        it('should write basic POINT string', function() {
+        it('should write basic POINT string', function () {
             wkt.components = cases.point.cmp;
             wkt.type = 'point';
 
@@ -446,7 +446,7 @@ describe('Standard WKT Test Cases: ', function() {
             expect(wkt.write()).equal(cases.point.str.replace(/ /g, '+'));
         });
 
-        it('should write basic LINESTRING string', function() {
+        it('should write basic LINESTRING string', function () {
             wkt.components = cases.linestring.cmp;
             wkt.type = 'linestring';
 
@@ -457,7 +457,7 @@ describe('Standard WKT Test Cases: ', function() {
             expect(wkt.write()).equal(cases.linestring.str.replace(/ /g, '+'));
         });
 
-        it('should write basic POLYGON string', function() {
+        it('should write basic POLYGON string', function () {
             wkt.components = cases.polygon.cmp;
             wkt.type = 'polygon';
 
@@ -468,7 +468,7 @@ describe('Standard WKT Test Cases: ', function() {
             expect(wkt.write()).equal(cases.polygon.str.replace(/ /g, '+'));
         });
 
-        it('should write basic POLYGON string with one (1) hole', function() {
+        it('should write basic POLYGON string with one (1) hole', function () {
             wkt.components = cases.polygon2.cmp;
             wkt.type = 'polygon';
 
@@ -479,7 +479,7 @@ describe('Standard WKT Test Cases: ', function() {
             expect(wkt.write()).equal(cases.polygon2.str.replace(/ /g, '+'));
         });
 
-        it('should write basic MULTIPOINT string with wrapped vertices', function() {
+        it('should write basic MULTIPOINT string with wrapped vertices', function () {
             wkt.components = cases.multipoint.cmp;
             wkt.type = 'multipoint';
             wkt.wrapVertices = true;
@@ -491,7 +491,7 @@ describe('Standard WKT Test Cases: ', function() {
             expect(wkt.write()).equal(cases.multipoint.str.replace(/ /g, '+'));
         });
 
-        it('should write basic MULTIPOINT string without wrapped vertices', function() {
+        it('should write basic MULTIPOINT string without wrapped vertices', function () {
             wkt.components = cases.multipoint2.cmp;
             wkt.type = 'multipoint';
             wkt.wrapVertices = false;
@@ -503,7 +503,7 @@ describe('Standard WKT Test Cases: ', function() {
             expect(wkt.write()).equal(cases.multipoint2.str.replace(/ /g, '+'));
         });
 
-        it('should write basic MULTILINESTRING string', function() {
+        it('should write basic MULTILINESTRING string', function () {
             wkt.components = cases.multilinestring.cmp;
             wkt.type = 'multilinestring';
 
@@ -514,7 +514,7 @@ describe('Standard WKT Test Cases: ', function() {
             expect(wkt.write()).equal(cases.multilinestring.str.replace(/ /g, '+'));
         });
 
-        it('should write basic MULTIPOLYGON string', function() {
+        it('should write basic MULTIPOLYGON string', function () {
             wkt.components = cases.multipolygon.cmp;
             wkt.type = 'multipolygon';
 
@@ -525,7 +525,7 @@ describe('Standard WKT Test Cases: ', function() {
             expect(wkt.write()).equal(cases.multipolygon.str.replace(/ /g, '+'));
         });
 
-        it('should write basic MULTIPOLYGON string with two (2) polygons, one with one (1) hole', function() {
+        it('should write basic MULTIPOLYGON string with two (2) polygons, one with one (1) hole', function () {
             wkt.components = cases.multipolygon2.cmp;
             wkt.type = 'multipolygon';
 
@@ -536,7 +536,7 @@ describe('Standard WKT Test Cases: ', function() {
             expect(wkt.write()).equal(cases.multipolygon2.str.replace(/ /g, '+'));
         });
 
-        it('should write basic PostGIS 2DBOX string', function() {
+        it('should write basic PostGIS 2DBOX string', function () {
             wkt.components = cases.box.cmp;
             wkt.type = 'box';
 
@@ -551,7 +551,7 @@ describe('Standard WKT Test Cases: ', function() {
 
 }); // eo describe()
 
-describe('Arbitrary WKT Test Cases: ', function() {
+describe('Arbitrary WKT Test Cases: ', function () {
     var cases, wkt;
 
     wkt = new Wkt.Wkt();
@@ -595,34 +595,34 @@ describe('Arbitrary WKT Test Cases: ', function() {
         return cs;
     };
 
-    it('should be able to read WKT strings with bizarre whitespace', function() {
+    it('should be able to read WKT strings with bizarre whitespace', function () {
         wkt.read('  LINESTRING  ( 30  10, 10 30, 40 40) ');
         expect(wkt.write()).equal('LINESTRING(30 10,10 30,40 40)');
     });
 
-    it('should be able to read WKT strings with (somewhat) arbitrary precision', function() {
+    it('should be able to read WKT strings with (somewhat) arbitrary precision', function () {
         wkt.read('MULTIPOINT((9.12345 40),(40 30),(20 19.999999),(30 10.000001))');
         expect(wkt.write()).equal('MULTIPOINT((9.12345 40),(40 30),(20 19.999999),(30 10.000001))');
     });
 
-    describe('Working with Random Coordinates: ', function() {
+    describe('Working with Random Coordinates: ', function () {
         var c;
 
-        it('should read and write arbitrary POINT string', function() {
+        it('should read and write arbitrary POINT string', function () {
             c = wkt.components = randomCoords(1);
             wkt.type = 'point';
 
             expect(wkt.read(wkt.write()).components).deep.equal(c);
         });
 
-        it('should read and write long, arbitrary LINESTRING string', function() {
+        it('should read and write long, arbitrary LINESTRING string', function () {
             c = wkt.components = randomCoords(100);
             wkt.type = 'linestring';
 
             expect(wkt.read(wkt.write()).components).deep.equal(c);
         });
 
-        it('should read and write long, arbitrary POLYGON string', function() {
+        it('should read and write long, arbitrary POLYGON string', function () {
             c = wkt.components = [randomCoords(100)];
             wkt.type = 'polygon';
 
@@ -632,15 +632,15 @@ describe('Arbitrary WKT Test Cases: ', function() {
     });
 });
 
-describe('Edge Cases: ', function() {
+describe('Edge Cases: ', function () {
     var wkt = new Wkt.Wkt();
 
-    afterEach(function() {
+    afterEach(function () {
         wkt.wrapVertices = false;
         wkt.delimiter = ' ';
     });
 
-    it('should read a POINT string with single-digit coordinates', function() {
+    it('should read a POINT string with single-digit coordinates', function () {
         var test = {
             str: 'POINT(4 4)',
             cmp: [{
@@ -661,7 +661,7 @@ describe('Edge Cases: ', function() {
         expect(wkt.components).deep.equal(test.cmp);
     });
 
-    it('should read a LINESTRING string with single-digit coordinates', function() {
+    it('should read a LINESTRING string with single-digit coordinates', function () {
         var test = {
             str: 'LINESTRING(4 4,3 5,6 7)',
             cmp: [{
@@ -688,7 +688,7 @@ describe('Edge Cases: ', function() {
         expect(wkt.components).deep.equal(test.cmp);
     });
 
-    it('should read a POLYGON string with single-digit coordinates', function() {
+    it('should read a POLYGON string with single-digit coordinates', function () {
         var test = {
             str: 'POLYGON((4 4,3 5,6 7,7 5,4 4))',
             cmp: [
@@ -723,7 +723,7 @@ describe('Edge Cases: ', function() {
         expect(wkt.components).deep.equal(test.cmp);
     });
 
-    it('should read a POLYGON string with excess precision', function() {
+    it('should read a POLYGON string with excess precision', function () {
         var test = {
             str: 'POLYGON((4.1234 4,3 5,6 7,7 5.5678,4 4))',
             cmp: [
@@ -760,7 +760,7 @@ describe('Edge Cases: ', function() {
 
 }); // eo describe()
 
-describe('Merged WKT Test Cases: ', function() {
+describe('Merged WKT Test Cases: ', function () {
     var cases = {
 
         pointA: {
@@ -1103,7 +1103,7 @@ describe('Merged WKT Test Cases: ', function() {
 
     };
 
-    it('should merge POINT strings together', function() {
+    it('should merge POINT strings together', function () {
         var a = new Wkt.Wkt(cases.pointA.str),
             b = new Wkt.Wkt(cases.pointB.str);
 
@@ -1125,7 +1125,7 @@ describe('Merged WKT Test Cases: ', function() {
 
     });
 
-    it('should merge LINESTRING strings together', function() {
+    it('should merge LINESTRING strings together', function () {
         var a = new Wkt.Wkt(cases.linestringA.str),
             b = new Wkt.Wkt(cases.linestringB.str);
 
@@ -1160,7 +1160,7 @@ describe('Merged WKT Test Cases: ', function() {
 
     });
 
-    it('should merge POLYGON strings together', function() {
+    it('should merge POLYGON strings together', function () {
         var a = new Wkt.Wkt(cases.polygonA.str),
             b = new Wkt.Wkt(cases.polygonB.str);
 
@@ -1211,7 +1211,7 @@ describe('Merged WKT Test Cases: ', function() {
 
     });
 
-    it('should merge POLYGON strings together even if they have holes', function() {
+    it('should merge POLYGON strings together even if they have holes', function () {
         var a = new Wkt.Wkt(cases.polygon2A.str),
             b = new Wkt.Wkt(cases.polygon2B.str);
 
@@ -1288,7 +1288,7 @@ describe('Merged WKT Test Cases: ', function() {
 
     });
 
-    it('should merge MULTIPOINT strings together', function() {
+    it('should merge MULTIPOINT strings together', function () {
         var a = new Wkt.Wkt(cases.multipointA.str),
             b = new Wkt.Wkt(cases.multipointB.str);
 
@@ -1335,7 +1335,7 @@ describe('Merged WKT Test Cases: ', function() {
 
     });
 
-    it('should merge MULTILINESTRING strings together', function() {
+    it('should merge MULTILINESTRING strings together', function () {
         var a = new Wkt.Wkt(cases.multilinestringA.str),
             b = new Wkt.Wkt(cases.multilinestringB.str);
 
@@ -1396,7 +1396,7 @@ describe('Merged WKT Test Cases: ', function() {
 
     });
 
-    it('should merge MULTIPOLYGON strings together', function() {
+    it('should merge MULTIPOLYGON strings together', function () {
         var a = new Wkt.Wkt(cases.multipolygonA.str),
             b = new Wkt.Wkt(cases.multipolygonB.str);
 
@@ -1477,7 +1477,7 @@ describe('Merged WKT Test Cases: ', function() {
 
     });
 
-    it('should merge POINT strings into MULTIPOINT strings', function() {
+    it('should merge POINT strings into MULTIPOINT strings', function () {
         var a = new Wkt.Wkt(cases.multipointA.str),
             b = new Wkt.Wkt(cases.pointB.str);
 
@@ -1512,7 +1512,7 @@ describe('Merged WKT Test Cases: ', function() {
 
     });
 
-    it('should merge LINESTRING strings into MULTILINESTRING strings', function() {
+    it('should merge LINESTRING strings into MULTILINESTRING strings', function () {
         var a = new Wkt.Wkt(cases.multilinestringA.str),
             b = new Wkt.Wkt(cases.linestringB.str);
 
@@ -1560,7 +1560,7 @@ describe('Merged WKT Test Cases: ', function() {
 
     });
 
-    it('should merge POLYGON strings into MULTIPOLYGON strings', function() {
+    it('should merge POLYGON strings into MULTIPOLYGON strings', function () {
         var a = new Wkt.Wkt(cases.multipolygonA.str),
             b = new Wkt.Wkt(cases.polygonB.str);
 
@@ -1628,7 +1628,7 @@ describe('Merged WKT Test Cases: ', function() {
 
 });
 
-describe('GeoJSON Cases:', function() {
+describe('GeoJSON Cases:', function () {
     var cases = { // See: http://en.wikipedia.org/wiki/GeoJSON#Geometries
 
         point: {
@@ -1808,141 +1808,141 @@ describe('GeoJSON Cases:', function() {
 
     };
 
-    describe('GeoJSON Construction:', function() {
+    describe('GeoJSON Construction:', function () {
 
-        it('should create valid JSON for WKT Point type', function() {
+        it('should create valid JSON for WKT Point type', function () {
             var a = new Wkt.Wkt(cases.point.str);
             expect(a.toJson()).deep.equal(cases.point.json);
         });
 
-        it('should create valid JSON for WKT LineString type', function() {
+        it('should create valid JSON for WKT LineString type', function () {
             var a = new Wkt.Wkt(cases.linestring.str);
             expect(a.toJson()).deep.equal(cases.linestring.json);
         });
 
-        it('should create valid JSON for WKT Polygon type', function() {
+        it('should create valid JSON for WKT Polygon type', function () {
             var a = new Wkt.Wkt(cases.polygon.str);
             expect(a.toJson()).deep.equal(cases.polygon.json);
         });
 
-        it('should create valid JSON for WKT Polygon type with a hole', function() {
+        it('should create valid JSON for WKT Polygon type with a hole', function () {
             var a = new Wkt.Wkt(cases.polygon2.str);
             expect(a.toJson()).deep.equal(cases.polygon2.json);
         });
 
-        it('should create valid JSON for WKT MultiPolygon type', function() {
+        it('should create valid JSON for WKT MultiPolygon type', function () {
             var a = new Wkt.Wkt(cases.multipolygon.str);
             expect(a.toJson()).deep.equal(cases.multipolygon.json);
         });
 
-        it('should create valid JSON for WKT MultiPolygon type with a hole', function() {
+        it('should create valid JSON for WKT MultiPolygon type with a hole', function () {
             var a = new Wkt.Wkt(cases.multipolygon2.str);
             expect(a.toJson()).deep.equal(cases.multipolygon2.json);
         });
 
-        it('should create valid JSON for WKT MultiPoint type', function() {
+        it('should create valid JSON for WKT MultiPoint type', function () {
             var a = new Wkt.Wkt(cases.multipoint.str);
             expect(a.toJson()).deep.equal(cases.multipoint.json);
         });
 
-        it('should create valid JSON for WKT MultiLineString type', function() {
+        it('should create valid JSON for WKT MultiLineString type', function () {
             var a = new Wkt.Wkt(cases.multilinestring.str);
             expect(a.toJson()).deep.equal(cases.multilinestring.json);
         });
 
-        it('should create valid JSON for WKT Box type', function() {
+        it('should create valid JSON for WKT Box type', function () {
             var a = new Wkt.Wkt(cases.box.str);
             expect(a.toJson()).deep.equal(cases.box.json);
         });
 
     });
 
-    describe('GeoJSON Deconstruction (from Objects):', function() {
+    describe('GeoJSON Deconstruction (from Objects):', function () {
 
-        it('should write the WKT string corresponding to a GeoJSON Point', function() {
+        it('should write the WKT string corresponding to a GeoJSON Point', function () {
             var a = new Wkt.Wkt(cases.point.json);
             expect(a.write()).deep.equal(cases.point.str);
         });
 
-        it('should write the WKT string corresponding to a GeoJSON LineString', function() {
+        it('should write the WKT string corresponding to a GeoJSON LineString', function () {
             var a = new Wkt.Wkt(cases.linestring.json);
             expect(a.write()).deep.equal(cases.linestring.str);
         });
 
-        it('should write the WKT string corresponding to a GeoJSON Polygon', function() {
+        it('should write the WKT string corresponding to a GeoJSON Polygon', function () {
             var a = new Wkt.Wkt(cases.polygon.json);
             expect(a.write()).deep.equal(cases.polygon.str);
         });
 
-        it('should write the WKT string corresponding to a GeoJSON Polygon with a hole', function() {
+        it('should write the WKT string corresponding to a GeoJSON Polygon with a hole', function () {
             var a = new Wkt.Wkt(cases.polygon2.json);
             expect(a.write()).deep.equal(cases.polygon2.str);
         });
 
-        it('should write the WKT string corresponding to a GeoJSON MultiPolygon', function() {
+        it('should write the WKT string corresponding to a GeoJSON MultiPolygon', function () {
             var a = new Wkt.Wkt(cases.multipolygon.json);
             expect(a.write()).deep.equal(cases.multipolygon.str);
         });
 
-        it('should write the WKT string corresponding to a GeoJSON MultiPolygon with a hole', function() {
+        it('should write the WKT string corresponding to a GeoJSON MultiPolygon with a hole', function () {
             var a = new Wkt.Wkt(cases.multipolygon2.json);
             expect(a.write()).deep.equal(cases.multipolygon2.str);
         });
 
-        it('should write the WKT string corresponding to a GeoJSON MultiPoint', function() {
+        it('should write the WKT string corresponding to a GeoJSON MultiPoint', function () {
             var a = new Wkt.Wkt(cases.multipoint.json);
             expect(a.write()).deep.equal(cases.multipoint.str);
         });
 
-        it('should write the WKT string corresponding to a GeoJSON MultiLineString', function() {
+        it('should write the WKT string corresponding to a GeoJSON MultiLineString', function () {
             var a = new Wkt.Wkt(cases.multilinestring.json);
             expect(a.write()).deep.equal(cases.multilinestring.str);
         });
 
     });
 
-    describe('GeoJSON Deconstruction (from Strings):', function() {
-        it('should provide support for JSON.parse() in the environment...', function() {
+    describe('GeoJSON Deconstruction (from Strings):', function () {
+        it('should provide support for JSON.parse() in the environment...', function () {
             expect(typeof JSON).deep.equal('object');
             expect(typeof JSON.parse).deep.equal('function');
         });
 
-        it('should parse a GeoJSON Point string', function() {
+        it('should parse a GeoJSON Point string', function () {
             var a = new Wkt.Wkt(cases.point.jsonStr);
             expect(a.write()).deep.equal(cases.point.str);
         });
 
-        it('should parse a GeoJSON LineString string', function() {
+        it('should parse a GeoJSON LineString string', function () {
             var a = new Wkt.Wkt(cases.linestring.jsonStr);
             expect(a.write()).deep.equal(cases.linestring.str);
         });
 
-        it('should parse a GeoJSON Polygon string', function() {
+        it('should parse a GeoJSON Polygon string', function () {
             var a = new Wkt.Wkt(cases.polygon.jsonStr);
             expect(a.write()).deep.equal(cases.polygon.str);
         });
 
-        it('should parse a GeoJSON Polygon string with a hole', function() {
+        it('should parse a GeoJSON Polygon string with a hole', function () {
             var a = new Wkt.Wkt(cases.polygon2.jsonStr);
             expect(a.write()).deep.equal(cases.polygon2.str);
         });
 
-        it('should parse a GeoJSON MultiPolygon string', function() {
+        it('should parse a GeoJSON MultiPolygon string', function () {
             var a = new Wkt.Wkt(cases.multipolygon.jsonStr);
             expect(a.write()).deep.equal(cases.multipolygon.str);
         });
 
-        it('should parse a GeoJSON MultiPolygon string with a hole', function() {
+        it('should parse a GeoJSON MultiPolygon string with a hole', function () {
             var a = new Wkt.Wkt(cases.multipolygon2.jsonStr);
             expect(a.write()).deep.equal(cases.multipolygon2.str);
         });
 
-        it('should parse a GeoJSON MultiPoint string', function() {
+        it('should parse a GeoJSON MultiPoint string', function () {
             var a = new Wkt.Wkt(cases.multipoint.jsonStr);
             expect(a.write()).deep.equal(cases.multipoint.str);
         });
 
-        it('should parse a GeoJSON MultiLineString string', function() {
+        it('should parse a GeoJSON MultiLineString string', function () {
             var a = new Wkt.Wkt(cases.multilinestring.jsonStr);
             expect(a.write()).deep.equal(cases.multilinestring.str);
         });

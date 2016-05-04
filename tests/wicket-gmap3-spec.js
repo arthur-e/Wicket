@@ -1,4 +1,4 @@
-describe('Standard WKT Test Cases: ', function() {
+describe('Standard WKT Test Cases: ', function () {
     var cases, wkt;
 
     wkt = new Wkt.Wkt();
@@ -582,13 +582,13 @@ describe('Standard WKT Test Cases: ', function() {
 
 
 
-    describe('Converting objects into WKT strings: ', function() {
+    describe('Converting objects into WKT strings: ', function () {
 
-        afterEach(function() {
+        afterEach(function () {
             wkt.delimiter = ' ';
         });
 
-        it('should convert a Marker instance into a basic POINT string', function() {
+        it('should convert a Marker instance into a basic POINT string', function () {
             wkt.fromObject(cases.point.obj);
             expect(wkt.type).toBe('point');
             expect(wkt.isCollection()).toBe(false);
@@ -596,7 +596,7 @@ describe('Standard WKT Test Cases: ', function() {
             expect(wkt.write()).toBe(cases.point.str);
         });
 
-        it('should convert a Polyline instance into a basic LINESTRING string', function() {
+        it('should convert a Polyline instance into a basic LINESTRING string', function () {
             wkt.fromObject(cases.linestring.obj);
             expect(wkt.type).toBe('linestring');
             expect(wkt.isCollection()).toBe(false);
@@ -604,7 +604,7 @@ describe('Standard WKT Test Cases: ', function() {
             expect(wkt.write()).toBe(cases.linestring.str);
         });
 
-        it('should convert a Polygon instance into a basic POLYGON string', function() {
+        it('should convert a Polygon instance into a basic POLYGON string', function () {
             wkt.fromObject(cases.polygon.obj);
             expect(wkt.type).toBe('polygon');
             expect(wkt.isCollection()).toBe(true);
@@ -612,7 +612,7 @@ describe('Standard WKT Test Cases: ', function() {
             expect(wkt.write()).toBe(cases.polygon.str);
         });
 
-        it('should convert a Polygon instance with a hole into a POLYGON string with the same hole', function() {
+        it('should convert a Polygon instance with a hole into a POLYGON string with the same hole', function () {
             wkt.fromObject(cases.polygon2.obj);
             expect(wkt.type).toBe('polygon');
             expect(wkt.isCollection()).toBe(true);
@@ -620,7 +620,7 @@ describe('Standard WKT Test Cases: ', function() {
             expect(wkt.write()).toBe(cases.polygon2.str);
         });
 
-        it('should convert a Rectangle instance into a POLYGON string', function() {
+        it('should convert a Rectangle instance into a POLYGON string', function () {
             wkt.fromObject(cases.rectangle.obj);
             expect(wkt.type).toBe('polygon');
             expect(wkt.isRectangle).toBe(true);
@@ -629,7 +629,7 @@ describe('Standard WKT Test Cases: ', function() {
             expect(wkt.write()).toBe(cases.rectangle.str);
         });
 
-        it('should convert an Array of Marker instances into a MULTIPOINT string', function() {
+        it('should convert an Array of Marker instances into a MULTIPOINT string', function () {
             wkt.fromObject(cases.multipoint.obj);
             expect(wkt.type).toBe('multipoint');
             expect(wkt.isCollection()).toBe(true);
@@ -637,7 +637,7 @@ describe('Standard WKT Test Cases: ', function() {
             expect(wkt.write()).toBe(cases.multipoint.str);
         });
 
-        it('should convert an Array of Polyline instances into a MULTILINESTRING string', function() {
+        it('should convert an Array of Polyline instances into a MULTILINESTRING string', function () {
             wkt.fromObject(cases.multilinestring.obj);
             expect(wkt.type).toBe('multilinestring');
             expect(wkt.isCollection()).toBe(true);
@@ -645,7 +645,7 @@ describe('Standard WKT Test Cases: ', function() {
             expect(wkt.write()).toBe(cases.multilinestring.str);
         });
 
-        it('should convert an Array of Polygon instances into a MULTIPOLYGON string', function() {
+        it('should convert an Array of Polygon instances into a MULTIPOLYGON string', function () {
             wkt.fromObject(cases.multipolygon.obj);
             expect(wkt.type).toBe('multipolygon');
             expect(wkt.isCollection()).toBe(true);
@@ -653,7 +653,7 @@ describe('Standard WKT Test Cases: ', function() {
             expect(wkt.write()).toBe(cases.multipolygon.str);
         });
 
-        it('should convert an Array of Polygon instances, some with holes, into a MULTIPOLYGON string with the same hole', function() {
+        it('should convert an Array of Polygon instances, some with holes, into a MULTIPOLYGON string with the same hole', function () {
             wkt.fromObject(cases.multipolygon2.obj);
             expect(wkt.type).toBe('multipolygon');
             expect(wkt.isCollection()).toBe(true);
@@ -781,13 +781,13 @@ describe('Standard WKT Test Cases: ', function() {
     });
 
 
-    describe('Coverting WKT strings into objects: ', function() {
+    describe('Coverting WKT strings into objects: ', function () {
 
-        afterEach(function() {
+        afterEach(function () {
             wkt.delimiter = ' ';
         });
 
-        it('should convert a basic POINT string to a Marker instance', function() {
+        it('should convert a basic POINT string to a Marker instance', function () {
             wkt.read(cases.marker.str);
             expect(wkt.type).toBe('point');
             expect(wkt.isCollection()).toBe(false);
@@ -795,7 +795,7 @@ describe('Standard WKT Test Cases: ', function() {
             expect(wkt.toObject().getPosition().toString()).toEqual(cases.marker.obj.getPosition().toString());
         });
 
-        it('should convert a basic LINESTRING string to a Polyline instance', function() {
+        it('should convert a basic LINESTRING string to a Polyline instance', function () {
             wkt.read(cases.linestring.str);
             expect(wkt.type).toBe('linestring');
             expect(wkt.isCollection()).toBe(false);
@@ -803,31 +803,31 @@ describe('Standard WKT Test Cases: ', function() {
             expect(wkt.toObject().getPath().getArray().toString()).toEqual(cases.linestring.obj.getPath().getArray().toString());
         });
 
-        it('should convert a basic POLYGON string to a Polygon instance', function() {
+        it('should convert a basic POLYGON string to a Polygon instance', function () {
             wkt.read(cases.polygon.str);
             expect(wkt.type).toBe('polygon');
             expect(wkt.isCollection()).toBe(true);
             expect(wkt.components).toEqual(cases.polygon.cmp);
-            expect(wkt.toObject().getPaths().getArray().map(function(ring) {
+            expect(wkt.toObject().getPaths().getArray().map(function (ring) {
                 return ring.getArray();
-            }).toString()).toEqual(cases.polygon.obj.getPaths().getArray().map(function(ring) {
+            }).toString()).toEqual(cases.polygon.obj.getPaths().getArray().map(function (ring) {
                 return ring.getArray();
             }).toString());
         });
 
-        it('should convert a POLYGON string with a hole to a Polygon instance with the same hole', function() {
+        it('should convert a POLYGON string with a hole to a Polygon instance with the same hole', function () {
             wkt.read(cases.polygon2.str);
             expect(wkt.type).toBe('polygon');
             expect(wkt.isCollection()).toBe(true);
             expect(wkt.components).toEqual(cases.polygon2.cmp);
-            expect(wkt.toObject().getPaths().getArray().map(function(ring) {
+            expect(wkt.toObject().getPaths().getArray().map(function (ring) {
                 return ring.getArray();
-            }).toString()).toEqual(cases.polygon2.obj.getPaths().getArray().map(function(ring) {
+            }).toString()).toEqual(cases.polygon2.obj.getPaths().getArray().map(function (ring) {
                 return ring.getArray();
             }).toString());
         });
 
-        it('should convert a POLYGON string, with isRectangle=true, into a Rectangle instance', function() {
+        it('should convert a POLYGON string, with isRectangle=true, into a Rectangle instance', function () {
             wkt.read(cases.rectangle.str);
             wkt.isRectangle = true;
             expect(wkt.type).toBe('polygon');
@@ -837,7 +837,7 @@ describe('Standard WKT Test Cases: ', function() {
             expect(wkt.toObject().constructor).toEqual(google.maps.Rectangle);
         });
 
-        it('should convert a MULTIPOINT string into an Array of Marker instances', function() {
+        it('should convert a MULTIPOINT string into an Array of Marker instances', function () {
             var m;
 
             wkt.read(cases.multipoint.str);
@@ -851,18 +851,18 @@ describe('Standard WKT Test Cases: ', function() {
             }
         });
 
-        it('should convert a MULTILINESTRING string into an Array of Polyline instances', function() {
+        it('should convert a MULTILINESTRING string into an Array of Polyline instances', function () {
             wkt.read(cases.multilinestring.str);
             expect(wkt.type).toBe('multilinestring');
             expect(wkt.isCollection()).toBe(true);
             expect(wkt.components).toEqual(cases.multilinestring.cmp);
             //console.debug({wkt:wkt.toObject(), cases:cases.multilinestring.obj});
-            expect(wkt.toObject().map(function(linestring) {
-                return linestring.getPath().getArray().map(function(point) {
+            expect(wkt.toObject().map(function (linestring) {
+                return linestring.getPath().getArray().map(function (point) {
                     return point.toString();
                 });
-            })).toEqual(cases.multilinestring.obj.map(function(linestring) {
-                return linestring.getPath().getArray().map(function(point) {
+            })).toEqual(cases.multilinestring.obj.map(function (linestring) {
+                return linestring.getPath().getArray().map(function (point) {
                     return point.toString();
                 });
             }));
@@ -874,12 +874,12 @@ describe('Standard WKT Test Cases: ', function() {
             expect(wkt.isCollection()).toBe(true);
             expect(wkt.components).toEqual(cases.multipolygon.cmp);
 
-            expect(wkt.toObject().map(function(ring) {
-                return ring.getPath().getArray().map(function(point) {
+            expect(wkt.toObject().map(function (ring) {
+                return ring.getPath().getArray().map(function (point) {
                     return point.toString();
                 });
-            })).toEqual(cases.multipolygon.obj.map(function(ring) {
-                return ring.getPath().getArray().map(function(point) {
+            })).toEqual(cases.multipolygon.obj.map(function (ring) {
+                return ring.getPath().getArray().map(function (point) {
                     return point.toString();
                 });
             }));
@@ -891,13 +891,13 @@ describe('Standard WKT Test Cases: ', function() {
             expect(wkt.type).toBe('multipolygon');
             expect(wkt.isCollection()).toBe(true);
             expect(wkt.components).toEqual(cases.multipolygon2.cmp);
-            
-             expect(wkt.toObject().map(function(ring) {
-                return ring.getPath().getArray().map(function(point) {
+
+             expect(wkt.toObject().map(function (ring) {
+                return ring.getPath().getArray().map(function (point) {
                     return point.toString();
                 });
-            })).toEqual(cases.multipolygon2.obj.map(function(ring) {
-                return ring.getPath().getArray().map(function(point) {
+            })).toEqual(cases.multipolygon2.obj.map(function (ring) {
+                return ring.getPath().getArray().map(function (point) {
                     return point.toString();
                 });
             }));
