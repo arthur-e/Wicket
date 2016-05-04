@@ -145,15 +145,13 @@
          */
         polygon: function (config, component) {
             var j, k, c, rings, verts;
-            
-            var polygonIsClockwise = function (coords)
-			{
+
+            var polygonIsClockwise = function (coords) {
 				var area = 0,
 					j = null,
 					i = 0;
 
-				for (i = 0; i < coords.length; i++)
-				{
+				for (i = 0; i < coords.length; i++) {
 					j = (i + 1) % coords.length;
 					area += coords[i].x * coords[j].x;
 					area -= coords[j].y * coords[i].y;
@@ -161,7 +159,7 @@
 
 				return area > 0;
 			};
-			
+
             c = component || this.components;
 
             config = config || {
@@ -180,10 +178,9 @@
 
                 } // eo for each vertex
 
-                if (j !== 0) { 
+                if (j !== 0) {
                    // Orient inner rings correctly
-					if (polygonIsClockwise(c[j]))
-					{
+					if (polygonIsClockwise(c[j]) && this.type == 'polygon') {
 						verts.reverse();
 					}
                 }

@@ -12,7 +12,7 @@ The core Wicket library and the Leaflet extension are both compatible with Node.
 
 If you are looking for [Apache Wicket](http://wicket.apache.org/), the web-app development framework for Java, [you'll find it here](http://wicket.apache.org/).
 
-*The Google Maps API extension currently does not support `MULTIPOLYGON` geometries with holes (inner rings) due to [an outstanding bug](https://github.com/arthur-e/Wicket/issues/33).
+*The Google Maps API extension can read WKT strings for (Multi)Polygons with interior rings/ holes but it cannot determine Multi-status or the nature of interior rings for `google.maps.Polygon` instances due to [an outstanding bug](https://github.com/arthur-e/Wicket/issues/33).
 
 ## License ##
 
