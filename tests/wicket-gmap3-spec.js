@@ -59,22 +59,21 @@ describe('Standard WKT Test Cases: ', function () {
             },
         },
 
-
         polygon: {
-            str: 'POLYGON((30 10,10 20,20 40,40 40,30 10))',
+            str: 'POLYGON((30 10,40 40,20 40,10 20,30 10))',
             cmp: [
                 [{
                     x: 30,
                     y: 10
                 }, {
-                    x: 10,
-                    y: 20
+                    x: 40,
+                    y: 40
                 }, {
                     x: 20,
                     y: 40
                 }, {
-                    x: 40,
-                    y: 40
+                    x: 10,
+                    y: 20
                 }, {
                     x: 30,
                     y: 10
@@ -85,9 +84,9 @@ describe('Standard WKT Test Cases: ', function () {
                 paths: [
                     [
                         new google.maps.LatLng(10, 30),
-                        new google.maps.LatLng(20, 10),
+                        new google.maps.LatLng(40, 40),
                         new google.maps.LatLng(40, 20),
-                        new google.maps.LatLng(40, 40)
+                        new google.maps.LatLng(20, 10)
                     ]
                 ]
             }),
@@ -95,9 +94,9 @@ describe('Standard WKT Test Cases: ', function () {
                 'coordinates': [
                     [
                         [30, 10],
-                        [10, 20],
-                        [20, 40],
                         [40, 40],
+                        [20, 40],
+                        [10, 20],
                         [30, 10]
                     ]
                 ],
@@ -107,26 +106,26 @@ describe('Standard WKT Test Cases: ', function () {
         },
 
         polygon2: {
-            str: 'POLYGON((35 10,10 20,15 40,45 45,35 10),(25 30,35 35,30 20,25 30))',
+            str: 'POLYGON((35 10,45 45,15 40,10 20,35 10),(20 30,35 35,30 20,20 30))',
             cmp: [
                 [{
                     x: 35,
                     y: 10
                 }, {
-                    x: 10,
-                    y: 20
+                    x: 45,
+                    y: 45
                 }, {
                     x: 15,
                     y: 40
                 }, {
-                    x: 45,
-                    y: 45
+                    x: 10,
+                    y: 20
                 }, {
                     x: 35,
                     y: 10
                 }],
                 [{
-                    x: 25,
+                    x: 20,
                     y: 30
                 }, {
                     x: 35,
@@ -135,7 +134,7 @@ describe('Standard WKT Test Cases: ', function () {
                     x: 30,
                     y: 20
                 }, {
-                    x: 25,
+                    x: 20,
                     y: 30
                 }]
             ],
@@ -144,14 +143,14 @@ describe('Standard WKT Test Cases: ', function () {
                 paths: [
                     [
                         new google.maps.LatLng(10, 35),
-                        new google.maps.LatLng(20, 10),
+                        new google.maps.LatLng(45, 45),
                         new google.maps.LatLng(40, 15),
-                        new google.maps.LatLng(45, 45)
+                        new google.maps.LatLng(20, 10)
                     ],
                     [ // Order in inner rings is reversed
                         new google.maps.LatLng(20, 30),
                         new google.maps.LatLng(35, 35),
-                        new google.maps.LatLng(30, 25)
+                        new google.maps.LatLng(30, 20)
                     ]
                 ]
             }),
@@ -159,16 +158,16 @@ describe('Standard WKT Test Cases: ', function () {
                 'coordinates': [
                     [
                         [35, 10],
-                        [10, 20],
-                        [15, 40],
                         [45, 45],
+                        [15, 40],
+                        [10, 20],
                         [35, 10]
                     ],
                     [
-                        [25, 30],
+                        [20, 30],
                         [35, 35],
                         [30, 20],
-                        [25, 30]
+                        [20, 30]
                     ]
                 ],
                 'type': 'Polygon'
@@ -288,17 +287,17 @@ describe('Standard WKT Test Cases: ', function () {
         },
 
         multipolygon: {
-            str: 'MULTIPOLYGON(((30 20,10 40,45 40,30 20)),((15 5,40 10,10 20,5 10,15 5)))',
+            str: 'MULTIPOLYGON(((30 20,45 40,10 40,30 20)),((15 5,40 10,10 20,5 10,15 5)))',
             cmp: [
                 [
                     [{
                         x: 30,
                         y: 20
                     }, {
-                        x: 10,
+                        x: 45,
                         y: 40
                     }, {
-                        x: 45,
+                        x: 10,
                         y: 40
                     }, {
                         x: 30,
@@ -330,8 +329,8 @@ describe('Standard WKT Test Cases: ', function () {
                     paths: [
                         [
                             new google.maps.LatLng(20, 30),
-                            new google.maps.LatLng(40, 10),
-                            new google.maps.LatLng(40, 45)
+                            new google.maps.LatLng(40, 45),
+                            new google.maps.LatLng(40, 10)
                         ]
                     ]
                 }),
@@ -352,8 +351,8 @@ describe('Standard WKT Test Cases: ', function () {
                     [
                         [
                             [30, 20],
-                            [10, 40],
                             [45, 40],
+                            [10, 40],
                             [30, 20]
                         ]
                     ],
@@ -369,11 +368,11 @@ describe('Standard WKT Test Cases: ', function () {
                 ],
                 'type': 'MultiPolygon'
             },
-            jsonStr: '{"coordinates": [[[[30, 20], [10, 40], [45, 40], [30, 20]]], [[[15, 5], [40, 10], [10, 20], [5, 10], [15, 5]]]], "type": "MultiPolygon"}'
+            jsonStr: '{"coordinates": [[[[30, 20], [45, 40], [10, 40], [30, 20]]], [[[15, 5], [40, 10], [10, 20], [5, 10], [15, 5]]]], "type": "MultiPolygon"}'
         },
 
         multipolygon2: {
-            str: 'MULTIPOLYGON(((40 40,20 45,45 30,40 40)),((20 35,45 20,30 5,10 10,10 30,20 35),(30 20,20 25,20 15,30 20)))',
+            str: 'MULTIPOLYGON(((40 40,20 45,45 30,40 40)),((20 35,10 30,10 10,30 5,45 20,20 35),(30 20,20 15,20 25,30 20)))',
             cmp: [
                 [
                     [{
@@ -395,17 +394,17 @@ describe('Standard WKT Test Cases: ', function () {
                         x: 20,
                         y: 35
                     }, {
-                        x: 45,
-                        y: 20
-                    }, {
-                        x: 30,
-                        y: 5
+                        x: 10,
+                        y: 30
                     }, {
                         x: 10,
                         y: 10
                     }, {
-                        x: 10,
-                        y: 30
+                        x: 30,
+                        y: 5
+                    }, {
+                        x: 45,
+                        y: 20
                     }, {
                         x: 20,
                         y: 35
@@ -415,10 +414,10 @@ describe('Standard WKT Test Cases: ', function () {
                         y: 20
                     }, {
                         x: 20,
-                        y: 25
+                        y: 15
                     }, {
                         x: 20,
-                        y: 15
+                        y: 25
                     }, {
                         x: 30,
                         y: 20
@@ -441,14 +440,14 @@ describe('Standard WKT Test Cases: ', function () {
                     paths: [
                         [
                             new google.maps.LatLng(35, 20),
-                            new google.maps.LatLng(20, 45),
-                            new google.maps.LatLng(5, 30),
+                            new google.maps.LatLng(30, 10),
                             new google.maps.LatLng(10, 10),
-                            new google.maps.LatLng(30, 10)
+                            new google.maps.LatLng(5, 30),
+                            new google.maps.LatLng(20, 45)
                         ],
                         [
-                            new google.maps.LatLng(15, 20),
                             new google.maps.LatLng(25, 20),
+                            new google.maps.LatLng(15, 20),
                             new google.maps.LatLng(20, 30)
                         ]
                     ]
@@ -467,16 +466,16 @@ describe('Standard WKT Test Cases: ', function () {
                     [
                         [
                             [20, 35],
-                            [45, 20],
-                            [30, 5],
-                            [10, 10],
                             [10, 30],
+                            [10, 10],
+                            [30, 5],
+                            [45, 20],
                             [20, 35]
                         ],
                         [
                             [30, 20],
-                            [20, 25],
                             [20, 15],
+                            [20, 25],
                             [30, 20]
                         ]
                     ]
@@ -511,8 +510,6 @@ describe('Standard WKT Test Cases: ', function () {
                     new google.maps.LatLng(20, 0))
             })
         },
-
-
 
         box: {
             str: 'BOX(0 0,20 20)',
@@ -577,10 +574,6 @@ describe('Standard WKT Test Cases: ', function () {
     };
 
     dataObjects = new google.maps.Data;
-
-
-
-
 
     describe('Converting objects into WKT strings: ', function () {
 
@@ -780,7 +773,6 @@ describe('Standard WKT Test Cases: ', function () {
 
     });
 
-
     describe('Coverting WKT strings into objects: ', function () {
 
         afterEach(function () {
@@ -792,7 +784,7 @@ describe('Standard WKT Test Cases: ', function () {
             expect(wkt.type).toBe('point');
             expect(wkt.isCollection()).toBe(false);
             expect(wkt.components).toEqual(cases.marker.cmp);
-            expect(wkt.toObject().getPosition()).toEqual(cases.marker.obj.getPosition());
+            expect(wkt.toObject().getPosition().toString()).toEqual(cases.marker.obj.getPosition().toString());
         });
 
         it('should convert a basic LINESTRING string to a Polyline instance', function () {
@@ -800,7 +792,7 @@ describe('Standard WKT Test Cases: ', function () {
             expect(wkt.type).toBe('linestring');
             expect(wkt.isCollection()).toBe(false);
             expect(wkt.components).toEqual(cases.linestring.cmp);
-            expect(wkt.toObject().getPath()).toEqual(cases.linestring.obj.getPath());
+            expect(wkt.toObject().getPath().getArray().toString()).toEqual(cases.linestring.obj.getPath().getArray().toString());
         });
 
         it('should convert a basic POLYGON string to a Polygon instance', function () {
@@ -808,7 +800,11 @@ describe('Standard WKT Test Cases: ', function () {
             expect(wkt.type).toBe('polygon');
             expect(wkt.isCollection()).toBe(true);
             expect(wkt.components).toEqual(cases.polygon.cmp);
-            expect(wkt.toObject().getPaths()).toEqual(cases.polygon.obj.getPaths());
+            expect(wkt.toObject().getPaths().getArray().map(function (ring) {
+                return ring.getArray();
+            }).toString()).toEqual(cases.polygon.obj.getPaths().getArray().map(function (ring) {
+                return ring.getArray();
+            }).toString());
         });
 
         it('should convert a POLYGON string with a hole to a Polygon instance with the same hole', function () {
@@ -816,7 +812,11 @@ describe('Standard WKT Test Cases: ', function () {
             expect(wkt.type).toBe('polygon');
             expect(wkt.isCollection()).toBe(true);
             expect(wkt.components).toEqual(cases.polygon2.cmp);
-            expect(wkt.toObject().getPaths()).toEqual(cases.polygon2.obj.getPaths());
+            expect(wkt.toObject().getPaths().getArray().map(function (ring) {
+                return ring.getArray();
+            }).toString()).toEqual(cases.polygon2.obj.getPaths().getArray().map(function (ring) {
+                return ring.getArray();
+            }).toString());
         });
 
         it('should convert a POLYGON string, with isRectangle=true, into a Rectangle instance', function () {
@@ -839,7 +839,7 @@ describe('Standard WKT Test Cases: ', function () {
 
             markers = wkt.toObject();
             for (m = 0; m < markers.length; m += 1) {
-                expect(markers[m].getPosition()).toEqual(cases.multipoint.obj[m].getPosition());
+                expect(markers[m].getPosition().toString()).toEqual(cases.multipoint.obj[m].getPosition().toString());
             }
         });
 
@@ -848,7 +848,16 @@ describe('Standard WKT Test Cases: ', function () {
             expect(wkt.type).toBe('multilinestring');
             expect(wkt.isCollection()).toBe(true);
             expect(wkt.components).toEqual(cases.multilinestring.cmp);
-            expect(wkt.toObject()).toEqual(cases.multilinestring.obj);
+            //console.debug({wkt:wkt.toObject(), cases:cases.multilinestring.obj});
+            expect(wkt.toObject().map(function (linestring) {
+                return linestring.getPath().getArray().map(function (point) {
+                    return point.toString();
+                });
+            })).toEqual(cases.multilinestring.obj.map(function (linestring) {
+                return linestring.getPath().getArray().map(function (point) {
+                    return point.toString();
+                });
+            }));
         });
 
         it('should convert a MULTIPOLYGON string into an Array of Polygon instances', function () {
@@ -856,7 +865,17 @@ describe('Standard WKT Test Cases: ', function () {
             expect(wkt.type).toBe('multipolygon');
             expect(wkt.isCollection()).toBe(true);
             expect(wkt.components).toEqual(cases.multipolygon.cmp);
-            expect(wkt.toObject()).toEqual(cases.multipolygon.obj);
+
+            expect(wkt.toObject().map(function (ring) {
+                return ring.getPath().getArray().map(function (point) {
+                    return point.toString();
+                });
+            })).toEqual(cases.multipolygon.obj.map(function (ring) {
+                return ring.getPath().getArray().map(function (point) {
+                    return point.toString();
+                });
+            }));
+
         });
 
         it('should convert a MULTIPOLYGON string with holes into an Array of Polygon instances with the same holes', function () {
@@ -864,7 +883,16 @@ describe('Standard WKT Test Cases: ', function () {
             expect(wkt.type).toBe('multipolygon');
             expect(wkt.isCollection()).toBe(true);
             expect(wkt.components).toEqual(cases.multipolygon2.cmp);
-            expect(wkt.toObject()).toEqual(cases.multipolygon2.obj);
+
+             expect(wkt.toObject().map(function (ring) {
+                return ring.getPath().getArray().map(function (point) {
+                    return point.toString();
+                });
+            })).toEqual(cases.multipolygon2.obj.map(function (ring) {
+                return ring.getPath().getArray().map(function (point) {
+                    return point.toString();
+                });
+            }));
         });
 
         it('should convert a PostGIS 2DBOX string into a Rectangle instance', function () {

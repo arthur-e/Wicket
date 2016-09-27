@@ -19,7 +19,23 @@
  *
  */
 
-(function (global) {
+(function (root, factory) {
+
+    if (typeof define === "function" && define.amd) {
+        // AMD (+ global for extensions)
+        define(function () {
+            return factory();
+        });
+    } else if (typeof module !== 'undefined' && typeof exports === "object") {
+        // CommonJS
+        module.exports = factory();
+    } else {
+        // Browser
+        root.Wkt = factory();
+    }
+}(this, function () {
+
+
 	var beginsWith, endsWith, root, Wkt;
 
 	// Establish the root object, window in the browser, or exports on the server
@@ -37,15 +53,7 @@
 		this._wrapped = obj;
 	};
 
-	// Following Underscore module pattern (http://underscorejs.org/docs/underscore.html)
-	if (typeof exports !== 'undefined') {
-		if (typeof module !== 'undefined' && module.exports) {
-			exports = module.exports = Wkt;
-		}
-		exports.Wkt = Wkt;
-	} else {
-		root.Wkt = Wkt;
-	}
+
 
 	/**
 	 * Returns true if the substring is found at the beginning of the string.
@@ -168,7 +176,7 @@
 
 	};
 
-	global.Wkt = Wkt;
+
 
 	/**
 	 * Returns true if the internal geometry is a collection of geometries.
@@ -642,9 +650,13 @@
 		multilinestring: function (multilinestring) {
 			var i, parts = [];
 	
+            if (multilinestring.length) {
 			for (i = 0; i < multilinestring.length; i += 1) {
 				parts.push(this.extract.linestring.apply(this, [multilinestring[i]]));
 			}
+            } else {
+                parts.push(this.extract.point.apply(this, [multilinestring]));
+            }
 	
 			return parts.join(',');
 		},
@@ -794,7 +806,9 @@
 					var split=ring[j].split(this.regExes.spaces);
 					if(split.length>2){
 						//remove the elements which are blanks
-						split = split.filter(function(n){ return n != "" });
+                        split = split.filter(function (n) {
+                            return n != ""
+                        });
 					}
 					if(split.length===2){
 						var x_cord=split[0];
@@ -863,6 +877,5 @@
 	
 	}; // eo ingest
 	
-	return this;
-}(this));
-
+    return Wkt;
+}));

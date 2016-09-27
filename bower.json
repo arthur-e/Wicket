@@ -1,6 +1,6 @@
 {
   "name": "Wicket",
-  "version": "1.2",
+  "version": "1.3.2",
   "main": [
     "wicket.js",
     "wicket-arcgis.js",
@@ -10,5 +10,8 @@
   "ignore": [
     "doc/*",
     "tests/*"
-  ]
+  ],
+  "devDependencies": {
+    "uglify-js": "2.4.x"
+  }
 }

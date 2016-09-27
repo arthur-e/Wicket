@@ -4,13 +4,15 @@
 
 Wicket is a lightweight library for translating between [Well-Known Text (WKT)](http://en.wikipedia.org/wiki/Well-known_text) and various client-side mapping frameworks:
 * Leaflet [(demo)](http://arthur-e.github.com/Wicket/)
-* Google Maps API [(demo)](http://arthur-e.github.com/Wicket/sandbox-gmaps3.html)
+* Google Maps API* [(demo)](http://arthur-e.github.com/Wicket/sandbox-gmaps3.html)
 * ESRI ArcGIS JavaScript API [(demo)](http://arthur-e.github.com/Wicket/sandbox-arcgis.html)
 * Potentially any other web mapping framework through serialization and de-serialization of GeoJSON (with `JSON.parse`)
 
 The core Wicket library and the Leaflet extension are both compatible with Node.js; the Google Maps and ArcGIS API extensions will not work in Node.js because they require a browser.
 
 If you are looking for [Apache Wicket](http://wicket.apache.org/), the web-app development framework for Java, [you'll find it here](http://wicket.apache.org/).
+
+*The Google Maps API extension can read WKT strings for (Multi)Polygons with interior rings/ holes but it cannot determine Multi-status or the nature of interior rings for `google.maps.Polygon` instances due to [an outstanding bug](https://github.com/arthur-e/Wicket/issues/33).
 
 ## License ##
 
@@ -48,7 +50,7 @@ wkt.write();
 // Create a geometry object, ready to be mapped!
 wkt.toObject();
 ```
-    
+
 Wicket will read from the geometry objects of any mapping client it understands.
 **Note:** Don't use the `deconstruct()` method! This is used internally by `Wkt.Wkt()` instances.
 Use `fromObject()` instead, as in the following example.
@@ -66,7 +68,7 @@ console.log(wkt.components);
 wkt.write();
 // "POINT(10 30)"
 ```
-    
+
 ## See Also ##
 
 * [wellknown](https://github.com/mapbox/wellknown)
@@ -131,7 +133,7 @@ Wicket borrows heavily from the experiences of others who came before us:
 
 The base library, wicket.js, contains the Wkt.Wkt base object.
 This object doesn't do anything on its own except read in WKT strings, allow the underlying geometry to be manipulated programmatically, and write WKT strings.
-By loading additional libraries, such as wicket-gmap3.js, users can transform between between WKT and the features of a given framework (e.g. google.maps.Polygon instances). 
+By loading additional libraries, such as wicket-gmap3.js, users can transform between between WKT and the features of a given framework (e.g. google.maps.Polygon instances).
 The intent is to add support for new frameworks as additional Javascript files that alter the Wkt.Wkt prototype.
 
 **To extend Wicket**, nominally by writing bindings for a new mapping library, add a new file with a name like wicket-libname.src.js (and corresponding minified version wicket-libname.js) where "libname" is some reasonably short, well-known name for the mapping library.
@@ -188,7 +190,7 @@ The above example cannot represent a LINESTRING feature (one of the few type-bas
 Similarly, multiple nested Arrays might reprsent a MULTIPOLYGON feature:
 
 ```javascript
-[ 
+[
     [
         [
             {x: -83, y: 42},
@@ -198,7 +200,7 @@ Similarly, multiple nested Arrays might reprsent a MULTIPOLYGON feature:
             {x: -83, y: 42}
         ]
     ],
-    [ 
+    [
         [
             {x: -70, y: 40},
             {x: -70, y: 41},
@@ -214,7 +216,7 @@ Similarly, multiple nested Arrays might reprsent a MULTIPOLYGON feature:
 Or a POLYGON with inner rings (holes) in it where the outer ring is the polygon envelope and comes first; subsequent Arrays are inner rings (holes):
 
 ```javascript
-[ 
+[
     [
         {x: 35, y: 10},
         {x: 10, y: 20},
