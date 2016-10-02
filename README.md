@@ -49,6 +49,10 @@ wkt.write();
 
 // Create a geometry object, ready to be mapped!
 wkt.toObject();
+
+// Convert to GeoJSON
+wkt.toJson(); // Outputs an object
+JSON.stringify(wkt.toJson()); // Outputs a string
 ```
 
 Wicket will read from the geometry objects of any mapping client it understands.
