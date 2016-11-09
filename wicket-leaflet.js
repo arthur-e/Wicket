@@ -113,7 +113,12 @@ Wkt.Wkt.prototype.construct = {
         var coords = this.components,
             latlngs = this.coordsToLatLngs(coords, 1);
 
-        return L.multiPolyline(latlngs, config);
+        if (L.multiPolyline) {
+            return L.multiPolyline(latlngs, config);
+        }
+        else {
+            return L.polyline(latlngs, config);
+        }
     },
 
     /**
@@ -138,7 +143,12 @@ Wkt.Wkt.prototype.construct = {
         var coords = this.trunc(this.components),
             latlngs = this.coordsToLatLngs(coords, 2);
 
-        return L.multiPolygon(latlngs, config);
+        if (L.multiPolygon) {
+            return L.multiPolygon(latlngs, config);
+        }
+        else {
+            return L.polygon(latlngs, config);
+        }
     },
 
     /**
