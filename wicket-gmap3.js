@@ -18,7 +18,19 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-(function (Wkt) {
+(function ( root, factory ) {
+    if ( typeof exports === 'object' ) {
+        // CommonJS
+        factory( require('./wicket') );
+    } else if ( typeof define === 'function' && define.amd ) {
+        // AMD. Register as an anonymous module.
+        define( ['wicket'], factory);
+    } else {
+        // Browser globals
+        factory(root.Wkt );
+    }
+}
+(this, function(Wkt) {
 
     /**
      * @augments Wkt.Wkt
@@ -741,4 +753,6 @@
         console.log('The passed object does not have any recognizable properties.');
 
     };
-}(Wkt || require('./wicket')));
+
+  return Wkt;
+}));
