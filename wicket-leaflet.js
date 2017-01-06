@@ -408,7 +408,7 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
     }
 
     // L.Circle ////////////////////////////////////////////////////////////////
-    if (obj.constructor === L.Rectangle || obj.constructor === L.rectangle) {
+    if (obj.constructor === L.Circle || obj.constructor === L.circle) {
         console.log('Deconstruction of L.Circle objects is not yet supported');
 
     } else {
