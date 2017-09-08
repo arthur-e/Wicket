@@ -76,7 +76,7 @@
     "jasmine-core": "^2.5.2",
     "karma": "^1.7.1",
     "karma-jasmine": "^1.1.0",
-    "karma-mocha-reporter": "^2.2.2",
+    "karma-mocha-reporter": "^2.2.4",
     "karma-phantomjs-launcher": "^1.0.1",
     "leaflet-providers": "git://github.com/leaflet-extras/leaflet-providers#master",
     "mocha": "*",
