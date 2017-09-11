@@ -1,6 +1,6 @@
 # Wicket #
 
-![Build Stats](https://travis-ci.org/arthur-e/Wicket.svg?branch=master)
+[![Travis CI](https://travis-ci.org/arthur-e/Wicket.svg?branch=master)](https://travis-ci.org/arthur-e/Wicket.svg?branch=master)
 [![CDNJS](https://img.shields.io/cdnjs/v/wicket.svg)](https://cdnjs.com/libraries/wicket)
 
 **Wicket is looking for a permanent maintainer.** Please [contact us](mailto:endsley@umich.edu) if you want to help maintain Wicket.
@@ -94,8 +94,6 @@ Minified versions can be generated via:
 ### Testing ###
 
     npm test
-
-The Google Maps API extension cannot be tested by Node.js at the command line; it requires a browser. The Google Maps API tests are run by Jasmine; navigate to the file `tests/wicket-gmap3.html` in a web browser.
 
 ## Documentation ##
 
