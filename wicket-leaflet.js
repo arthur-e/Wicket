@@ -174,7 +174,7 @@ L.Util.extend(Wkt.Wkt.prototype, {
     // TODO Why doesn't the coordsToLatLng function in L.GeoJSON already suffice?
     coordsToLatLng: function (coords, reverse) {
         var lat = reverse ? coords.x : coords.y,
-        lng = reverse ? coords.y : coords.x;
+            lng = reverse ? coords.y : coords.x;
 
         return L.latLng(lat, lng, true);
     },
