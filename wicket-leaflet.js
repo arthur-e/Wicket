@@ -173,16 +173,15 @@ Wkt.Wkt.prototype.construct = {
 L.Util.extend(Wkt.Wkt.prototype, {
     // TODO Why doesn't the coordsToLatLng function in L.GeoJSON already suffice?
     coordsToLatLng: function (coords, reverse) {
-      var lat = reverse ? coords.x : coords.y,
+        var lat = reverse ? coords.x : coords.y,
         lng = reverse ? coords.y : coords.x;
 
-      return L.latLng(lat, lng, true);
+        return L.latLng(lat, lng, true);
     },
     coordsToLatLngs: function (coords, levelsDeep) {
-      return L.GeoJSON.coordsToLatLngs(coords, levelsDeep, this.coordsToLatLng)
+        return L.GeoJSON.coordsToLatLngs(coords, levelsDeep, this.coordsToLatLng)
     }
-  }
-);
+});
 
 
 /**
