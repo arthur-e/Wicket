@@ -4,6 +4,7 @@
   "license": "GPL-3.0",
   "description": "A modest library for moving between Well-Known Text (WKT) and various framework geometries",
   "homepage": "https://github.com/arthur-e/Wicket",
+  "main": "wicket.js",
   "keywords": [
     "wkt",
     "map",
