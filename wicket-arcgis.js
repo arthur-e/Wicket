@@ -192,41 +192,21 @@ Wkt.Wkt.prototype.construct = {
         return new esri.geometry.Polygon({
             // Create an Array of rings...
             rings: (function () {
-                var i, j, holey, newRings, rings;
-
-                holey = false; // Assume there are no inner rings (holes)
-                rings = that.components.map(function (i) {
-                    // ...Within which are Arrays of (outer) rings (polygons)
-                    var rings = i.map(function (j) {
-                        // ...Within which are (possibly) Arrays of (inner) rings (holes)
-                        return j.map(function (k) {
+                var rings = [];
+                that.components.forEach(function (polygon) {
+                    polygon.forEach(function (exteriorOrHole) {
+                        // ArcGis expects a flat array of rings
+                        // The direction of the ring determines if it is a hole or an exterior
+                        // Its assumed that the directionality of the incoming Wkt is correct
+                        // Further checking could be added to enforce the direction of the
+                        // exterior (first) polygon ring and the subsequent holes
+                        rings.push(exteriorOrHole.map(function (k) {
                             return [k.x, k.y];
-                        });
-                    });
-
-                    holey = (rings.length > 1);
-
-                    return rings;
+                        }));
+                    })
                 });
 
-                if (!holey && rings[0].length > 1) { // Easy, if there are no inner rings (holes)
-                    // But we add the second condition to check that we're not too deeply nested
-                    return rings;
-                }
-
-                newRings = [];
-                for (i = 0; i < rings.length; i += 1) {
-                    if (rings[i].length > 1) {
-                        for (j = 0; j < rings[i].length; j += 1) {
-                            newRings.push(rings[i][j]);
-                        }
-                    } else {
-                        newRings.push(rings[i][0]);
-                    }
-                }
-
-                return newRings;
-
+                return rings;
             }()),
             spatialReference: config.spatialReference
         });
