@@ -18,7 +18,19 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-(function (Wkt) {
+(function ( root, factory ) {
+    if ( typeof exports === 'object' ) {
+        // CommonJS
+        factory( require('./wicket') );
+    } else if ( typeof define === 'function' && define.amd ) {
+        // AMD. Register as an anonymous module.
+        define( ['wicket'], factory);
+    } else {
+        // Browser globals
+        factory(root.Wkt );
+    }
+}
+(this, function(Wkt) {
 
     /**
      * @augments Wkt.Wkt
@@ -249,11 +261,11 @@
      * @return          {Object}    A hash of the 'type' and 'components' thus derived, plus the WKT string of the feature.
      */
     Wkt.Wkt.prototype.deconstruct = function (obj, multiFlag) {
-        var features, i, j, multiFlag, verts, rings, sign, tmp, response, lat, lng;
+        var features, i, j, multiFlag, verts, rings, sign, tmp, response, lat, lng, vertex, ring, linestrings, k;
 
         // Shortcut to signed area function (determines clockwise vs counter-clock)
         if (google.maps.geometry) {
-          sign = google.maps.geometry.spherical.computeSignedArea;
+            sign = google.maps.geometry.spherical.computeSignedArea;
         };
 
         // google.maps.LatLng //////////////////////////////////////////////////////
@@ -356,6 +368,7 @@
             for (i = 0; i < obj.getPaths().length; i += 1) { // For each polygon (ring)...
                 tmp = obj.getPaths().getAt(i);
                 verts = [];
+
                 for (j = 0; j < obj.getPaths().getAt(i).length; j += 1) { // For each vertex...
                     verts.push({
                         x: tmp.getAt(j).lng(),
@@ -365,36 +378,28 @@
                 }
 
                 if (!tmp.getAt(tmp.length - 1).equals(tmp.getAt(0))) {
-                    if (i % 2 !== 0) { // In inner rings, coordinates are reversed...
-                        verts.unshift({ // Add the first coordinate again for closure
-                            x: tmp.getAt(tmp.length - 1).lng(),
-                            y: tmp.getAt(tmp.length - 1).lat()
-                        });
-
-                    } else {
-                        verts.push({ // Add the first coordinate again for closure
+                       verts.push({ // Add the first coordinate again for closure
                             x: tmp.getAt(0).lng(),
                             y: tmp.getAt(0).lat()
                         });
 
-                    }
-
+                    if (i % 2 !== 0) { // In inner rings, coordinates are reversed...
+                        verts.reverse();
+                    } 
                 }
 
                 if (obj.getPaths().length > 1 && i > 0) {
                     // If this and the last ring have the same signs...
                     if (sign(obj.getPaths().getAt(i)) > 0 && sign(obj.getPaths().getAt(i - 1)) > 0 ||
-                        sign(obj.getPaths().getAt(i)) < 0 && sign(obj.getPaths().getAt(i - 1)) < 0 && !multiFlag) {
+                        sign(obj.getPaths().getAt(i)) < 0 && sign(obj.getPaths().getAt(i - 1)) < 0 /*&& !multiFlag*/ ) {
                         // ...They must both be inner rings (or both be outer rings, in a multipolygon)
                         verts = [verts]; // Wrap multipolygons once more (collection)
+                    } else {
+                        verts.reverse();
                     }
 
                 }
 
-                //TODO This makes mistakes when a second polygon has holes; it sees them all as individual polygons
-                if (i % 2 !== 0) { // In inner rings, coordinates are reversed...
-                    verts.reverse();
-                }
                 rings.push(verts);
             }
 
@@ -468,7 +473,6 @@
                 y: tmp.getNorthEast().lat()
             });
 
-
             response = {
                 type: 'polygon',
                 isRectangle: true,
@@ -508,7 +512,6 @@
                 x: tmp.getSouthWest().lng(),
                 y: tmp.getNorthEast().lat()
             });
-
 
             response = {
                 type: 'polygon',
@@ -558,9 +561,6 @@
             return response;
         }
 
-
-
-
         // google.maps.Data.Polygon /////////////////////////////////////////////////////
         if (obj.constructor === google.maps.Data.Polygon) {
             var rings = [];
@@ -589,7 +589,6 @@
 
             return response;
         }
-
 
         // google.maps.Data.MultiPoint /////////////////////////////////////////////////////
         if (obj.constructor === google.maps.Data.MultiPoint) {
@@ -682,7 +681,6 @@
             return response;
         }
 
-
         // Array ///////////////////////////////////////////////////////////////////
         if (Wkt.isArray(obj)) {
             features = [];
@@ -741,4 +739,6 @@
         console.log('The passed object does not have any recognizable properties.');
 
     };
-}(Wkt || require('./wicket')));
+
+  return Wkt;
+}));

@@ -113,7 +113,12 @@ Wkt.Wkt.prototype.construct = {
         var coords = this.components,
             latlngs = this.coordsToLatLngs(coords, 1);
 
-        return L.multiPolyline(latlngs, config);
+        if (L.multiPolyline) {
+            return L.multiPolyline(latlngs, config);
+        }
+        else {
+            return L.polyline(latlngs, config);
+        }
     },
 
     /**
@@ -138,7 +143,12 @@ Wkt.Wkt.prototype.construct = {
         var coords = this.trunc(this.components),
             latlngs = this.coordsToLatLngs(coords, 2);
 
-        return L.multiPolygon(latlngs, config);
+        if (L.multiPolygon) {
+            return L.multiPolygon(latlngs, config);
+        }
+        else {
+            return L.polygon(latlngs, config);
+        }
     },
 
     /**
@@ -161,15 +171,18 @@ Wkt.Wkt.prototype.construct = {
 };
 
 L.Util.extend(Wkt.Wkt.prototype, {
-    coordsToLatLngs: L.GeoJSON.coordsToLatLngs,
     // TODO Why doesn't the coordsToLatLng function in L.GeoJSON already suffice?
     coordsToLatLng: function (coords, reverse) {
         var lat = reverse ? coords.x : coords.y,
             lng = reverse ? coords.y : coords.x;
 
         return L.latLng(lat, lng, true);
+    },
+    coordsToLatLngs: function (coords, levelsDeep) {
+        return L.GeoJSON.coordsToLatLngs(coords, levelsDeep, this.coordsToLatLng)
     }
 });
+
 
 /**
  * @augments Wkt.Wkt
@@ -398,7 +411,7 @@ Wkt.Wkt.prototype.deconstruct = function (obj) {
     }
 
     // L.Circle ////////////////////////////////////////////////////////////////
-    if (obj.constructor === L.Rectangle || obj.constructor === L.rectangle) {
+    if (obj.constructor === L.Circle || obj.constructor === L.circle) {
         console.log('Deconstruction of L.Circle objects is not yet supported');
 
     } else {

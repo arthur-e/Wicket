@@ -1,6 +1,9 @@
 # Wicket #
 
-![Build Stats](https://travis-ci.org/arthur-e/Wicket.svg?branch=master)
+[![Travis CI](https://travis-ci.org/arthur-e/Wicket.svg?branch=master)](https://travis-ci.org/arthur-e/Wicket.svg?branch=master)
+[![CDNJS](https://img.shields.io/cdnjs/v/wicket.svg)](https://cdnjs.com/libraries/wicket)
+
+**Wicket is looking for a permanent maintainer.** Please [contact us](mailto:endsley@umich.edu) if you want to help maintain Wicket.
 
 Wicket is a lightweight library for translating between [Well-Known Text (WKT)](http://en.wikipedia.org/wiki/Well-known_text) and various client-side mapping frameworks:
 * Leaflet [(demo)](http://arthur-e.github.com/Wicket/)
@@ -49,6 +52,10 @@ wkt.write();
 
 // Create a geometry object, ready to be mapped!
 wkt.toObject();
+
+// Convert to GeoJSON
+wkt.toJson(); // Outputs an object
+JSON.stringify(wkt.toJson()); // Outputs a string
 ```
 
 Wicket will read from the geometry objects of any mapping client it understands.
@@ -87,8 +94,6 @@ Minified versions can be generated via:
 ### Testing ###
 
     npm test
-
-The Google Maps API extension cannot be tested by Node.js at the command line; it requires a browser. The Google Maps API tests are run by Jasmine; navigate to the file `tests/wicket-gmap3.html` in a web browser.
 
 ## Documentation ##
 

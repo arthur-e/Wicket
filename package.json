@@ -1,68 +1,86 @@
 {
-    "name": "wicket",
-    "version": "1.3.2",
-    "license": "GPL-3.0",
-    "description": "A modest library for moving between Well-Known Text (WKT) and various framework geometries",
-    "homepage": "https://github.com/arthur-e/Wicket",
-    "keywords": [
-        "wkt",
-        "map",
-        "mapping",
-        "geometry",
-        "leaflet"
-    ],
-    "maintainers": [{
-        "name": "K. Arthur Endsley",
-        "email": "kaendsle@mtu.edu",
-        "web": "https://github.com/arthur-e"
-    }],
-    "contributors": [{
-        "name": "K. Arthur Endsley",
-        "email": "kaendsle@mtu.edu",
-        "web": "https://github.com/arthur-e"
-    }, {
-        "name": "cuyahoga",
-        "web": "https://github.com/cuyahoga"
-    }, {
-        "name": "Tom Nightingale",
-        "web": "https://github.com/thegreat"
-    }, {
-        "name": "Aaron Ogle",
-        "web": "https://github.com/atogle"
-    }, {
-        "name": "James Seppi",
-        "web": "https://github.com/jseppi"
-    }, {
-        "name": "tchannel",
-        "web": "https://github.com/tchannel"
-    }, {
-        "name": "Felipe Figueroa",
-        "web": "https://github.com/amenadiel"
-    }, {
-        "name": "Matthijs van Henten",
-        "web": "https://github.com/mvhenten"
-    }],
-    "bugs": {
-        "mail": "kaendsle@mtu.edu",
-        "url": "https://github.com/arthur-e/Wicket/issues"
-    },
-    "licenses": [{
-        "type": "GPLv3",
-        "url": "https://raw.github.com/arthur-e/Wicket/master/LICENSE"
-    }],
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/arthur-e/Wicket.git"
-    },
-    "scripts": {
-        "build": "uglifyjs wicket.js -o wicket.min.js;uglifyjs wicket-gmap3.js -o wicket-gmap3.min.js;uglifyjs wicket-arcgis.js -o wicket-arcgis.min.js;uglifyjs wicket-leaflet.js -o wicket-leaflet.min.js;",
-        "test": "./node_modules/mocha/bin/mocha -R tap tests/wicket-spec.js"
-    },
-    "devDependencies": {
-        "chai": "*",
-        "mocha": "*",
-        "uglify-js": "2.4.x",
-        "jasmine": "git://github.com/pivotal/jasmine#master",
-        "leaflet-providers": "git://github.com/leaflet-extras/leaflet-providers#master"
+  "name": "wicket",
+  "version": "1.3.2",
+  "license": "GPL-3.0",
+  "description": "A modest library for moving between Well-Known Text (WKT) and various framework geometries",
+  "homepage": "https://github.com/arthur-e/Wicket",
+  "main": "wicket.js",
+  "keywords": [
+    "wkt",
+    "map",
+    "mapping",
+    "geometry",
+    "leaflet"
+  ],
+  "maintainers": [
+    {
+      "name": "K. Arthur Endsley",
+      "email": "kaendsle@mtu.edu",
+      "web": "https://github.com/arthur-e"
     }
+  ],
+  "contributors": [
+    {
+      "name": "K. Arthur Endsley",
+      "email": "kaendsle@mtu.edu",
+      "web": "https://github.com/arthur-e"
+    },
+    {
+      "name": "cuyahoga",
+      "web": "https://github.com/cuyahoga"
+    },
+    {
+      "name": "Tom Nightingale",
+      "web": "https://github.com/thegreat"
+    },
+    {
+      "name": "Aaron Ogle",
+      "web": "https://github.com/atogle"
+    },
+    {
+      "name": "James Seppi",
+      "web": "https://github.com/jseppi"
+    },
+    {
+      "name": "tchannel",
+      "web": "https://github.com/tchannel"
+    },
+    {
+      "name": "Felipe Figueroa",
+      "web": "https://github.com/amenadiel"
+    },
+    {
+      "name": "Matthijs van Henten",
+      "web": "https://github.com/mvhenten"
+    }
+  ],
+  "bugs": {
+    "mail": "kaendsle@mtu.edu",
+    "url": "https://github.com/arthur-e/Wicket/issues"
+  },
+  "licenses": [
+    {
+      "type": "GPLv3",
+      "url": "https://raw.github.com/arthur-e/Wicket/master/LICENSE"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arthur-e/Wicket.git"
+  },
+  "scripts": {
+    "build": "uglifyjs wicket.js -o wicket.min.js;uglifyjs wicket-gmap3.js -o wicket-gmap3.min.js;uglifyjs wicket-arcgis.js -o wicket-arcgis.min.js;uglifyjs wicket-leaflet.js -o wicket-leaflet.min.js;",
+    "test": "./node_modules/mocha/bin/mocha -R tap tests/wicket-spec.js && ./node_modules/karma/bin/karma start"
+  },
+  "devDependencies": {
+    "chai": "*",
+    "jasmine-core": "^2.5.2",
+    "karma": "^1.7.1",
+    "karma-jasmine": "^1.1.0",
+    "karma-mocha-reporter": "^2.2.4",
+    "karma-phantomjs-launcher": "^1.0.1",
+    "leaflet-providers": "git://github.com/leaflet-extras/leaflet-providers#master",
+    "mocha": "*",
+    "uglify-js": "2.4.x"
+  }
 }
