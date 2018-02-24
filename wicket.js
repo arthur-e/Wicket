@@ -156,9 +156,19 @@
             'parenComma': /\)\s*,\s*\(/,
             'coord': /-*\d+\.*\d+ -*\d+\.*\d+/, // e.g. "24 -14"
             'doubleParenComma': /\)\s*\)\s*,\s*\(\s*\(/,
-            'trimParens': /^\s*\(?(.*?)\)?\s*$/,
             'ogcTypes': /^(multi)?(point|line|polygon|box)?(string)?$/i, // Captures e.g. "Multi","Line","String"
             'crudeJson': /^{.*"(type|coordinates|geometries|features)":.*}$/ // Attempts to recognize JSON strings
+        };
+
+        /**
+         * Strip any whitespace and parens from front and back.
+         * This is the equivalent of s/^\s*\(?(.*)\)?\s*$/$1/ but without the risk of catastrophic backtracking.
+         * @param   str {String}
+         */
+        this._stripWhitespaceAndParens = function (fullStr) {
+            var trimmed = fullStr.trim();
+            var noParens = trimmed.replace(/^\(?(.*?)\)?$/, '$1');
+            return noParens;
         };
 
         /**
@@ -781,7 +791,7 @@
             }
 
             for (i = 0; i < lines.length; i += 1) {
-                line = lines[i].replace(this.regExes.trimParens, '$1');
+                line = this._stripWhitespaceAndParens(lines[i]);
                 components.push(this.ingest.linestring.apply(this, [line]));
             }
 
@@ -799,7 +809,7 @@
             rings = Wkt.trim(str).split(this.regExes.parenComma);
             components = []; // Holds one or more rings
             for (i = 0; i < rings.length; i += 1) {
-                ring = rings[i].replace(this.regExes.trimParens, '$1').split(this.regExes.comma);
+                ring = this._stripWhitespaceAndParens(rings[i]).split(this.regExes.comma);
                 subcomponents = []; // Holds the outer ring and any inner rings (holes)
                 for (j = 0; j < ring.length; j += 1) {
                     // Split on the empty space or '+' character (between coordinates)
@@ -859,7 +869,7 @@
             components = [];
             polygons = Wkt.trim(str).split(this.regExes.doubleParenComma);
             for (i = 0; i < polygons.length; i += 1) {
-                polygon = polygons[i].replace(this.regExes.trimParens, '$1');
+                polygon = this._stripWhitespaceAndParens(polygons[i]);
                 components.push(this.ingest.polygon.apply(this, [polygon]));
             }
             return components;
