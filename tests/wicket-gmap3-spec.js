@@ -6,7 +6,7 @@ describe('Standard WKT Test Cases: ', function() {
         if (window.google) {
             done();
         }
-        console.log('waiting for google to load');
+
         // Wait one second, then check if google has loaded.
         // If it hasn't, then wait for another second and so forth
         setTimeout(function() {
@@ -25,6 +25,7 @@ describe('Standard WKT Test Cases: ', function() {
     });
 
     it("Type of window.google should be 'object' to ensure the library is loaded in the global scope", function() {
+        console.log('waiting for google to load');
         expect(typeof window.google).toEqual('object');
     });
 
