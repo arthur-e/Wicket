@@ -27,7 +27,7 @@
 (function ( root, factory ) {
     if ( typeof exports === 'object' ) {
         // CommonJS
-        factory( require('./wicket') );
+        module.exports = factory( require('./wicket') );
     } else if ( typeof define === 'function' && define.amd ) {
         // AMD. Register as an anonymous module.
         define( ['wicket'], factory);
@@ -112,7 +112,7 @@
          */
         linestring: function (config, component) {
             var coords = component || this.components,
-                latlngs = this.coordsToLatLngs(coords);
+                latlngs = this.coordsToLatLngs(coords, 0, this.coordsToLatLng);
 
             return L.polyline(latlngs, config);
         },
@@ -124,9 +124,14 @@
          */
         multilinestring: function (config) {
             var coords = this.components,
-                latlngs = this.coordsToLatLngs(coords, 1);
+                latlngs = this.coordsToLatLngs(coords, 1, this.coordsToLatLng);
 
-            return L.multiPolyline(latlngs, config);
+            if (L.multiPolyline) {
+                return L.multiPolyline(latlngs, config);
+            }
+            else {
+                return L.polyline(latlngs, config);
+            }
         },
 
         /**
@@ -137,7 +142,7 @@
         polygon: function (config) {
             // Truncate the coordinates to remove the closing coordinate
             var coords = this.trunc(this.components),
-                latlngs = this.coordsToLatLngs(coords, 1);
+                latlngs = this.coordsToLatLngs(coords, 1, this.coordsToLatLng);
             return L.polygon(latlngs, config);
         },
 
@@ -149,9 +154,14 @@
         multipolygon: function (config) {
             // Truncate the coordinates to remove the closing coordinate
             var coords = this.trunc(this.components),
-                latlngs = this.coordsToLatLngs(coords, 2);
+                latlngs = this.coordsToLatLngs(coords, 2, this.coordsToLatLng);
 
-            return L.multiPolygon(latlngs, config);
+            if (L.multiPolygon) {
+                return L.multiPolygon(latlngs, config);
+            }
+            else {
+                return L.polygon(latlngs, config);
+            }
         },
 
         /**
@@ -169,7 +179,6 @@
             }
 
             return L.featureGroup(layers, config);
-
         }
     };
 
