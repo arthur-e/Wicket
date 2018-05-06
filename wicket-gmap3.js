@@ -159,18 +159,17 @@
             var j, k, c, rings, verts;
 
             var polygonIsClockwise = function (coords) {
-				var area = 0,
-					j = null,
-					i = 0;
-
-				for (i = 0; i < coords.length; i++) {
-					j = (i + 1) % coords.length;
-					area += coords[i].x * coords[j].x;
-					area -= coords[j].y * coords[i].y;
-				}
-
-				return area > 0;
-			};
+                var area = 0,
+                    j = null,
+                    i = 0;
+            
+                for (i = 0; i < coords.length; i++) {
+                    j = (i + 1) % coords.length;
+                    area += (coords[j].x - coords[i].x) * (coords[j].y + coords[i].y);
+                }
+            
+                return area > 0;
+            };
 
             c = component || this.components;
 
@@ -184,8 +183,7 @@
             for (j = 0; j < c.length; j += 1) { // For each ring...
 
                 verts = [];
-                // NOTE: We iterate to one (1) less than the Array length to skip the last vertex
-                for (k = 0; k < c[j].length - 1; k += 1) { // For each vertex...
+                for (k = 0; k < c[j].length; k += 1) { // For each vertex...
                     verts.push(new google.maps.LatLng(c[j][k].y, c[j][k].x));
 
                 } // eo for each vertex
