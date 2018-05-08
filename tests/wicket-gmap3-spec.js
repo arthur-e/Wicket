@@ -116,7 +116,8 @@ describe('Standard WKT Test Cases: ', function() {
                         new google.maps.LatLng(10, 30),
                         new google.maps.LatLng(40, 40),
                         new google.maps.LatLng(40, 20),
-                        new google.maps.LatLng(20, 10)
+                        new google.maps.LatLng(20, 10),
+                        new google.maps.LatLng(10, 30)
                     ]
                 ]
             }),
@@ -175,12 +176,14 @@ describe('Standard WKT Test Cases: ', function() {
                         new google.maps.LatLng(10, 35),
                         new google.maps.LatLng(45, 45),
                         new google.maps.LatLng(40, 15),
-                        new google.maps.LatLng(20, 10)
+                        new google.maps.LatLng(20, 10),
+                        new google.maps.LatLng(10, 35)
                     ],
                     [ // Order in inner rings is reversed
                         new google.maps.LatLng(30, 21),
                         new google.maps.LatLng(35, 35),
-                        new google.maps.LatLng(20, 30)
+                        new google.maps.LatLng(20, 30),
+                        new google.maps.LatLng(30, 21)
                     ]
                 ]
             }),
@@ -360,7 +363,8 @@ describe('Standard WKT Test Cases: ', function() {
                         [
                             new google.maps.LatLng(20, 30),
                             new google.maps.LatLng(40, 45),
-                            new google.maps.LatLng(40, 10)
+                            new google.maps.LatLng(40, 10),
+                            new google.maps.LatLng(20, 30)
                         ]
                     ]
                 }),
@@ -371,7 +375,8 @@ describe('Standard WKT Test Cases: ', function() {
                             new google.maps.LatLng(5, 15),
                             new google.maps.LatLng(10, 40),
                             new google.maps.LatLng(20, 10),
-                            new google.maps.LatLng(10, 5)
+                            new google.maps.LatLng(10, 5),
+                            new google.maps.LatLng(5, 15)
                         ]
                     ]
                 })
@@ -461,7 +466,8 @@ describe('Standard WKT Test Cases: ', function() {
                         [
                             new google.maps.LatLng(40, 40),
                             new google.maps.LatLng(45, 20),
-                            new google.maps.LatLng(30, 45)
+                            new google.maps.LatLng(30, 45),
+                            new google.maps.LatLng(40, 40)
                         ]
                     ]
                 }),
@@ -473,13 +479,14 @@ describe('Standard WKT Test Cases: ', function() {
                             new google.maps.LatLng(30, 10),
                             new google.maps.LatLng(10, 10),
                             new google.maps.LatLng(5, 30),
-                            new google.maps.LatLng(20, 45)
+                            new google.maps.LatLng(20, 45),
+                            new google.maps.LatLng(35, 20)
                         ],
                         [
                             new google.maps.LatLng(20, 30),
                             new google.maps.LatLng(15, 20),
                             new google.maps.LatLng(25, 20),
-
+                            new google.maps.LatLng(20, 30)
                         ]
                     ]
                 })

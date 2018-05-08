@@ -156,7 +156,7 @@
          * @return              {google.maps.Polygon}
          */
         polygon: function (config, component) {
-            var j, k, c, rings, verts;
+            var j, k, c, rings, verts, outerClockwise;
 
             var polygonIsClockwise = function (coords) {
                 var area = 0,
@@ -188,10 +188,13 @@
 
                 } // eo for each vertex
 
-                if (j !== 0) {
-                   // Orient inner rings correctly
-					if (polygonIsClockwise(c[j]) && this.type == 'polygon') {
-						verts.reverse();
+                if (j === 0) {
+                    outerClockwise = polygonIsClockwise(c[j]);
+                } else {
+                   // Note that the points forming the inner path are wound in the
+                   // opposite direction to those in the outer path, to form the hole
+                    if (polygonIsClockwise(c[j]) === outerClockwise && this.type == 'polygon') {
+                        verts.reverse();
 					}
                 }
 
@@ -336,19 +339,8 @@
                         return false;
                     }
 
-                    if (l === 2) {
-                        // If clockwise*clockwise or counter*counter, i.e.
-                        //  (-1)*(-1) or (1)*(1), then result would be positive
-                        if (sign(obj.getPaths().getAt(0)) * sign(obj.getPaths().getAt(1)) < 0) {
-                            return false; // Most likely single polygon with 1 hole
-                        }
-
-                        return true;
-                    }
-
-                    // Must be longer than 3 polygons at this point...
                     areas = obj.getPaths().getArray().map(function (k) {
-                        return sign(k) / Math.abs(sign(k)); // Unit normalization (outputs 1 or -1)
+                        return sign(k) > 0 ? 1 : -1; // Unit normalization (outputs 1 or -1)
                     });
 
                     // If two clockwise or two counter-clockwise rings are found
@@ -359,7 +351,6 @@
                     }
 
                     return false;
-
                 }());
             }
 
@@ -380,22 +371,6 @@
                             x: tmp.getAt(0).lng(),
                             y: tmp.getAt(0).lat()
                         });
-
-                    if (i % 2 !== 0) { // In inner rings, coordinates are reversed...
-                        verts.reverse();
-                    } 
-                }
-
-                if (obj.getPaths().length > 1 && i > 0) {
-                    // If this and the last ring have the same signs...
-                    if (sign(obj.getPaths().getAt(i)) > 0 && sign(obj.getPaths().getAt(i - 1)) > 0 ||
-                        sign(obj.getPaths().getAt(i)) < 0 && sign(obj.getPaths().getAt(i - 1)) < 0 /*&& !multiFlag*/ ) {
-                        // ...They must both be inner rings (or both be outer rings, in a multipolygon)
-                        verts = [verts]; // Wrap multipolygons once more (collection)
-                    } else {
-                        verts.reverse();
-                    }
-
                 }
 
                 rings.push(verts);
