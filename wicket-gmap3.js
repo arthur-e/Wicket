@@ -185,7 +185,6 @@
                 verts = [];
                 for (k = 0; k < c[j].length; k += 1) { // For each vertex...
                     verts.push(new google.maps.LatLng(c[j][k].y, c[j][k].x));
-
                 } // eo for each vertex
 
                 if (j === 0) {
@@ -193,9 +192,9 @@
                 } else {
                    // Note that the points forming the inner path are wound in the
                    // opposite direction to those in the outer path, to form the hole
-                    if (polygonIsClockwise(c[j]) === outerClockwise && this.type == 'polygon') {
+                    if (polygonIsClockwise(c[j]) === outerClockwise && this.type === 'polygon') {
                         verts.reverse();
-					}
+                    }
                 }
 
                 rings.push(verts);
@@ -346,7 +345,6 @@
                     // If two clockwise or two counter-clockwise rings are found
                     //  (at different indices)...
                     if (areas.indexOf(areas[0]) !== areas.lastIndexOf(areas[0])) {
-                        multiFlag = true; // Flag for holes in one or more polygons
                         return true;
                     }
 
@@ -358,12 +356,11 @@
                 tmp = obj.getPaths().getAt(i);
                 verts = [];
 
-                for (j = 0; j < obj.getPaths().getAt(i).length; j += 1) { // For each vertex...
+                for (j = 0; j < tmp.length; j += 1) { // For each vertex...
                     verts.push({
                         x: tmp.getAt(j).lng(),
                         y: tmp.getAt(j).lat()
                     });
-
                 }
 
                 if (!tmp.getAt(tmp.length - 1).equals(tmp.getAt(0))) {
@@ -371,6 +368,15 @@
                             x: tmp.getAt(0).lng(),
                             y: tmp.getAt(0).lat()
                         });
+                }
+                if (multiFlag) {
+                    if (i === 0) {
+                        k = sign(tmp);
+                    } else if (k * sign(tmp) > 0) {
+                        // If current ring has same orientation with the outer ring,
+                        // Wrap multipolygons once more (collection)
+                        verts = [verts];
+                    }
                 }
 
                 rings.push(verts);
