@@ -156,21 +156,20 @@
          * @return              {google.maps.Polygon}
          */
         polygon: function (config, component) {
-            var j, k, c, rings, verts;
+            var j, k, c, rings, verts, outerClockwise;
 
             var polygonIsClockwise = function (coords) {
-				var area = 0,
-					j = null,
-					i = 0;
-
-				for (i = 0; i < coords.length; i++) {
-					j = (i + 1) % coords.length;
-					area += coords[i].x * coords[j].x;
-					area -= coords[j].y * coords[i].y;
-				}
-
-				return area > 0;
-			};
+                var area = 0,
+                    j = null,
+                    i = 0;
+            
+                for (i = 0; i < coords.length; i++) {
+                    j = (i + 1) % coords.length;
+                    area += (coords[j].x - coords[i].x) * (coords[j].y + coords[i].y);
+                }
+            
+                return area > 0;
+            };
 
             c = component || this.components;
 
@@ -184,17 +183,18 @@
             for (j = 0; j < c.length; j += 1) { // For each ring...
 
                 verts = [];
-                // NOTE: We iterate to one (1) less than the Array length to skip the last vertex
-                for (k = 0; k < c[j].length - 1; k += 1) { // For each vertex...
+                for (k = 0; k < c[j].length; k += 1) { // For each vertex...
                     verts.push(new google.maps.LatLng(c[j][k].y, c[j][k].x));
-
                 } // eo for each vertex
 
-                if (j !== 0) {
-                   // Orient inner rings correctly
-					if (polygonIsClockwise(c[j]) && this.type == 'polygon') {
-						verts.reverse();
-					}
+                if (j === 0) {
+                    outerClockwise = polygonIsClockwise(c[j]);
+                } else {
+                   // Note that the points forming the inner path are wound in the
+                   // opposite direction to those in the outer path, to form the hole
+                    if (polygonIsClockwise(c[j]) === outerClockwise && this.type === 'polygon') {
+                        verts.reverse();
+                    }
                 }
 
                 rings.push(verts);
@@ -338,30 +338,17 @@
                         return false;
                     }
 
-                    if (l === 2) {
-                        // If clockwise*clockwise or counter*counter, i.e.
-                        //  (-1)*(-1) or (1)*(1), then result would be positive
-                        if (sign(obj.getPaths().getAt(0)) * sign(obj.getPaths().getAt(1)) < 0) {
-                            return false; // Most likely single polygon with 1 hole
-                        }
-
-                        return true;
-                    }
-
-                    // Must be longer than 3 polygons at this point...
                     areas = obj.getPaths().getArray().map(function (k) {
-                        return sign(k) / Math.abs(sign(k)); // Unit normalization (outputs 1 or -1)
+                        return sign(k) > 0 ? 1 : -1; // Unit normalization (outputs 1 or -1)
                     });
 
                     // If two clockwise or two counter-clockwise rings are found
                     //  (at different indices)...
                     if (areas.indexOf(areas[0]) !== areas.lastIndexOf(areas[0])) {
-                        multiFlag = true; // Flag for holes in one or more polygons
                         return true;
                     }
 
                     return false;
-
                 }());
             }
 
@@ -369,12 +356,11 @@
                 tmp = obj.getPaths().getAt(i);
                 verts = [];
 
-                for (j = 0; j < obj.getPaths().getAt(i).length; j += 1) { // For each vertex...
+                for (j = 0; j < tmp.length; j += 1) { // For each vertex...
                     verts.push({
                         x: tmp.getAt(j).lng(),
                         y: tmp.getAt(j).lat()
                     });
-
                 }
 
                 if (!tmp.getAt(tmp.length - 1).equals(tmp.getAt(0))) {
@@ -382,22 +368,15 @@
                             x: tmp.getAt(0).lng(),
                             y: tmp.getAt(0).lat()
                         });
-
-                    if (i % 2 !== 0) { // In inner rings, coordinates are reversed...
-                        verts.reverse();
-                    } 
                 }
-
-                if (obj.getPaths().length > 1 && i > 0) {
-                    // If this and the last ring have the same signs...
-                    if (sign(obj.getPaths().getAt(i)) > 0 && sign(obj.getPaths().getAt(i - 1)) > 0 ||
-                        sign(obj.getPaths().getAt(i)) < 0 && sign(obj.getPaths().getAt(i - 1)) < 0 /*&& !multiFlag*/ ) {
-                        // ...They must both be inner rings (or both be outer rings, in a multipolygon)
-                        verts = [verts]; // Wrap multipolygons once more (collection)
-                    } else {
-                        verts.reverse();
+                if (multiFlag) {
+                    if (i === 0) {
+                        k = sign(tmp);
+                    } else if (k * sign(tmp) > 0) {
+                        // If current ring has same orientation with the outer ring,
+                        // Wrap multipolygons once more (collection)
+                        verts = [verts];
                     }
-
                 }
 
                 rings.push(verts);
