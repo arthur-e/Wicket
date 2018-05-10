@@ -7,15 +7,13 @@
 
 Wicket is a lightweight library for translating between [Well-Known Text (WKT)](http://en.wikipedia.org/wiki/Well-known_text) and various client-side mapping frameworks:
 * Leaflet [(demo)](http://arthur-e.github.com/Wicket/)
-* Google Maps API* [(demo)](http://arthur-e.github.com/Wicket/sandbox-gmaps3.html)
+* Google Maps API [(demo)](http://arthur-e.github.com/Wicket/sandbox-gmaps3.html)
 * ESRI ArcGIS JavaScript API [(demo)](http://arthur-e.github.com/Wicket/sandbox-arcgis.html)
 * Potentially any other web mapping framework through serialization and de-serialization of GeoJSON (with `JSON.parse`)
 
 The core Wicket library and the Leaflet extension are both compatible with Node.js; the Google Maps and ArcGIS API extensions will not work in Node.js because they require a browser.
 
 If you are looking for [Apache Wicket](http://wicket.apache.org/), the web-app development framework for Java, [you'll find it here](http://wicket.apache.org/).
-
-*The Google Maps API extension can read WKT strings for (Multi)Polygons with interior rings/ holes but it cannot determine Multi-status or the nature of interior rings for `google.maps.Polygon` instances due to [an outstanding bug](https://github.com/arthur-e/Wicket/issues/33).
 
 ## License ##
 
