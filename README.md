@@ -3,8 +3,6 @@
 [![Travis CI](https://travis-ci.org/arthur-e/Wicket.svg?branch=master)](https://travis-ci.org/arthur-e/Wicket.svg?branch=master)
 [![CDNJS](https://img.shields.io/cdnjs/v/wicket.svg)](https://cdnjs.com/libraries/wicket)
 
-**Wicket is looking for a permanent maintainer.** Please [contact us](mailto:endsley@umich.edu) if you want to help maintain Wicket.
-
 Wicket is a lightweight library for translating between [Well-Known Text (WKT)](http://en.wikipedia.org/wiki/Well-known_text) and various client-side mapping frameworks:
 * Leaflet [(demo)](http://arthur-e.github.com/Wicket/)
 * Google Maps API [(demo)](http://arthur-e.github.com/Wicket/sandbox-gmaps3.html)
