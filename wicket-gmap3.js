@@ -21,7 +21,7 @@
 (function ( root, factory ) {
     if ( typeof exports === 'object' ) {
         // CommonJS
-        factory( require('./wicket') );
+        module.exports = factory( require('./wicket') );
     } else if ( typeof define === 'function' && define.amd ) {
         // AMD. Register as an anonymous module.
         define( ['wicket'], factory);
