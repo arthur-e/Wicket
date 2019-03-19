@@ -300,19 +300,19 @@
         if (obj.constructor === L.Polygon || obj.constructor === L.polygon) {
             rings = [];
             verts = [];
-            tmp = obj.getLatLngs();
+            boundary = obj.getLatLngs()[0];
 
             // First, we deal with the boundary points
-            for (i = 0; i < obj._latlngs.length; i += 1) {
+            for (i = 0; i < boundary.length; i += 1) {
                 verts.push({ // Add the first coordinate again for closure
-                    x: tmp[i].lng,
-                    y: tmp[i].lat
+                    x: boundary[i].lng,
+                    y: boundary[i].lat
                 });
             }
 
             verts.push({ // Add the first coordinate again for closure
-                x: tmp[0].lng,
-                y: tmp[0].lat
+                x: boundary[0].lng,
+                y: boundary[0].lat
             });
 
             rings.push(verts);
