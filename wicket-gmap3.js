@@ -403,7 +403,7 @@
             var rlat = (radius / earthsradius) * r2d;
             var rlng = rlat / Math.cos(point.lat() * d2r);
 
-            for (var n = 0; n <= num_seg; n++) {
+            for (var n = 0; n < num_seg; n++) {
                 var theta = Math.PI * (n / (num_seg / 2));
                 lng = point.lng() + (rlng * Math.cos(theta)); // center a + radius x * cos(theta)
                 lat = point.lat() + (rlat * Math.sin(theta)); // center b + radius y * sin(theta)
@@ -412,6 +412,7 @@
                     y: lat
                 });
             }
+            verts.push(verts[0]);
 
             response = {
                 type: 'polygon',
