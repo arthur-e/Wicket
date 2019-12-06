@@ -203,7 +203,7 @@
      * @return      {Object}    A hash of the 'type' and 'components' thus derived
      */
     Wkt.Wkt.prototype.deconstruct = function (obj) {
-        var attr, coordsFromLatLngs, features, i, verts, rings, tmp;
+        var attr, coordsFromLatLngs, features, i, verts, rings, tmp, boundary;
 
         /**
          * Accepts an Array (arr) of LatLngs from which it extracts each one as a
