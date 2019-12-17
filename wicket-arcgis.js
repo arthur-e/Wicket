@@ -209,11 +209,6 @@ Wkt.Wkt.prototype.construct = {
                     return rings;
                 });
 
-                if (!holey && rings[0].length > 1) { // Easy, if there are no inner rings (holes)
-                    // But we add the second condition to check that we're not too deeply nested
-                    return rings;
-                }
-
                 newRings = [];
                 for (i = 0; i < rings.length; i += 1) {
                     if (rings[i].length > 1) {
