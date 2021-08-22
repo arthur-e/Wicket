@@ -1,0 +1,264 @@
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="./index.css" />
+    <title>Wicket - Lightweight Javascript for WKT [ESRI ArcGIS Sandbox]</title>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.20/esri/themes/light/main.css">
+    <script type="text/javascript">
+        var basePath = window.location.origin + location.pathname.replace(/\/[^/]+$/, '') + "/";
+
+        //configure dojo to load wicket modules from basePath
+        var dojoConfig = {
+            packages: [
+                { name: "wicket", location: basePath + ".." },
+            ]
+        };
+    </script>
+
+    <script src="https://js.arcgis.com/4.20/"></script>
+    <script type="text/javascript">
+        require([
+            'wicket/wicket',
+            'wicket/wicket-arcgis-amd',
+            'esri/Map',
+            "esri/views/MapView",
+            "esri/Graphic",
+            "esri/layers/GraphicsLayer",
+        ], function (
+            wicket,
+            wickedArcgis4Amd,
+            Map,
+            MapView,
+            Graphic,
+            GraphicsLayer,
+        ) {
+
+            //global variable.
+            app = (function () {
+
+                const simpleFillSymbol = {
+                    type: "simple-fill",
+                    color: [227, 139, 79, 0.8],  // Orange, opacity 80%
+                    outline: {
+                        color: [255, 255, 255],
+                        width: 1
+                    }
+                };
+
+                const simpleLineSymbol = {
+                    type: "simple-line",
+                    color: [226, 119, 40], // Orange
+                    width: 2
+                };
+
+                const simpleMarkerSymbol = {
+                    type: "simple-marker",
+                    color: [226, 119, 40],  // Orange
+                    outline: {
+                        color: [255, 255, 255], // White
+                        width: 1
+                    }
+                };
+
+                return {
+                    features: [],
+                    clearMap: function () {
+                        var i;
+
+                        // Reset the remembered last string (so that we can clear the map,
+                        //  paste the same string, and see it again)
+                        document.getElementById('wkt').last = '';
+
+                        for (i = 0; i < this.features.length; i += 1) {
+                            this.graphicsLayer.remove(this.features[i]);
+                        }
+
+                        //this.features.length = 0;
+                    },
+
+                    /**
+                     * Clears the current contents of the textarea.
+                     */
+                    clearText: function () {
+                        document.getElementById('wkt').value = '';
+                    },
+
+                    /**
+                     * Maps the current contents of the textarea.
+                     * @param   editable    {Boolean}   Indicates that the feature drawn should be editable
+                     * @param   focus       {Boolean}   Indicates that the map should pan and/or zoom to new features
+                     * @return              {Object}    Some sort of geometry object
+                     */
+                    mapIt: function (editable, focus) {
+                        var el, wkt;
+
+                        // Indicates that the map should pan and/or zoom to new features
+                        focus = focus || false;
+
+                        if (editable === undefined) {
+                            editable = true;
+                        }
+
+                        el = document.getElementById('wkt');
+                        wkt = new Wkt.Wkt();
+
+                        if (el.last === el.value) { // Remember the last string
+                            return; // Do nothing if the WKT string hasn't changed
+                        } else {
+                            el.last = el.value;
+                        }
+
+                        try { // Catch any malformed WKT strings
+                            wkt.read(el.value);
+                        } catch (e1) {
+                            try {
+                                wkt.read(el.value.replace('\n', '').replace('\r', '').replace('\t', ''));
+                            } catch (e2) {
+                                if (e2.name === 'WKTError') {
+                                    alert('Wicket could not understand the WKT string you entered. Check that you have parentheses balanced, and try removing tabs and newline characters.');
+                                    return;
+                                }
+                            }
+                        }
+
+                        var config = {
+                            spatialReference: {
+                                wkid: 4326 // WGS84 unprojected
+                            },
+                            editable: editable
+                        };
+
+
+
+                        var geometry = wkt.toObject(config);
+
+                        switch (geometry.type) {
+                            case "point":
+                                symbol = simpleMarkerSymbol;
+                                break;
+                            case "polyline":
+                                symbol = simpleLineSymbol;
+                                break;
+                            case "polygon":
+                                symbol = simpleFillSymbol;
+                                break;
+                            case "extent":
+                                symbol = simpleFillSymbol;
+                                break;
+                            case "multipoint":
+                                symbol = simpleMarkerSymbol
+                                break;
+                        }
+
+                        var graphic = new Graphic({
+                            geometry: geometry, //autocasts
+                            symbol: symbol      //autocasts
+                        });
+                        this.graphicsLayer.add(graphic);
+                        this.features.push(graphic); // Remember it for later
+
+                        return geometry;
+                    },
+
+                    /**
+                     * Updates the textarea based on the first available feature.
+                     */
+                    updateText: function () {
+                        var wkt = new Wkt.Wkt();
+                        wkt.fromObject(this.features[0]);
+                        document.getElementById('wkt').value = wkt.write();
+                    },
+
+                    /**
+                     * Formats the textarea contents for a URL.
+                     * @param   checked {Boolean}   The check state of the associated checkbox
+                     */
+                    urlify: function (checked) {
+                        var wkt = new Wkt.Wkt();
+                        wkt.read(document.getElementById('wkt').value);
+                        wkt.delimiter = (checked) ? '+' : ' ';
+                        document.getElementById('wkt').value = wkt.write();
+                        return wkt;
+                    },
+
+                    init: function () {
+                        this.map = new Map({
+                            basemap: 'oceans'
+                        });
+                        this.view = new MapView({
+                            map: this.map,
+                            center: [10, 20],
+                            zoom: 2,
+                            container: "viewDiv"
+                        });
+
+                        this.graphicsLayer = new GraphicsLayer();
+                        this.map.add(this.graphicsLayer);
+
+                        document.getElementById('wkt').value = 'MULTIPOLYGON (((40 40, 20 45, 45 30, 40 40)), ((20 35, 45 20, 30 5, 10 10, 10 30, 20 35), (30 20, 20 25, 20 15, 30 20)))';
+                        return this.map;
+                    }
+                };
+            }());
+        });
+    </script>
+</head>
+
+<body onload="app.init();">
+    <!--app.mapIt(false, false);">-->
+    <div id="head">
+        <div class="wrapper">
+        </div>
+    </div>
+    <div id="ribbon">
+        <div class="wrapper" style="display: flex;">
+            <a href="http://github.com/arthur-e/Wicket">
+                <div id="forkme">&nbsp;
+                </div>
+            </a>
+            <div id="viewDiv" style="width: 100%;height: 100%;"></div>
+            <div id="controls" style="display: inline-block;">
+                <div class="title">
+                    <div class="brand">Wicket</div>
+                </div>
+                <div class="text">
+                    Wicket is a lightweight Javascript library that reads and writes <a
+                        href="http://en.wikipedia.org/wiki/Well-known_text#Geometric_objects"
+                        target="_blaknk">Well-Known Text (WKT)</a> strings. It can also be extended to parse and to
+                    create geometric objects from various mapping frameworks, such as <a
+                        href="http://http://leafletjs.com/" target="_blank">Leaflet</a>, the ESRI ArcGIS JavaScript API,
+                    and the Google Maps API.
+                </div>
+                <div id="form">
+                    <textarea type="text" name="wkt" id="wkt"></textarea>
+                    <label><input type="checkbox" name="urlify" id="urlify"
+                            onchange="app.urlify(this.checked);" />Format for URLs</label>
+                    <input type="submit" id="submit" value="Map It!" onclick="app.clearMap();app.mapIt(true, true);" />
+                    <input type="reset" id="reset" value="Clear Map" onclick="app.clearText();app.clearMap();" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="foot">
+        <div class="wrapper">
+            <div class="menu" id="nav">
+                <a href="/">Home</a>
+                <a href="mailto:kaendsle@mtu.edu">Contact Me</a>
+                <a href="http://github.com/arthur-e/Wicket">"Fork me on GitHub!"</a>
+            </div>
+            <div class="attribute">
+                Design &copy; 2012-2013 <a href="mailto:kaendsle@mtu.edu">K. Arthur Endsley</a>
+                <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_GB">
+                    <img alt="Wicket is licensed under a Creative Commons Attribution-ShareAlike 3.0 Unported License"
+                        style="float:right;border-width:0;vertical-align:middle;"
+                        src="http://i.creativecommons.org/l/by-sa/3.0/80x15.png" />
+                </a><br />
+                Wicket is released under the <a href="https://github.com/arthur-e/Wicket/blob/master/LICENSE"
+                    target="_blank">GPL v3</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
