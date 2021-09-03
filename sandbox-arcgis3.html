@@ -16,10 +16,10 @@
         };
     </script>
     <script src="https://js.arcgis.com/3.37/"></script>
+    <script src="wicket.js" type="text/javascript"></script>
+    <script src="wicket-arcgis-amd.js" type="text/javascript"></script>
     <script type="text/javascript">
         require([
-            'wicket/wicket',
-            'wicket/wicket-arcgis-amd',
             'esri/map',
             "esri/graphic",
             "esri/layers/GraphicsLayer",
@@ -28,8 +28,6 @@
             'esri/symbols/SimpleLineSymbol',
             'esri/symbols/SimpleMarkerSymbol'
         ], function (
-            wicket,
-            wickedArcgis4Amd,
             Map,
             Graphic,
             GraphicsLayer,
