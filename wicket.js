@@ -36,7 +36,7 @@
 }(this, function () {
 
 
-    var beginsWith, endsWith, root;
+    var beginsWith, endsWith, root, Wkt;
 
     // Establish the root object, window in the browser, or exports on the server
     root = this;

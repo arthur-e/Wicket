@@ -22,12 +22,15 @@ define([
     'esri/geometry/Multipoint',
     'esri/geometry/Point',
     'esri/geometry/Polygon',
-    'esri/geometry/Polyline'
+    'esri/geometry/Polyline',
+    './wicket'
 ], function (
     Multipoint,
     Point,
     Polygon,
-    Polyline) {
+    Polyline,
+    Wkt
+    ) {
 
     if (!Array.prototype.map) {
         Array.prototype.map = function (fun /* thisArg? */) {
@@ -400,4 +403,5 @@ define([
 
         }
     };
+    return Wkt;
 });
